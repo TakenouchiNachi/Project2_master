@@ -77,8 +77,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		//エネミーの更新処理
-		EnemyUpdate(p_gameobject);
-
+		EnemyUpdate(p_gameobject, p_camera);
 		CameraUpdate(p_camera, p_key);
 
 		//リセット関数

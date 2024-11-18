@@ -230,7 +230,24 @@ struct Player :RectangleObject {
 	Flickr flickr;
 };
 
+//ボスの手の構造体
+struct RightHand :RectangleObject {
+
+};
+
+struct LeftHand :RectangleObject {
+
+};
+
 struct Enemy : RectangleObject {
+	RightHand righthand;
+	LeftHand lefthand;
+
+	//動きの番号を格納する変数
+	int MoveType;
+
+	//両手・片手・手なし　の状態を格納する変数
+	int Condition;
 };
 
 struct MapChip : RectangleObject {
