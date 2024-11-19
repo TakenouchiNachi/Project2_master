@@ -231,23 +231,50 @@ struct Player :RectangleObject {
 };
 
 //ボスの手の構造体
-struct RightHand :RectangleObject {
+struct Hand :RectangleObject {
 
+	//生存フラグ
+	int IsAlive;
+
+	//イージング用の変数
+	float t;
+	Vector2 EasingStartPos;
+	float NowFrame;
 };
 
-struct LeftHand :RectangleObject {
+/*==============================
+		  攻撃の構造体
+ ==============================*/
+//台パン攻撃の構造体
+struct DaiPanStruct :RectangleObject {
 
+	//現在のフレームを格納する変数
+	int CurrentFrame;
+};
+
+struct RocketPunchstruct : RectangleObject {
+
+	//現在のフレームを格納する変数
+	int CurrentFrame;
 };
 
 struct Enemy : RectangleObject {
-	RightHand righthand;
-	LeftHand lefthand;
+	//手の構造体（enumで管理）
+	Hand hand[2];
 
 	//動きの番号を格納する変数
 	int MoveType;
 
 	//両手・片手・手なし　の状態を格納する変数
 	int Condition;
+
+	//攻撃の構造体
+	DaiPanStruct DaiPanInfo;
+
+
+	//イージング用の変数
+	float t;
+	Vector2 EasingStartPos;
 };
 
 struct MapChip : RectangleObject {
