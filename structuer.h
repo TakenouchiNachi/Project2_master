@@ -50,6 +50,8 @@ struct ObjectBaseInfo {
 	Vector2 Vector;
 	float Speed;
 
+	Vector2 ShakePos;
+
 	/*  描画関連  */
 	//画像の描画する座標
 	Vector2 ImagePos;
@@ -146,6 +148,7 @@ struct RectangleObject : ObjectBaseInfo, FoursVertxes {
 
 		Speed = static_cast<float>(Ini_speed);
 
+		ShakePos = {};
 
 		//描画関係
 		ImagePos = {};
@@ -167,20 +170,20 @@ struct RectangleObject : ObjectBaseInfo, FoursVertxes {
 
 		Novice::DrawQuad(
 			//左上
-			static_cast<int>(DrawLeftTop.x),
-			static_cast<int>(DrawLeftTop.y),
+			static_cast<int>(DrawLeftTop.x + ShakePos.x),
+			static_cast<int>(DrawLeftTop.y + ShakePos.y),
 
 			//右上
-			static_cast<int>(DrawRightTop.x),
-			static_cast<int>(DrawRightTop.y),
+			static_cast<int>(DrawRightTop.x + ShakePos.x),
+			static_cast<int>(DrawRightTop.y + ShakePos.y),
 
 			//左下
-			static_cast<int>(DrawLeftBottom.x),
-			static_cast<int>(DrawLeftBottom.y),
+			static_cast<int>(DrawLeftBottom.x + ShakePos.x),
+			static_cast<int>(DrawLeftBottom.y + ShakePos.y),
 
 			//右下
-			static_cast<int>(DrawRightBottom.x),
-			static_cast<int>(DrawRightBottom.y),
+			static_cast<int>(DrawRightBottom.x + ShakePos.x),
+			static_cast<int>(DrawRightBottom.y + ShakePos.y),
 
 			//画像上の座標
 			static_cast<int>(ImagePos.x),
@@ -221,33 +224,78 @@ struct Flickr :RectangleObject {
 	int RangeLimit;
 };
 
+
+//プレイヤーのライフや残機の宣言
+const int HPNum = 3;
+const int RemainingLifeNum = 3;
+
 struct Player :RectangleObject {
 
 	//可動オブジェクトを保持しているかのフラグ
 	int IsHoldObject;
 
+	//プレイ中のライフ
+	RectangleObject HP[HPNum];
+	int HPGH;
+
+	//残機
+	RectangleObject RemainingLife[RemainingLifeNum];
+	int RemainingLifeGH; 
 
 	Flickr flickr;
 };
 
 //ボスの手の構造体
-struct RightHand :RectangleObject {
+struct Hand :RectangleObject {
 
+	//顔の横の固定位置
+	Vector2 FixedPosition;
+
+	//生存フラグ
+	int IsAlive;
+
+	//イージング用の変数
+	float t;
+	Vector2 EasingStartPos;
+	float NowFrame;
 };
 
-struct LeftHand :RectangleObject {
+/*==============================
+		  攻撃の構造体
+ ==============================*/
+//台パン攻撃の構造体
+struct DaiPanStruct :RectangleObject {
 
+	//攻撃判定がアクティブかどうか
+	int IsAcitve;
+
+	//現在のフレームを格納する変数
+	int CurrentFrame;
+};
+
+struct RocketPunchstruct : RectangleObject {
+
+	//現在のフレームを格納する変数
+	int CurrentFrame;
 };
 
 struct Enemy : RectangleObject {
-	RightHand righthand;
-	LeftHand lefthand;
+	//手の構造体（enumで管理）
+	Hand hand[2];
 
 	//動きの番号を格納する変数
 	int MoveType;
 
 	//両手・片手・手なし　の状態を格納する変数
 	int Condition;
+
+	//攻撃の構造体
+	DaiPanStruct DaiPanInfo;
+	RocketPunchstruct RocketPunchInfo;
+
+	//イージング用の変数
+	float t;
+	Vector2 EasingStartPos;
 };
 
 struct MapChip : RectangleObject {
@@ -321,6 +369,9 @@ struct CameraRelated {
 	Viewport view;
 
 	Matrix3x3 camera;
+  
+  Vector2 CameraPos;
+
 
 };
 

@@ -273,8 +273,7 @@ float InOutBounce(float x) {
 	return x;
 }
 
-
-void Easing(Vector2* Pos, float startPosX, float startPosY, float endPosX, float endPosY, float* nowFrame, float endFrame, float* t, float magNum, int material) {
+void Easing(Vector2* Pos, float startPosX,float startPosY, float endPosX,float endPosY, float* nowFrame, float endFrame, float* t, float magNum, int material) {
 
 	*t = *nowFrame / endFrame;
 
@@ -413,7 +412,8 @@ void Easing(Vector2* Pos, float startPosX, float startPosY, float endPosX, float
 }
 
 //ｔとかの初期化関数
-void EasingInitialize(float* t, float* NowFrame, Vector2* startPos, Vector2* Ini_startPos) {
+void EasingInitialize(float* t, float* NowFrame, Vector2* startPos,Vector2* Ini_startPos) {
+
 	*startPos = *Ini_startPos;
 	*t = 0.0f;
 	*NowFrame = 0.0f;
