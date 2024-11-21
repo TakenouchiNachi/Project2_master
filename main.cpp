@@ -1,5 +1,7 @@
 //ソースファイルの読み込み
 #include <Novice.h>
+#include<math.h>
+#include<time.h>
 
 //ヘッダーファイルの読み込み（アルファベット順）
 #include"camera.h"
@@ -16,10 +18,11 @@ const char kWindowTitle[] = "LC1A_21_タケノウチ_ナチ_タイトル";
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-
-
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, WindowWidth, WindowHeight);
+
+	//乱数値の取得
+	srand((unsigned)time(NULL));
 
 	//構造体の実体化
 	GameObject gameobject;
@@ -29,7 +32,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//構造体のアドレスを格納する変数の宣言
 	GameObject* p_gameobject = &gameobject;
 	CameraRelated* p_camera = &camera;
-
 	Key* p_key = &key;
 
 
@@ -78,6 +80,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//エネミーの更新処理
 		EnemyUpdate(p_gameobject, p_camera);
+
+		ScrollFunction(p_gameobject,p_camera);
+
 		CameraUpdate(p_camera, p_key);
 
 		//リセット関数

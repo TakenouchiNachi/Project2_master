@@ -10,10 +10,12 @@
 //カメラ関連の初期化関数
 void CameraInitialize(CameraRelated* cr) {
 
+	cr->CameraPos = { -640,-360 };
+
 	cr->camera = {
 		1,0,0,
 		0,1,0,
-		-640,-360,1
+		cr->CameraPos.x,cr->CameraPos.y,1
 	};
 
 	cr->O.InitialLeft = -640.0f;
@@ -35,11 +37,16 @@ void CameraInitialize(CameraRelated* cr) {
 //カメラの拡縮
 void CameraUpdate(CameraRelated* cr, Key* key) {
 
+	cr->camera = {
+		1,0,0,
+		0,1,0,
+		cr->CameraPos.x,cr->CameraPos.y,1
+	};
+
 	cr->O.Left = cr->O.InitialLeft * cr->O.Scale;
 	cr->O.Top = cr->O.InitialTop * cr->O.Scale;
 	cr->O.Right = cr->O.InitialRight * cr->O.Scale;
 	cr->O.Bottom = cr->O.InitialBottom * cr->O.Scale;
-
 
 	if (key->keys[DIK_UP]) {
 		cr->O.Scale += 0.01f;

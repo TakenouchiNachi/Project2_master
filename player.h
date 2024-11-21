@@ -46,7 +46,13 @@ void MovableObjectShot(GameObject* go, Key* key);
 //プレイヤーの更新処理
 void PlayerUpdate(GameObject* go,CameraRelated* cr, Key* key);
 
+//プレイヤーのHUD関連の更新処理
+void PlayerHudUpdate(GameObject* go);
+
 //描画関数
 void PlayerDraw(GameObject* go);
+
+//プレイヤーのHUD描画関数
+void PlayerHudDraw(GameObject* go);
 
 void FlickrDraw(GameObject* go);

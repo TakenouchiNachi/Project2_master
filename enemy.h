@@ -40,16 +40,18 @@ void DecisionMoveType_Ver1(GameObject* go);
 
 //台パン
 //全体フレーム
-const float DaiPanWholeFrame = 600.0f;
+const float DaiPanWholeFrame = 380.0f;
 void Daipan(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame);
 
 //ロケットパンチ7
 const float LocketPunchWholeFrame = 600.0f;
-void LocketPunch(GameObject* go, int WholeFrame, int TransrateFrame, int LastingFlame);
+void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame);
+
+
+
 
 //更新処理
 void EnemyUpdate(GameObject* go, CameraRelated* cr);
-
 
 //描画関数
 void EnemyDraw(GameObject* go);
