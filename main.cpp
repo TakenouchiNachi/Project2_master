@@ -12,6 +12,7 @@
 #include"stage.h"
 #include"structuer.h"
 #include"system.h"
+#include "field.h"
 
 const char kWindowTitle[] = "LC1A_21_タケノウチ_ナチ_タイトル";
 
@@ -29,17 +30,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	CameraRelated camera;
 	Key key;
 
+	PARTICLE particle;//@@@
+
 	//構造体のアドレスを格納する変数の宣言
 	GameObject* p_gameobject = &gameobject;
 	CameraRelated* p_camera = &camera;
 	Key* p_key = &key;
 
+	PARTICLE* p_particle = &particle;//@@@
 
 	//初期化関数
 	PlayerInitialize(p_gameobject);
 	StageInitialize(p_gameobject);
 	EnemyInitialize(p_gameobject);
 	CameraInitialize(p_camera);
+
+	ParticleInitialize(p_particle);// @@@
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -57,6 +63,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//プレイヤーの更新処理
 
 		PlayerUpdate(p_gameobject, p_camera, p_key);
+
+		ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
 
 		FlickrUpdate(p_gameobject, p_key);
 		RenderingPipeline(&gameobject.player.flickr, p_camera);
@@ -102,6 +110,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		FlickrDraw(p_gameobject);
 
+		ParticleDraw(p_particle);
+
 		StageDraw(p_gameobject);
 
 		MovableObjectDraw(p_gameobject);
@@ -115,21 +125,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		);
 
 		//デバッグ
-		Novice::ScreenPrintf(20, 0, "player pos x : %f", gameobject.player.ScreenPos.x);
-		Novice::ScreenPrintf(20, 20, "player pos y : %f", gameobject.player.ScreenPos.y);
+		/*Novice::ScreenPrintf(20, 0, "player pos x : %f", gameobject.player.ScreenPos.x);
+		Novice::ScreenPrintf(20, 20, "player pos y : %f", gameobject.player.ScreenPos.y);*/
 
 		Novice::ScreenPrintf(20, 50, "player Wpos x : %f", gameobject.player.WorldPos.x);
 		Novice::ScreenPrintf(20, 70, "player Wpos y : %f", gameobject.player.WorldPos.y);
 
-		Novice::ScreenPrintf(20, 100, "IsHit : %d", gameobject.player.flickr.IsHit);
-		Novice::ScreenPrintf(20, 120, "IsMovableObjHit : %d", gameobject.player.flickr.IsMovableObjHit);
+		//Novice::ScreenPrintf(20, 100, "IsHit : %d", gameobject.player.flickr.IsHit);
+		//Novice::ScreenPrintf(20, 120, "IsMovableObjHit : %d", gameobject.player.flickr.IsMovableObjHit);
 		Novice::ScreenPrintf(20, 140, "IsShot : %d", gameobject.player.flickr.IsShot);
-		Novice::ScreenPrintf(20, 160, "IsHold : %d", gameobject.player.IsHoldObject);
+		//Novice::ScreenPrintf(20, 160, "IsHold : %d", gameobject.player.IsHoldObject);
+		//
+		//Novice::ScreenPrintf(20, 200, "Flickr VecX : %f", gameobject.player.flickr.Vector.x);
+		//Novice::ScreenPrintf(20, 220, "Flickr VecY : %f", gameobject.player.flickr.Vector.y);
+		//
+		//Novice::ScreenPrintf(20, 250, "RangeLimit : %d", gameobject.player.flickr.RangeLimit);
 
-		Novice::ScreenPrintf(20, 200, "Flickr VecX : %f", gameobject.player.flickr.Vector.x);
-		Novice::ScreenPrintf(20, 220, "Flickr VecY : %f", gameobject.player.flickr.Vector.y);
-
-		Novice::ScreenPrintf(20, 250, "RangeLimit : %d", gameobject.player.flickr.RangeLimit);
+		Novice::ScreenPrintf(10, 10, "posP : %f / isP : %d / ", p_particle->particleCharge[0].DrawLeftTop.y, p_particle->particleCharge[0].isParticle);
+		Novice::ScreenPrintf(10, 40, "posP : %f / isP : %d / ", p_particle->particleFlicker[5].DrawLeftBottom.y, p_particle->particleFlicker[6].isParticle);
 
 		///
 		/// ↑描画処理ここまで

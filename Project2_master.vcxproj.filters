@@ -59,6 +59,12 @@
     <ClCompile Include="easing.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="field.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="rope.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -142,6 +148,12 @@
     <ClInclude Include="system.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="easing.h" />
+    <ClInclude Include="field.h">
+      <Filter>KamataEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="rope.h">
+      <Filter>KamataEngine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

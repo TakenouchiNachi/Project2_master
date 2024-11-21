@@ -132,3 +132,5 @@ float InBounce(float x);
 float OutBounce(float x);
 
 float InOutBounce(float x);
+
+void EasingInitialize(float* t, float* NowFrame, Vector2* startPos, Vector2* Ini_startPos);
