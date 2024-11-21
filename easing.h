@@ -68,7 +68,7 @@ enum Material {
 	materialInOutBounce,
 };
 
-void Easing(float* PosX, float* PosY, Vector2 startPos, Vector2 endPos, float* nowFrame, float endFrame, float* t, float magNum, int material);
+void Easing(Vector2* Pos, float startPosX, float startPosY, float endPosX, float endPosY, float* nowFrame, float endFrame, float* t, float magNum, int material);
 
 
 float InSine(float x);
@@ -130,3 +130,5 @@ float InBounce(float x);
 float OutBounce(float x);
 
 float InOutBounce(float x);
+
+void EasingInitialize(float* t, float* NowFrame, Vector2* startPos, Vector2* Ini_startPos);

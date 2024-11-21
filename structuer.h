@@ -323,3 +323,75 @@ struct CameraRelated {
 	Matrix3x3 camera;
 
 };
+
+//==================================
+//　　　追加（パーティクル）
+//==================================
+
+//================== [ 残像の構造体 ] ================/
+const int AFINum = 7;
+struct Afterimage{
+	int afterNum = 0;
+	Vector2 afterImagePos[AFINum] = {};
+	int aIColor[AFINum] = {};
+
+	void MakeAfterImage(Vector2 *go, Afterimage *ai, int num) {
+		for (int i = 0;i < ai->afterNum;i++) {
+
+			if (go->x != ai->afterImagePos[i].x || go->y != ai->afterImagePos[i].y) {
+				if (ai->afterNum == i) {
+					ai->afterImagePos[i] = *go;
+					ai->aIColor[i] = 0xFFFFFFFF;
+					ai->afterNum += 1;
+					if (ai->afterNum >= num - 1) {
+						ai->afterNum = 0;
+					}
+					break;
+				}
+			}
+		}
+	}
+
+};
+
+//================= { パーティクルの構造体 ] ===================/
+struct Particle : RectangleObject , Afterimage{
+
+	Vector2 start = {};
+	Vector2 end;
+	float weight;
+	float nowFrame = 0;
+	float endFrame;
+	float t;
+	int life;
+	int isParticle = 0;
+};
+
+//パーティクルの種類
+
+//エドみたいなパーティクル
+  const int pF = 100;
+//| 紐を作成する際の制御点の数(あくまで紐の数を増やすためのもの)
+  const int control = 1;
+//|振れ幅
+  inline IntVector2 particleRand = { 0,0 };
+  inline int particleIsKey = 0;
+
+//プレイヤー周りのパーティクル
+const int pC = 10;
+
+//パーティクルの処理をまとめるために合併したかった
+struct PARTICLE {
+	Particle particleFlicker[pF];
+	Particle particleCharge[pC];
+};
+
+//==================================
+//　　　　　　重力場
+//==================================
+
+struct Field {
+	Vector2 pos;
+	Vector2 wid;
+	Vector2 F;//重力
+};
