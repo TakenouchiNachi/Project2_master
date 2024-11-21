@@ -49,7 +49,80 @@ void PlayerInitialize(GameObject* go) {
 	//プレイヤー関連のフラグの初期化
 	go->player.IsHoldObject = false;
 
-	
+
+	for (int i = 0; i < HPNum; ++i) {
+		go->player.HP[i].BaseInfoInitialize(
+			//初期座標(x,y)
+			640.0f,
+			360.0f,
+
+			//横幅、縦幅
+			32.0f,
+			32.0f,
+
+			//加速度(x,y)
+			0.0f,
+			0.0f,
+
+			//速度(x,y)
+			0.0f,
+			0.0f,
+
+			//ベクトル(x,y)
+			0.0f,
+			0.0f,
+
+			//スピード
+			2.0f,
+
+			//画像
+			Novice::LoadTexture("./image./Life.png"),
+
+			//色
+			WHITE,
+
+			//オブジェクトタイプ（可動or不可動）
+			Else
+		);
+	}
+
+
+	for (int i = 0; i < RemainingLifeNum; ++i) {
+		go->player.RemainingLife[i].BaseInfoInitialize(
+			//初期座標(x,y)
+			640.0f,
+			360.0f,
+
+			//横幅、縦幅
+			32.0f,
+			32.0f,
+
+			//加速度(x,y)
+			0.0f,
+			0.0f,
+
+			//速度(x,y)
+			0.0f,
+			0.0f,
+
+			//ベクトル(x,y)
+			0.0f,
+			0.0f,
+
+			//スピード
+			2.0f,
+
+			//画像
+			1,
+
+			//色
+			WHITE,
+
+			//オブジェクトタイプ（可動or不可動）
+			Else
+		);
+	}
+
 	/*========================================
 			  フリッカーの初期化
 	========================================*/
@@ -537,10 +610,29 @@ void PlayerUpdate(GameObject* go,CameraRelated* cr, Key* key) {
 	RenderingPipeline(&go->player, cr);
 }
 
+//プレイヤーのHUD関連の更新処理
+void PlayerHudUpdate(GameObject* go) {
+
+	for (int i = 0; i < HPNum; ++i) {
+
+		//HUDはスクリーン座標で処理
+		go->player.HP[i].ScreenPos = go->player.HP[i].WorldPos;
+	}
+}
+
+
 //描画関数
 void PlayerDraw(GameObject* go) {
 
 	go->player.RectObjDraw();
+}
+
+//プレイヤーのHUD描画関数
+void PlayerHudDraw(GameObject* go) {
+
+	go->player.Color;
+
+
 }
 
 void FlickrDraw(GameObject* go) {
