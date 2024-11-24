@@ -17,7 +17,7 @@ void StageGenerate(GameObject* go);
 void  MovableObjectHold(GameObject* go);
 
 //可動オブジェクトの更新処理関数
-void MovableObjectUpdate(GameObject* go,Key* key);
+void MovableObjectUpdate(GameObject* go, CameraRelated* cr, Key* key);
 
 //描画関数
 void StageDraw(GameObject* go);

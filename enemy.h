@@ -4,7 +4,8 @@
 enum {
 	None,
 	daipan,
-	locketpunch
+	locketpunch,
+	bulletshot
 };
 
 //敵の状態（両手・片手・頭のみ）
@@ -14,7 +15,7 @@ enum {
 	HeadOnly
 };
 
-//手の左右の
+//手の左右
 enum {
 	Right,
 	Left
@@ -43,12 +44,16 @@ void DecisionMoveType_Ver1(GameObject* go);
 const float DaiPanWholeFrame = 380.0f;
 void Daipan(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame);
 
-//ロケットパンチ7
-const float LocketPunchWholeFrame = 600.0f;
+//ロケットパンチ
+const float LocketPunchWholeFrame = 400.0f;
 void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame);
 
-
-
+//弾撃ち（利用可能）
+//弾の数
+const int EnemyBulletNum = 4;
+const float BulletShotWholeFrame = 330.0f;
+void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, Vector2 FixedPos);
+void BulletMove(GameObject* go, int VectorUpdateFlame);
 
 //更新処理
 void EnemyUpdate(GameObject* go, CameraRelated* cr);

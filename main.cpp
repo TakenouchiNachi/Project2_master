@@ -45,7 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	EnemyInitialize(p_gameobject);
 	CameraInitialize(p_camera);
 
-	ParticleInitialize(p_particle);// @@@
+	ParticleInitialize(p_particle);//@@@
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -69,7 +69,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		FlickrUpdate(p_gameobject, p_key);
 		RenderingPipeline(&gameobject.player.flickr, p_camera);
 
-
+		MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 		//ステージの更新処理
 
@@ -94,7 +94,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		CameraUpdate(p_camera, p_key);
 
 		//リセット関数
-		RkeyReset(p_gameobject, p_key);
+		RkeyReset(p_gameobject, p_camera, p_key);
 
 		///
 		/// ↑更新処理ここまで
@@ -104,6 +104,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 	 
+		Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+
 		EnemyDraw(p_gameobject);
 
 		PlayerDraw(p_gameobject);
@@ -143,6 +145,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Novice::ScreenPrintf(10, 10, "posP : %f / isP : %d / ", p_particle->particleCharge[0].DrawLeftTop.y, p_particle->particleCharge[0].isParticle);
 		Novice::ScreenPrintf(10, 40, "posP : %f / isP : %d / ", p_particle->particleFlicker[5].DrawLeftBottom.y, p_particle->particleFlicker[6].isParticle);
+
+
+		Novice::ScreenPrintf(900, 0, "ShotCount :%d", gameobject.enemy.ShotCount);
 
 		///
 		/// ↑描画処理ここまで

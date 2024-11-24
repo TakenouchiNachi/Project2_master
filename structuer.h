@@ -254,20 +254,30 @@ struct Hand :RectangleObject {
 	//生存フラグ
 	int IsAlive;
 
+	//攻撃判定を持っているか
+	int IsAggression;
+
 	//イージング用の変数
 	float t;
 	Vector2 EasingStartPos;
 	float NowFrame;
 };
 
+struct Bullet :RectangleObject{
+
+	//フラグ
+	int IsShot;
+
+	//攻撃判定を持つか
+	int IsAggression;
+};
+
+
 /*==============================
 		  攻撃の構造体
  ==============================*/
 //台パン攻撃の構造体
 struct DaiPanStruct :RectangleObject {
-
-	//攻撃判定がアクティブかどうか
-	int IsAcitve;
 
 	//現在のフレームを格納する変数
 	int CurrentFrame;
@@ -280,8 +290,27 @@ struct RocketPunchstruct : RectangleObject {
 };
 
 struct Enemy : RectangleObject {
+	//一週目か二週目か判断する変数
+	int LapNum;
+
 	//手の構造体（enumで管理）
 	Hand hand[2];
+
+	//弾の構造体
+	Bullet RightBullet[4];
+	Bullet LeftBullet[4];
+
+	//発射間隔
+	int ShotIntervalTime;
+	
+	//発射数カウント
+	int ShotCount;
+
+	//発射上限数
+	int ShotNumLimit;
+
+	//攻撃中か否かを判別する変数
+	int IsAttack;
 
 	//動きの番号を格納する変数
 	int MoveType;
@@ -293,9 +322,17 @@ struct Enemy : RectangleObject {
 	DaiPanStruct DaiPanInfo;
 	RocketPunchstruct RocketPunchInfo;
 
+	//各攻撃の現在フレ―ムを取得する用の変数9
+	int BulletShotCurrentFrame;
+
 	//イージング用の変数
 	float t;
+	float NowFrame;
 	Vector2 EasingStartPos;
+
+	//フレームカウント
+	int FlameCount;
+
 };
 
 struct MapChip : RectangleObject {
@@ -370,9 +407,7 @@ struct CameraRelated {
 
 	Matrix3x3 camera;
   
-  Vector2 CameraPos;
-
-
+	Vector2 CameraPos;
 };
 
 //==================================
