@@ -25,13 +25,20 @@ void CameraInitialize(CameraRelated* cr) {
 
 	cr->O.Scale = 1.0f;
 
-
-
 	cr->view.Left = 0.0f;
 	cr->view.Top = 0.0f;
 	cr->view.Width = 1280.0f;
 	cr->view.Height = 720.0f;
+
+	cr->easeCamera.start = { 0.0f };
+	cr->easeCamera.end = { 0.0f };
+	cr->easeCamera.t = 0.0f;
+	cr->easeCamera.nowFrame = 1.0f;
+	cr->easeCamera.isEase = false;
+	cr->easeCamera.isEaseOut = false;
+	
 }
+
 
 
 //カメラの拡縮
@@ -79,4 +86,6 @@ void RenderingPipeline(RectangleObject* obj, CameraRelated* cr) {
 	obj->DrawRightTop = Transform(obj->OriginRightTop, wvpVpMatrix);
 	obj->DrawRightBottom = Transform(obj->OriginRightBottom, wvpVpMatrix);
 
+	//座標のカメラ変換
+	obj->ScreenPos = Transform({ 0,0 }, wvpVpMatrix);
 }

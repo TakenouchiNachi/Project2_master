@@ -694,8 +694,12 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 
 		//ベクトルの取得
 		for (int i = 0; i < 2; ++i) {
+
 			go->enemy.hand[i].Vector.x = (go->player.WorldPos.x - go->enemy.hand[i].WorldPos.x);
 			go->enemy.hand[i].Vector.y = (go->player.WorldPos.y - go->enemy.hand[i].WorldPos.y);
+
+			//go->enemy.hand[i].Vector.x=(go->player.WorldPos.x - )
+
 		}
 	}
 

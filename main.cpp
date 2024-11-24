@@ -13,6 +13,7 @@
 #include"structuer.h"
 #include"system.h"
 #include "field.h"
+#include"sceneChange.h"
 
 const char kWindowTitle[] = "LC1A_21_タケノウチ_ナチ_タイトル";
 
@@ -29,6 +30,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameObject gameobject;
 	CameraRelated camera;
 	Key key;
+	sceneChange scene;
+	Sounds sounds;
+	Shake shake;
 
 	PARTICLE particle;//@@@
 
@@ -36,6 +40,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameObject* p_gameobject = &gameobject;
 	CameraRelated* p_camera = &camera;
 	Key* p_key = &key;
+	sceneChange* p_scene=&scene;
+	Sounds* p_sounds = &sounds;
+	Shake * p_shake= &shake;
 
 	PARTICLE* p_particle = &particle;//@@@
 
@@ -44,6 +51,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	StageInitialize(p_gameobject);
 	EnemyInitialize(p_gameobject);
 	CameraInitialize(p_camera);
+	intializeScene(p_scene);
+	initializeSounds(p_sounds);
+	initializeShake(p_shake);
 
 	ParticleInitialize(p_particle);//@@@
 
@@ -60,45 +70,68 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 		
-		//プレイヤーの更新処理
+		switch (p_scene->state)
+		{
+		case TITLE:
 
-		PlayerUpdate(p_gameobject, p_camera, p_key);
+			TitleChange(p_scene, p_key, p_sounds);
 
-		ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
+			//描画処理
+			Novice::DrawBox(128, 128 + p_scene->option * 64, 64, 64, 0.0f, WHITE, kFillModeSolid);
 
-		FlickrUpdate(p_gameobject, p_key);
-		RenderingPipeline(&gameobject.player.flickr, p_camera);
+			break;
+
+		case GAMEPLAY:
+			//プレイヤーの更新処理
+
+			PlayerUpdate(p_gameobject, p_camera, p_key);
+
 
 		MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
-		//ステージの更新処理
+			ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
 
-		StageGenerate(p_gameobject);
+			FlickrUpdate(p_gameobject, p_key);
+			RenderingPipeline(&gameobject.player.flickr, p_camera);
 
-		for (int i = 0; i < VerBlockNum; ++i) {
-			for (int j = 0; j < HolBlockNum; ++j) {
 
-				RenderingPipeline(&gameobject.mapchip[i][j],p_camera);
+			CameraTransition_Start(p_gameobject, p_camera, p_key);
+
+			MaskChange(p_scene, p_gameobject, p_key);
+
+			//ステージの更新処理
+
+			StageGenerate(p_gameobject);
+
+			for (int i = 0; i < VerBlockNum; ++i) {
+				for (int j = 0; j < HolBlockNum; ++j) {
+
+					RenderingPipeline(&gameobject.mapchip[i][j], p_camera);
+				}
 			}
-		}
 
 
+			ShakeFanction(p_shake, p_camera, p_key);
 
 
+			//エネミーの更新処理
+			EnemyUpdate(p_gameobject, p_camera);
 
-		//エネミーの更新処理
-		EnemyUpdate(p_gameobject, p_camera);
+			//ScrollFunction(p_gameobject,p_camera);
 
-		ScrollFunction(p_gameobject,p_camera);
+			CameraUpdate(p_camera, p_key);
 
-		CameraUpdate(p_camera, p_key);
+			//リセット関数
+			RkeyReset(p_gameobject, p_key);
+
+
 
 		//リセット関数
 		RkeyReset(p_gameobject, p_camera, p_key);
+=======
 
-		///
-		/// ↑更新処理ここまで
-		///
+
+
 
 		///
 		/// ↓描画処理ここから
@@ -107,47 +140,74 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
 
 		EnemyDraw(p_gameobject);
+=======
 
-		PlayerDraw(p_gameobject);
 
-		FlickrDraw(p_gameobject);
+			///
+			/// ↑更新処理ここまで
+			///
 
-		ParticleDraw(p_particle);
+			///
+			/// ↓描画処理ここから
+			///
 
-		StageDraw(p_gameobject);
+			EnemyDraw(p_gameobject);
 
-		MovableObjectDraw(p_gameobject);
+			PlayerDraw(p_gameobject);
 
-		Novice::DrawLine(
-			static_cast<int>(gameobject.player.ScreenPos.x),
-			static_cast<int>(gameobject.player.ScreenPos.y),
-			static_cast<int>(gameobject.player.flickr.ScreenPos.x),
-			static_cast<int>(gameobject.player.flickr.ScreenPos.y),
-			RED
-		);
+			FlickrDraw(p_gameobject);
 
-		//デバッグ
-		/*Novice::ScreenPrintf(20, 0, "player pos x : %f", gameobject.player.ScreenPos.x);
-		Novice::ScreenPrintf(20, 20, "player pos y : %f", gameobject.player.ScreenPos.y);*/
+			ParticleDraw(p_particle);
 
-		Novice::ScreenPrintf(20, 50, "player Wpos x : %f", gameobject.player.WorldPos.x);
-		Novice::ScreenPrintf(20, 70, "player Wpos y : %f", gameobject.player.WorldPos.y);
+			StageDraw(p_gameobject);
 
-		//Novice::ScreenPrintf(20, 100, "IsHit : %d", gameobject.player.flickr.IsHit);
-		//Novice::ScreenPrintf(20, 120, "IsMovableObjHit : %d", gameobject.player.flickr.IsMovableObjHit);
-		Novice::ScreenPrintf(20, 140, "IsShot : %d", gameobject.player.flickr.IsShot);
-		//Novice::ScreenPrintf(20, 160, "IsHold : %d", gameobject.player.IsHoldObject);
-		//
-		//Novice::ScreenPrintf(20, 200, "Flickr VecX : %f", gameobject.player.flickr.Vector.x);
-		//Novice::ScreenPrintf(20, 220, "Flickr VecY : %f", gameobject.player.flickr.Vector.y);
-		//
-		//Novice::ScreenPrintf(20, 250, "RangeLimit : %d", gameobject.player.flickr.RangeLimit);
+			MovableObjectDraw(p_gameobject);
 
-		Novice::ScreenPrintf(10, 10, "posP : %f / isP : %d / ", p_particle->particleCharge[0].DrawLeftTop.y, p_particle->particleCharge[0].isParticle);
-		Novice::ScreenPrintf(10, 40, "posP : %f / isP : %d / ", p_particle->particleFlicker[5].DrawLeftBottom.y, p_particle->particleFlicker[6].isParticle);
+			MaskDraw(p_scene);
+
+			Novice::DrawLine(
+				static_cast<int>(gameobject.player.ScreenPos.x),
+				static_cast<int>(gameobject.player.ScreenPos.y),
+				static_cast<int>(gameobject.player.flickr.ScreenPos.x),
+				static_cast<int>(gameobject.player.flickr.ScreenPos.y),
+				RED
+			);
+
 
 
 		Novice::ScreenPrintf(900, 0, "ShotCount :%d", gameobject.enemy.ShotCount);
+
+=======
+			//デバッグ
+			/*Novice::ScreenPrintf(20, 0, "player pos x : %f", gameobject.player.ScreenPos.x);
+			Novice::ScreenPrintf(20, 20, "player pos y : %f", gameobject.player.ScreenPos.y);*/
+
+			Novice::ScreenPrintf(20, 50, "player Wpos x : %f", gameobject.player.WorldPos.x);
+			Novice::ScreenPrintf(20, 70, "player Wpos y : %f", gameobject.player.WorldPos.y);
+
+			//Novice::ScreenPrintf(20, 100, "IsHit : %d", gameobject.player.flickr.IsHit);
+			//Novice::ScreenPrintf(20, 120, "IsMovableObjHit : %d", gameobject.player.flickr.IsMovableObjHit);
+			Novice::ScreenPrintf(20, 140, "IsShot : %d", gameobject.player.flickr.IsShot);
+			//Novice::ScreenPrintf(20, 160, "IsHold : %d", gameobject.player.IsHoldObject);
+			//
+			//Novice::ScreenPrintf(20, 200, "Flickr VecX : %f", gameobject.player.flickr.Vector.x);
+			//Novice::ScreenPrintf(20, 220, "Flickr VecY : %f", gameobject.player.flickr.Vector.y);
+			//
+			//Novice::ScreenPrintf(20, 250, "RangeLimit : %d", gameobject.player.flickr.RangeLimit);
+
+			Novice::ScreenPrintf(10, 10, "posP : %f / isP : %d / ", p_particle->particleCharge[0].DrawLeftTop.y, p_particle->particleCharge[0].isParticle);
+			Novice::ScreenPrintf(10, 40, "posP : %f / isP : %d / ", p_particle->particleFlicker[5].DrawLeftBottom.y, p_particle->particleFlicker[6].isParticle);
+			Novice::ScreenPrintf(10, 400, "posP : %f / isP : %f / ", p_camera->CameraPos.x, p_camera->CameraPos.y);
+			Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_camera->easeCamera.t, p_scene->pos.y);
+
+			break;
+
+		case CLEAR:
+			break;
+
+		case GAMEOVER:
+			break;
+		}
 
 		///
 		/// ↑描画処理ここまで

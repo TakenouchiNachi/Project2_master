@@ -366,7 +366,70 @@ struct Key {
 	char preKeys[256] = { 0 };
 };
 
+//音の構造体
+struct Sounds
+{
+	int cursorPlayHandle;
+	int cursorSoundHandle;
+	int decisionPlayHandle;
+	int  decisionSoundHandle;
+	float volume;
+};
 
+//シェイクの構造体
+struct Shake
+{
+	float elapsedTime;
+	float duration;
+	float amplitude;
+	float frequency;
+	float outX; 
+	float outY;
+	float progress;
+	float easedProgress;
+	float randomX;
+	float randomY;
+	float randMax;
+	int   isShake;
+};
+
+//シーン遷移の構造体
+struct sceneChange
+{
+	Vector2 pos;
+	float width;
+	float height;
+	float startWidth;
+	float startHeight;
+
+	float endWidth;
+	float endHeight;
+
+	float endFrame;
+	float t;
+	int isEase;
+	int image;
+	int state;
+	int option;
+};
+
+enum Scene
+{
+	TITLE,
+	GAMEPLAY,
+	CLEAR,
+	GAMEOVER,
+};
+
+struct EaseCamera
+{
+	Vector2 start;
+	Vector2 end;
+	float t;
+	float nowFrame;
+	float isEase;
+	float isEaseOut;
+};
 
 //カメラ関連
 struct Ortho {
@@ -407,7 +470,10 @@ struct CameraRelated {
 
 	Matrix3x3 camera;
   
-	Vector2 CameraPos;
+
+  Vector2 CameraPos;
+
+	EaseCamera easeCamera;
 };
 
 //==================================
