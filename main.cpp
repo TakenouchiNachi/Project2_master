@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	initializeSounds(p_sounds);
 	initializeShake(p_shake);
 
-	ParticleInitialize(p_particle);// @@@
+	ParticleInitialize(p_particle);//@@@
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -86,10 +86,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			PlayerUpdate(p_gameobject, p_camera, p_key);
 
+
+		MovableObjectUpdate(p_gameobject, p_camera, p_key);
+
 			ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
 
 			FlickrUpdate(p_gameobject, p_key);
 			RenderingPipeline(&gameobject.player.flickr, p_camera);
+
 
 			CameraTransition_Start(p_gameobject, p_camera, p_key);
 
@@ -122,6 +126,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
+		//リセット関数
+		RkeyReset(p_gameobject, p_camera, p_key);
+=======
+
+
+
+
+		///
+		/// ↓描画処理ここから
+		///
+	 
+		Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+
+		EnemyDraw(p_gameobject);
+=======
 
 
 			///
@@ -154,6 +173,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				RED
 			);
 
+
+
+		Novice::ScreenPrintf(900, 0, "ShotCount :%d", gameobject.enemy.ShotCount);
+
+=======
 			//デバッグ
 			/*Novice::ScreenPrintf(20, 0, "player pos x : %f", gameobject.player.ScreenPos.x);
 			Novice::ScreenPrintf(20, 20, "player pos y : %f", gameobject.player.ScreenPos.y);*/
@@ -184,6 +208,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case GAMEOVER:
 			break;
 		}
+
 		///
 		/// ↑描画処理ここまで
 		///
