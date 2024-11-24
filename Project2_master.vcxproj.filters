@@ -154,6 +154,9 @@
     <ClInclude Include="rope.h">
       <Filter>KamataEngine</Filter>
     </ClInclude>
+    <ClInclude Include="sceneChange.h">
+      <Filter>KamataEngine\Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
