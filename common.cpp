@@ -234,18 +234,18 @@ int RectangleObjectCollision(RectangleObject* obj1, RectangleObject* obj2) {
 /*=======================================
           2物体の距離を測る関数
  =======================================*/
-float Distance(float obj1X, float obj1Y, float obj2X, float obj2Y) {
-
+float Distance(Vector2 obj1, Vector2 obj2) {
 	float distance;
 
-	float DifferX = obj1X - obj2X;
-	float DifferY = obj1Y - obj2Y;
+	float DifferX = obj1.x - obj2.x;
+	float DifferY = obj1.y - obj2.y;
 
 
 	distance = sqrtf((DifferX * DifferX) + (DifferY * DifferY));
 
 	return distance;
 }
+
 
 //　Rキーリセット関数
 void RkeyReset(GameObject* go,CameraRelated* cr, Key* key) {

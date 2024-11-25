@@ -40,7 +40,7 @@ float NormalizeY(float vecx, float vecy);
 int RectangleObjectCollision(RectangleObject* obj1, RectangleObject* obj2);
 
 //2物体の距離を測る関数
-float Distance(float obj1X, float obj1Y, float obj2X, float obj2Y);
+float Distance(Vector2 obj1, Vector2 obj2);
 
 //　Rキーリセット関数
 void RkeyReset(GameObject* go, CameraRelated* cr, Key* key);
