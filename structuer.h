@@ -421,6 +421,13 @@ enum Scene
 	GAMEOVER,
 };
 
+enum EaseCameraState
+{
+	NONE,
+	TO_PLAYER,
+	TO_ENEMY,	
+};
+
 struct EaseCamera
 {
 	Vector2 start;
@@ -429,6 +436,7 @@ struct EaseCamera
 	float nowFrame;
 	float isEase;
 	float isEaseOut;
+	int state;
 };
 
 //カメラ関連
