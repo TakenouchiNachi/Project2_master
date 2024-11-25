@@ -13,7 +13,11 @@
 #include"structuer.h"
 #include"system.h"
 #include "field.h"
+
 #include"sceneChange.h"
+#include "afterimage.h"
+#include"title.h"
+
 
 const char kWindowTitle[] = "LC1A_21_タケノウチ_ナチ_タイトル";
 
@@ -35,6 +39,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Shake shake;
 
 	PARTICLE particle;//@@@
+	AFTERIMAGE afterimage;
+
+	TitleScene title;
 
 	//構造体のアドレスを格納する変数の宣言
 	GameObject* p_gameobject = &gameobject;
@@ -45,6 +52,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Shake * p_shake= &shake;
 
 	PARTICLE* p_particle = &particle;//@@@
+	AFTERIMAGE *p_afterimage = &afterimage;
+
+	TitleScene* p_title = &title;
 
 	//初期化関数
 	PlayerInitialize(p_gameobject);
@@ -55,7 +65,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	initializeSounds(p_sounds);
 	initializeShake(p_shake);
 
-	ParticleInitialize(p_particle);//@@@
+
+	ParticleInitialize(p_particle);
+	AfterimageInitialize(p_afterimage);//@@@
+
+	TitleInitialize(p_title);
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -65,6 +80,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// キー入力を受け取る
 		memcpy(key.preKeys, key.keys, 256);
 		Novice::GetHitKeyStateAll(key.keys);
+
+		TitleSceneUpDate(p_title, p_key, p_camera);
 
 		///
 		/// ↓更新処理ここから
@@ -76,6 +93,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			TitleChange(p_scene, p_key, p_sounds);
 
+
 			//描画処理
 			Novice::DrawBox(128, 128 + p_scene->option * 64, 64, 64, 0.0f, WHITE, kFillModeSolid);
 
@@ -85,8 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//プレイヤーの更新処理
 
 			PlayerUpdate(p_gameobject, p_camera, p_key);
-
-
+      AfterimageUpDate(p_afterimage, p_particle, p_camera,p_gameobject);//@@@
 		MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 			ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
@@ -138,26 +155,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 	 
 		Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+   
 
-		EnemyDraw(p_gameobject);
-=======
+		
+
 
 
 			///
 			/// ↑更新処理ここまで
 			///
 
+
 			///
 			/// ↓描画処理ここから
 			///
+      AfterimageDraw(p_afterimage, p_particle);//@@@
+
 
 			EnemyDraw(p_gameobject);
+
 
 			PlayerDraw(p_gameobject);
 
 			FlickrDraw(p_gameobject);
 
 			ParticleDraw(p_particle);
+
 
 			StageDraw(p_gameobject);
 
@@ -177,7 +200,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Novice::ScreenPrintf(900, 0, "ShotCount :%d", gameobject.enemy.ShotCount);
 
-=======
+
 			//デバッグ
 			/*Novice::ScreenPrintf(20, 0, "player pos x : %f", gameobject.player.ScreenPos.x);
 			Novice::ScreenPrintf(20, 20, "player pos y : %f", gameobject.player.ScreenPos.y);*/
@@ -208,6 +231,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case GAMEOVER:
 			break;
 		}
+
 
 		///
 		/// ↑描画処理ここまで

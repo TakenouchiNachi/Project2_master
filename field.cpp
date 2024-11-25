@@ -66,6 +66,39 @@ void ParticleInitialize(PARTICLE* particle) {
 			//オブジェクトタイプ（可動or不可動）
 			ImMovable
 		);
+		particle->particleFlickerT[i].BaseInfoInitialize(
+			//初期座標(x,y)
+			0.0f,
+			0.0f,
+
+			//横幅、縦幅
+			16.0f,
+			16.0f,
+
+			//加速度(x,y)
+			0.0f,
+			0.0f,
+
+			//速度(x,y)
+			0.0f,
+			0.0f,
+
+			//ベクトル(x,y)
+			0.0f,
+			0.0f,
+
+			//スピード
+			2.0f,
+
+			//画像
+			Novice::LoadTexture("./image./TD1-2_particle.png"),
+
+			//色
+			0xFF00FFDD,
+
+			//オブジェクトタイプ（可動or不可動）
+			ImMovable
+		);
 	}
 
 	for (int i = 0;i < pC;i++) {
@@ -124,18 +157,7 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 				particleIsKey = 2;
 			}
 		}
-		if (particleIsKey == 1) {
-			particleRand.y = 0;
-			particleRand.x = rand() % 61 - 30;
-		}
-		if (particleIsKey == 2) {
-			particleRand.y = rand() % 61 - 30;
-			particleRand.x = 0;
-		}
-		if (particleIsKey == 3) {
-			particleRand.y = rand() % 51 - 25;
-			particleRand.x = rand() % 101 - 50;
-		}
+		
 
 		//弾を撃っている時はパーティクルを出す
 		if (go->player.flickr.IsShot) {
@@ -152,11 +174,38 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 			//== [ ひもの処理 ] ==/
 			for (int i = 0;i < control;i++) {
 
+				if (particleIsKey == 1) {
+					particle->particleFlicker[k].Scale = { 0.75f, 4.0f };
+					particle->particleFlickerT[k].Scale = { 0.75f, 4.0f };
+					if(i == 0)
+						particleRand = {20,0};
+					if (i == 1)
+						particleRand = { -50,0 };
+				}
+				if (particleIsKey == 2) {
+					particle->particleFlicker[k].Scale = { 4.0f,0.75f };
+					particle->particleFlickerT[k].Scale = { 4.0f,0.75f };
+					if (i == 0)
+						particleRand = {0,20};
+					if (i == 1)
+						particleRand = { 0,-50 };
+				}
+				if (particleIsKey == 3) {
+					particle->particleFlicker[k].Scale = { 1.4f,1.4f };
+					particle->particleFlickerT[k].Scale = { 1.4f,1.4f };
+					if (i == 0)
+						particleRand = {14,14};
+					if (i == 1)
+						particleRand = { -35,-35 };
+				}
+
 				p1[i].x = go->player.WorldPos.x + (go->player.flickr.WorldPos.x - go->player.WorldPos.x) / 2.0f + particleRand.x;
 				p1[i].y = go->player.flickr.WorldPos.y + particleRand.y;
 
 				particle->particleFlicker[k].t = k / float(pF);//for文外でもいい説
-				particle->particleFlicker[k].WorldPos = Bezier(&go->player.WorldPos, &p1[i], &go->player.flickr.WorldPos, particle->particleFlicker[k].t);
+				particle->particleFlicker[k].WorldPos = Bezier(&go->player.WorldPos, &p1[0], &go->player.flickr.WorldPos, particle->particleFlicker[k].t);
+				particle->particleFlickerT[k].t = k / float(pF);//for文外でもいい説
+				particle->particleFlickerT[k].WorldPos = Bezier(&go->player.WorldPos, &p1[1], &go->player.flickr.WorldPos, particle->particleFlickerT[k].t);
 
 			}
 
@@ -165,16 +214,22 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 	        //弾のフラグが０なら、寿命を決定する -> （透明度のため）　
 			if (!go->player.flickr.IsShot) {
 				particle->particleFlicker[k].life = 10;
+				particle->particleFlickerT[k].life = 10;
 			}
 
 			if (particle->particleFlicker[k].life > 0) {
 				if (particle->particleFlicker[k].Color > 0xFF00FF00) {
 					particle->particleFlicker[k].Color -= 255 / particle->particleFlicker[k].life;
+					particle->particleFlickerT[k].Color -= 255 / particle->particleFlickerT[k].life;
 				}
 				else if (particle->particleFlicker[k].Color <= 0xFF00FF00) {
 					particle->particleFlicker[k].isParticle = 0;
 					particle->particleFlicker[k].life = 0;
 					particle->particleFlicker[k].Color = 0xFF00FFFF;
+
+					particle->particleFlickerT[k].isParticle = 0;
+					particle->particleFlickerT[k].life = 0;
+					particle->particleFlickerT[k].Color = 0xFF00FFFF;
 				}
 			}
 
@@ -183,39 +238,49 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 
 		SetFourVertexes(&particle->particleFlicker[k]);
 		RenderingPipeline(&particle->particleFlicker[k], cr);
+
+		SetFourVertexes(&particle->particleFlickerT[k]);
+		RenderingPipeline(&particle->particleFlickerT[k], cr);
+
 	}
+
 	//============== [ チャージ ] ================/
 	for (int i = 0;i < pC;i++) {
 		if (key->keys[DIK_J]) {
 
 			if (particle->particleCharge[i].isParticle == 0) {
+
 				particle->particleCharge[i].isParticle = 1;
-				particle->particleCharge[i].WorldPos.x = go->player.flickr.WorldPos.x + rand() % 181 - 90.0f;
-				particle->particleCharge[i].WorldPos.y = go->player.flickr.WorldPos.y + rand() % 181 - 90.0f;
+				particle->particleCharge[i].WorldPos.x = go->player.flickr.WorldPos.x + rand() % 361 - 180.0f;
+				particle->particleCharge[i].WorldPos.y = go->player.flickr.WorldPos.y + rand() % 361 - 180.0f;
 
 				particle->particleCharge[i].start = particle->particleCharge[i].WorldPos;
-				
 
 				particle->particleCharge[i].life = 20;
+				particle->particleCharge[i].Scale = { 1,1 };
 				particle->particleCharge[i].nowFrame = 0;
 				particle->particleCharge[i].endFrame = float(particle->particleCharge[i].life);
 				particle->particleCharge[i].Color = 0xFF00FFFF;
 			}
+			
 		}
-		/*if (go->player.flickr.ChargeTime <= 20 && go->player.flickr.ChargeTime > 0) {*/
-			if (particle->particleCharge[i].isParticle == 1) {
-				if (particle->particleCharge[i].life <= 0) {
-					particle->particleCharge[i].isParticle = 0;
-				}
-				else if (particle->particleCharge[i].life > 0) {
-					particle->particleCharge[i].life -= 1;
-					Easing(&particle->particleCharge[i].WorldPos, particle->particleCharge[i].start.x, particle->particleCharge[i].start.y,
-						particle->particleCharge[i].end.x, particle->particleCharge[i].end.y, &particle->particleCharge[i].nowFrame, particle->particleCharge[i].endFrame,
-						&particle->particleCharge[i].t, 1.0f, materialOutCubic);
-				}
+		if (particle->particleCharge[i].isParticle == 1) {
+			if (particle->particleCharge[i].life <= 0) {
+				particle->particleCharge[i].isParticle = 0;
 			}
-		/*}*/
-			particle->particleCharge[i].end = go->player.flickr.WorldPos;
+			else if (particle->particleCharge[i].life > 0) {
+				particle->particleCharge[i].life -= 1;
+				Easing(&particle->particleCharge[i].WorldPos, particle->particleCharge[i].start.x, particle->particleCharge[i].start.y,
+					particle->particleCharge[i].end.x, particle->particleCharge[i].end.y, &particle->particleCharge[i].nowFrame, particle->particleCharge[i].endFrame,
+					&particle->particleCharge[i].t, 1.0f, materialOutCubic);
+				particle->particleCharge[i].nowFrame -= 1;
+				Easing(&particle->particleCharge[i].Scale, 0.25f, 0.25f,
+					2.0f, 2.0f, &particle->particleCharge[i].nowFrame, particle->particleCharge[i].endFrame,
+					&particle->particleCharge[i].t, 1.0f, materialOutBack);
+			}
+		}
+		
+		particle->particleCharge[i].end = go->player.flickr.WorldPos;
 		SetFourVertexes(&particle->particleCharge[i]);
 		RenderingPipeline(&particle->particleCharge[i], cr);
 	}
@@ -231,6 +296,7 @@ void ParticleDraw(PARTICLE* particle) {
 		//ひものフラグが立っているなら描画する
 		if (particle->particleFlicker[i].isParticle) {
 			particle->particleFlicker[i].RectObjDraw();
+			particle->particleFlickerT[i].RectObjDraw();
 		}
 	}
 	for (int i = 0;i < pC;i++) {
