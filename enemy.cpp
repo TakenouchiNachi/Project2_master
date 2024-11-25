@@ -693,6 +693,7 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 	if (go->enemy.RocketPunchInfo.CurrentFrame > TransrateFrame && go->enemy.RocketPunchInfo.CurrentFrame < OccurrenceFrame) {
 
 		//ベクトルの取得
+
 		for (int i = 0; i < 2; ++i) {
 
 			go->enemy.hand[i].Vector.x = (go->player.WorldPos.x - go->enemy.hand[i].WorldPos.x);
@@ -701,6 +702,7 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 			//go->enemy.hand[i].Vector.x=(go->player.WorldPos.x - )
 
 		}
+
 	}
 
 	//攻撃動作

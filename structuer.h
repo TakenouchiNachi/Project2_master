@@ -480,51 +480,26 @@ struct CameraRelated {
 //　　　追加（パーティクル）
 //==================================
 
-//================== [ 残像の構造体 ] ================/
-const int AFINum = 7;
-struct Afterimage{
-	int afterNum = 0;
-	Vector2 afterImagePos[AFINum] = {};
-	int aIColor[AFINum] = {};
-
-	void MakeAfterImage(Vector2 *go, Afterimage *ai, int num) {
-		for (int i = 0;i < ai->afterNum;i++) {
-
-			if (go->x != ai->afterImagePos[i].x || go->y != ai->afterImagePos[i].y) {
-				if (ai->afterNum == i) {
-					ai->afterImagePos[i] = *go;
-					ai->aIColor[i] = 0xFFFFFFFF;
-					ai->afterNum += 1;
-					if (ai->afterNum >= num - 1) {
-						ai->afterNum = 0;
-					}
-					break;
-				}
-			}
-		}
-	}
-
-};
-
 //================= { パーティクルの構造体 ] ===================/
-struct Particle : RectangleObject , Afterimage{
+struct Particle : RectangleObject{
 
 	Vector2 start = {};
-	Vector2 end;
-	float weight;
+	Vector2 end = {};
+	float weight = 1;
 	float nowFrame = 0;
-	float endFrame;
-	float t;
-	int life;
+	float endFrame = 1;
+	float t = 0;
+	int life = 0;
 	int isParticle = 0;
+
 };
 
 //パーティクルの種類
 
 //エドみたいなパーティクル
-  const int pF = 100;
+  const int pF = 20;
 //| 紐を作成する際の制御点の数(あくまで紐の数を増やすためのもの)
-  const int control = 1;
+  const int control = 2;
 //|振れ幅
   inline IntVector2 particleRand = { 0,0 };
   inline int particleIsKey = 0;
@@ -535,6 +510,7 @@ const int pC = 10;
 //パーティクルの処理をまとめるために合併したかった
 struct PARTICLE {
 	Particle particleFlicker[pF];
+	Particle particleFlickerT[pF];
 	Particle particleCharge[pC];
 };
 
@@ -547,3 +523,67 @@ struct Field {
 	Vector2 wid;
 	Vector2 F;//重力
 };
+
+//================== [ 残像の構造体 ] ================/
+const int AFINum = 3;
+
+struct Afterimage : RectangleObject {
+};
+//制御用の点
+
+//=================== [ -普通- ] =======================/
+
+inline int afterNumPA = 0;// Player Afterimage
+
+inline int afterNumBA = 0;// Boss Afterimage
+
+inline int afterNumBAR = 0;// Boss Afterimage Right
+
+inline int afterNumBAL = 0;// Boss Afterimage Left
+//============= [ 間隔の設定用の変数 ] ==============/
+
+inline int intervalPlayer = 3;//プレイヤー
+
+inline int intervalBoss = 3;//ボス
+
+inline int intervalBossR = 3;//ボス ライトハンド
+
+inline int intervalBossL = 3;//ボス レフトハンド
+
+//================= [ 最大の間隔 ] ===============/
+//パーティクル以外の物
+inline int maxInterval = 3;
+//パーティクルの物
+inline int maxIntervalParticle = 2;
+
+//================= [ まとめたもの ] =================/
+struct AFTERIMAGE {
+
+	//プレイヤーの残像
+	Afterimage playerPA[AFINum];
+	//ボスの残像
+	Afterimage bossBA[AFINum];
+	//R
+	Afterimage bossBAR[AFINum];
+	//L
+	Afterimage bossBAL[AFINum];
+};
+
+//================ [ カメラの制御で使ったもの ] =====================/
+
+inline float cameraNowFrame = 0.0f;
+inline float cameraEndFrame = 1.75f;
+inline float cameraT = 0.0f;
+
+//================ [ タイトル ] ==================/
+
+struct TitleScene {
+	RectangleObject titleScene;
+	RectangleObject titleSpace[5];
+	float nowFrame = 0;
+	float endFrame = 120;
+	float t = 0;
+};
+
+inline int isTitle = 1;
+inline int doreTitle = 0;

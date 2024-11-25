@@ -10,7 +10,7 @@
 //カメラ関連の初期化関数
 void CameraInitialize(CameraRelated* cr) {
 
-	cr->CameraPos = { -640,-360 };
+	cr->CameraPos = { -629.333f,-341.333f };
 
 	cr->camera = {
 		1,0,0,
