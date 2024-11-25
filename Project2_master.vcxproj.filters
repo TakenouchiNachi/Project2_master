@@ -65,6 +65,12 @@
     <ClCompile Include="rope.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="sceneChange.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="collision.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -150,7 +156,6 @@
     <ClInclude Include="easing.h" />
     <ClInclude Include="rope.h" />
     <ClInclude Include="field.h" />
-
     <ClInclude Include="field.h">
       <Filter>KamataEngine</Filter>
     </ClInclude>
@@ -160,7 +165,7 @@
     <ClInclude Include="sceneChange.h">
       <Filter>KamataEngine\Source</Filter>
     </ClInclude>
-
+    <ClInclude Include="collision.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

@@ -235,12 +235,12 @@ struct Player :RectangleObject {
 	int IsHoldObject;
 
 	//プレイ中のライフ
-	RectangleObject HP[HPNum];
-	int HPGH;
+	int HP;
+	RectangleObject HPGH[HPNum];
 
 	//残機
-	RectangleObject RemainingLife[RemainingLifeNum];
-	int RemainingLifeGH; 
+	int RemainingLife;
+	RectangleObject RemainingLifeGH[RemainingLifeNum];
 
 	Flickr flickr;
 };
