@@ -13,6 +13,8 @@
 #include"structuer.h"
 #include"system.h"
 #include "field.h"
+#include "afterimage.h"
+#include"title.h"
 
 const char kWindowTitle[] = "LC1A_21_タケノウチ_ナチ_タイトル";
 
@@ -31,6 +33,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Key key;
 
 	PARTICLE particle;//@@@
+	AFTERIMAGE afterimage;
+
+	TitleScene title;
 
 	//構造体のアドレスを格納する変数の宣言
 	GameObject* p_gameobject = &gameobject;
@@ -38,6 +43,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Key* p_key = &key;
 
 	PARTICLE* p_particle = &particle;//@@@
+	AFTERIMAGE *p_afterimage = &afterimage;
+
+	TitleScene* p_title = &title;
 
 	//初期化関数
 	PlayerInitialize(p_gameobject);
@@ -45,7 +53,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	EnemyInitialize(p_gameobject);
 	CameraInitialize(p_camera);
 
-	ParticleInitialize(p_particle);// @@@
+	ParticleInitialize(p_particle);
+	AfterimageInitialize(p_afterimage);//@@@
+
+	TitleInitialize(p_title);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -56,6 +67,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		memcpy(key.preKeys, key.keys, 256);
 		Novice::GetHitKeyStateAll(key.keys);
 
+		TitleSceneUpDate(p_title, p_key, p_camera);
+
 		///
 		/// ↓更新処理ここから
 		///
@@ -64,7 +77,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		PlayerUpdate(p_gameobject, p_camera, p_key);
 
-		ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
+		ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);
+		AfterimageUpDate(p_afterimage, p_particle, p_camera,p_gameobject);//@@@
 
 		FlickrUpdate(p_gameobject, p_key);
 		RenderingPipeline(&gameobject.player.flickr, p_camera);
@@ -104,6 +118,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 	 
+		AfterimageDraw(p_afterimage, p_particle);//@@@
+		
 		EnemyDraw(p_gameobject);
 
 		PlayerDraw(p_gameobject);
@@ -111,7 +127,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		FlickrDraw(p_gameobject);
 
 		ParticleDraw(p_particle);
-
+		
 		StageDraw(p_gameobject);
 
 		MovableObjectDraw(p_gameobject);
@@ -128,12 +144,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/*Novice::ScreenPrintf(20, 0, "player pos x : %f", gameobject.player.ScreenPos.x);
 		Novice::ScreenPrintf(20, 20, "player pos y : %f", gameobject.player.ScreenPos.y);*/
 
-		Novice::ScreenPrintf(20, 50, "player Wpos x : %f", gameobject.player.WorldPos.x);
-		Novice::ScreenPrintf(20, 70, "player Wpos y : %f", gameobject.player.WorldPos.y);
+		/*Novice::ScreenPrintf(20, 50, "player Wpos x : %f", gameobject.player.WorldPos.x);
+		Novice::ScreenPrintf(20, 70, "player Wpos y : %f", gameobject.player.WorldPos.y);*/
 
 		//Novice::ScreenPrintf(20, 100, "IsHit : %d", gameobject.player.flickr.IsHit);
 		//Novice::ScreenPrintf(20, 120, "IsMovableObjHit : %d", gameobject.player.flickr.IsMovableObjHit);
-		Novice::ScreenPrintf(20, 140, "IsShot : %d", gameobject.player.flickr.IsShot);
+		/*Novice::ScreenPrintf(20, 140, "IsShot : %d", gameobject.player.flickr.IsShot);*/
 		//Novice::ScreenPrintf(20, 160, "IsHold : %d", gameobject.player.IsHoldObject);
 		//
 		//Novice::ScreenPrintf(20, 200, "Flickr VecX : %f", gameobject.player.flickr.Vector.x);
@@ -141,8 +157,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//
 		//Novice::ScreenPrintf(20, 250, "RangeLimit : %d", gameobject.player.flickr.RangeLimit);
 
-		Novice::ScreenPrintf(10, 10, "posP : %f / isP : %d / ", p_particle->particleCharge[0].DrawLeftTop.y, p_particle->particleCharge[0].isParticle);
-		Novice::ScreenPrintf(10, 40, "posP : %f / isP : %d / ", p_particle->particleFlicker[5].DrawLeftBottom.y, p_particle->particleFlicker[6].isParticle);
+		Novice::ScreenPrintf(10, 10, "poslP : %f / posrP : %d / ", p_afterimage->playerPA[0].WorldPos.x, afterNumPA);
+		Novice::ScreenPrintf(10, 40, "posP : %f / isP : %f / ", p_afterimage->playerPA[4].WorldPos.x, p_afterimage->playerPA[4].WorldPos.y);
 
 		///
 		/// ↑描画処理ここまで
