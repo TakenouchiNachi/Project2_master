@@ -44,7 +44,7 @@ void EnemyInitialize(GameObject* go) {
 		Novice::LoadTexture("./image./boss_ver2.png"),
 
 		//色
-		0xffff008f,
+		0xffff00ff,
 
 		//オブジェクトタイプ（可動or不可動）
 		ImMovable
