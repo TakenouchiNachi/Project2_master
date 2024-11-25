@@ -25,6 +25,12 @@ Matrix3x3 Multiply(Matrix3x3 a, Matrix3x3 b);
 //オブジェクトの四つ角を計算する関数
 void SetFourVertexes(RectangleObject* obj);
 
+//ベクトルのX成分を求める関数(obj1←obj2のベクトル)
+float FindVectorX(Vector2 obj1, Vector2 obj2);
+
+//ベクトルのY成分を求める関数(obj1←obj2のベクトル)
+float FindVectorY(Vector2 obj1, Vector2 obj2);
+
 //ベクトル正規化関数
 float NormalizeX(float vecx, float vecy);
 
@@ -37,4 +43,4 @@ int RectangleObjectCollision(RectangleObject* obj1, RectangleObject* obj2);
 float Distance(float obj1X, float obj1Y, float obj2X, float obj2Y);
 
 //　Rキーリセット関数
-void RkeyReset(GameObject* go, Key* key);
+void RkeyReset(GameObject* go, CameraRelated* cr, Key* key);

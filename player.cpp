@@ -34,13 +34,13 @@ void PlayerInitialize(GameObject* go) {
 		0.0f,
 
 		//スピード
-		2.0f,
+		4.0f,
 
 		//画像
-		Novice::LoadTexture("./image./player.png"),
+		Novice::LoadTexture("./image./player_ver5.png"),
 
 		//色
-		WHITE,
+		0x2288ffff,
 
 		//オブジェクトタイプ（可動or不可動）
 		Else
@@ -283,7 +283,7 @@ void FlickrShot(GameObject* go,Key* key) {
 		go->player.flickr.ChargeTime = 0;
 
 		//移動速度を戻す
-		go->player.Speed = 2.0f;
+		go->player.Speed = 4.0f;
 	}
 }
 

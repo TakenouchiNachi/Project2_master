@@ -157,12 +157,16 @@
     <ClInclude Include="system.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="easing.h" />
+    <ClInclude Include="rope.h" />
+    <ClInclude Include="field.h" />
+
     <ClInclude Include="field.h">
       <Filter>KamataEngine</Filter>
     </ClInclude>
     <ClInclude Include="rope.h">
       <Filter>KamataEngine</Filter>
     </ClInclude>
+
     <ClInclude Include="afterimage.h" />
     <ClInclude Include="camerasystem.h">
       <Filter>KamataEngine</Filter>
@@ -170,6 +174,12 @@
     <ClInclude Include="title.h">
       <Filter>KamataEngine</Filter>
     </ClInclude>
+
+    <ClInclude Include="sceneChange.h">
+      <Filter>KamataEngine\Source</Filter>
+    </ClInclude>
+
+
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

@@ -2,6 +2,8 @@
 #include<math.h>
 
 //ヘッダーファイルの読み込み
+#include"camera.h"
+#include"enemy.h"
 #include"structuer.h"
 #include"common.h"
 #include"define.h"
@@ -161,6 +163,30 @@ void SetFourVertexes(RectangleObject* obj) {
 	//obj->DrawRightBottom.y = obj->ScreenPos.y + obj->Height / 2.0f;
 }
 
+
+/*====================================
+		  ベクトル関数
+ ====================================*/
+ //ベクトルのX成分を求める関数(obj1←obj2のベクトル)
+float FindVectorX(Vector2 obj1, Vector2 obj2) {
+	float vecX;
+
+	vecX = obj1.x - obj2.x;
+
+	return vecX;
+}
+
+//ベクトルのY成分を求める関数(obj1←obj2のベクトル)
+float FindVectorY(Vector2 obj1, Vector2 obj2) {
+	float vecY;
+
+	vecY = obj1.y - obj2.y;
+
+	return vecY;
+
+}
+
+
 /*====================================
 		  ベクトル正規化関数
  ====================================*/
@@ -222,10 +248,13 @@ float Distance(float obj1X, float obj1Y, float obj2X, float obj2Y) {
 }
 
 //　Rキーリセット関数
-void RkeyReset(GameObject* go, Key* key) {
+void RkeyReset(GameObject* go,CameraRelated* cr, Key* key) {
 	if (key->keys[DIK_R] && !key->preKeys[DIK_R]) {
 		PlayerInitialize(go);
 		
 		StageInitialize(go);
+		EnemyInitialize(go);
+		CameraInitialize(cr);
+
 	}
 }
