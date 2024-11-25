@@ -9,7 +9,7 @@
 #include "rope.h"
 #include "easing.h"
 
-void MakeAfterImage(RectangleObject* obj, Vector2 go, Afterimage* af, int afterImageNum, int* afterNum, int* inter);
+void MakeAfterImage(Vector2 go, Afterimage* af, int afterImageNum, int* afterNum, int *inter);
 
 void AfterimageInitialize(AFTERIMAGE* Af);
 

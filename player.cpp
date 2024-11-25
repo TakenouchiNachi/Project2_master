@@ -51,7 +51,7 @@ void PlayerInitialize(GameObject* go) {
 
 
 	for (int i = 0; i < HPNum; ++i) {
-		go->player.HPGH[i].BaseInfoInitialize(
+		go->player.HP[i].BaseInfoInitialize(
 			//初期座標(x,y)
 			640.0f,
 			360.0f,
@@ -88,7 +88,7 @@ void PlayerInitialize(GameObject* go) {
 
 
 	for (int i = 0; i < RemainingLifeNum; ++i) {
-		go->player.RemainingLifeGH[i].BaseInfoInitialize(
+		go->player.RemainingLife[i].BaseInfoInitialize(
 			//初期座標(x,y)
 			640.0f,
 			360.0f,
@@ -485,7 +485,7 @@ void FlickrUpdate(GameObject* go, Key* key) {
 	}
 
 	//射程限界になったらフラグを折る
-	if (Distance(go->player.WorldPos,go->player.flickr.WorldPos) >= go->player.flickr.RangeLimit) {
+	if (Distance(go->player.WorldPos.x, go->player.WorldPos.y,go->player.flickr.WorldPos.x, go->player.flickr.WorldPos.y) >= go->player.flickr.RangeLimit) {
 		go->player.flickr.IsShot = false;
 
 		//限界射程を初期化する
@@ -616,7 +616,7 @@ void PlayerHudUpdate(GameObject* go) {
 	for (int i = 0; i < HPNum; ++i) {
 
 		//HUDはスクリーン座標で処理
-		go->player.HPGH[i].ScreenPos = go->player.HPGH[i].WorldPos;
+		go->player.HP[i].ScreenPos = go->player.HP[i].WorldPos;
 	}
 }
 

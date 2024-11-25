@@ -15,7 +15,7 @@ void Col_Player_Hands(GameObject* go) {
 
         if (go->enemy.hand[Right].IsAggression) {
 
-            if (RectangleObjectCollision(&go->player, &go->enemy.hand[Right]) == 1) {
+            if (RectangleObjectCollision(&go->player, &go->enemy.hand[Right]) == true) {
 
                 //プレイヤーのLifeを減らす
                 go->player.HP--;
@@ -29,7 +29,7 @@ void Col_Player_Hands(GameObject* go) {
 
         if (go->enemy.hand[Left].IsAggression) {
 
-            if (RectangleObjectCollision(&go->player, &go->enemy.hand[Left]) == 1) {
+            if (RectangleObjectCollision(&go->player, &go->enemy.hand[Left]) == true) {
 
                 //プレイヤーのLifeを減らす
                 go->player.HP--;
