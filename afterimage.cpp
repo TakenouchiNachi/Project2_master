@@ -1,13 +1,13 @@
 #include "afterimage.h"
 
 
-void MakeAfterImage(Vector2 go, Afterimage *af, int afterImageNum, int* afterNum, int *inter) {
+void MakeAfterImage(RectangleObject* obj,Vector2 go, Afterimage *af, int afterImageNum, int* afterNum, int *inter) {
 	*inter -= 1;
 	for (int k = 0;k < afterImageNum;k++) {
 			if (go.x != af[k].WorldPos.x || go.y != af[k].WorldPos.y) {
 				if (*afterNum == k && *inter <= 0) {
 					af[k].WorldPos = go;
-					af[k].Color = 0xFFFFFFFF;
+					af[k].Color = obj->Color;
 					*afterNum += 1;
 					*inter = maxInterval;
 					if (*afterNum >= afterImageNum) {
@@ -50,7 +50,7 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./player.png"),
+			Novice::LoadTexture("./image./player_ver5.png"),
 
 			//色
 			0xFFFFFFFF,
@@ -84,7 +84,7 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./boss.png"),
+			Novice::LoadTexture("./image./boss_ver2.png"),
 
 			//色
 			0xFFFFFFFF,
@@ -119,7 +119,7 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./Righthand.png"),
+			Novice::LoadTexture("./image./RightHand_ver2.png"),
 
 			//色
 			0xFFFFFFFF,
@@ -154,7 +154,7 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./Lefthand.png"),
+			Novice::LoadTexture("./image./LeftHand_ver2.png"),
 
 			//色
 			0xFFFFFFFF,
@@ -170,25 +170,25 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 void AfterimageUpDate(AFTERIMAGE* Af,PARTICLE* p, CameraRelated* cr, GameObject *go) {
 
 	//プレイヤー
-	MakeAfterImage(go->player.WorldPos, Af->playerPA, AFINum, &afterNumPA, &intervalPlayer);
+	MakeAfterImage(&go->player,go->player.WorldPos, Af->playerPA, AFINum, &afterNumPA, &intervalPlayer);
 	for (int k = 0;k < AFINum;k++) {
 		Af->playerPA[k].Color -= (255 / (AFINum * maxInterval));
 	}
 
 	//ボス
-	MakeAfterImage(go->enemy.WorldPos, Af->bossBA, AFINum, &afterNumBA, &intervalBoss);
+	MakeAfterImage(&go->enemy,go->enemy.WorldPos, Af->bossBA, AFINum, &afterNumBA, &intervalBoss);
 	for (int k = 0;k < AFINum;k++) {
 		Af->bossBA[k].Color -= (255 / (AFINum * maxInterval));
 	}
 
 	//ボス R
-	MakeAfterImage(go->enemy.hand[Right].WorldPos, Af->bossBAR, AFINum, &afterNumBAR, &intervalBossR);
+	MakeAfterImage(&go->enemy.hand[Right], go->enemy.hand[Right].WorldPos, Af->bossBAR, AFINum, &afterNumBAR, &intervalBossR);
 	for (int k = 0;k < AFINum;k++) {
 		Af->bossBAR[k].Color -= (255 / (AFINum * maxInterval));
 	}
 
 	//ボス L
-	MakeAfterImage(go->enemy.hand[Left].WorldPos, Af->bossBAL, AFINum, &afterNumBAL, &intervalBossL);
+	MakeAfterImage(&go->enemy.hand[Left], go->enemy.hand[Left].WorldPos, Af->bossBAL, AFINum, &afterNumBAL, &intervalBossL);
 	for (int k = 0;k < AFINum;k++) {
 		Af->bossBAL[k].Color -= (255 / (AFINum * maxInterval));
 	}

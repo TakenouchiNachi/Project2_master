@@ -44,7 +44,7 @@ void EnemyInitialize(GameObject* go) {
 		Novice::LoadTexture("./image./boss_ver2.png"),
 
 		//色
-		0xffff008f,
+		0xffff00ff,
 
 		//オブジェクトタイプ（可動or不可動）
 		ImMovable
@@ -87,7 +87,7 @@ void EnemyInitialize(GameObject* go) {
 		2.0f,
 
 		//画像
-		Novice::LoadTexture("./image./LeftHand_ver2.png"),
+		Novice::LoadTexture("./image./RightHand_ver2.png"),
 
 		//色
 		WHITE,
@@ -122,7 +122,7 @@ void EnemyInitialize(GameObject* go) {
 		2.0f,
 
 		//画像
-		Novice::LoadTexture("./image./RightHand_ver2.png"),
+		Novice::LoadTexture("./image./LeftHand_ver2.png"),
 
 		//色
 		WHITE,
