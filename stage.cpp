@@ -43,11 +43,11 @@ void StageInitialize(GameObject* go) {
 				0.0f,
 
 				//画像
-				Novice::LoadTexture("./image./map.png"),
+				Novice::LoadTexture("./image./map_ver2.png"),
 
 				//画像の幅
-				32.0f,
-				32.0f,
+				320.0f,
+				320.0f,
 
 				//色
 				WHITE,
@@ -148,7 +148,7 @@ void StageGenerate(GameObject* go) {
 
 
 			//画像上の座標の始点の更新
-			go->mapchip[i][j].ImagePos.x = static_cast<float>(BlockSize * go->mapchip[i][j].Map);
+			go->mapchip[i][j].ImagePos.x = static_cast<float>(320.0f * go->mapchip[i][j].Map);
 		}
 	}
 }

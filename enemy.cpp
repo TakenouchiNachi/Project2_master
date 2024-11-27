@@ -18,8 +18,8 @@ void EnemyInitialize(GameObject* go) {
 	go->enemy.BaseInfoInitialize(
 
 		//初期座標(x,y)
-		200.0f,
-		360.0f,
+		WorldWidth / 2.0f,
+		WorldHeight / 2.0f,
 
 		//横幅、縦幅
 		160.0f,
