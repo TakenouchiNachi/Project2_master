@@ -8,6 +8,7 @@
 #include"enemy.h"
 #include"structuer.h"
 #include"common.h"
+#include"sceneChange.h"
 
 //初期化関数
 void PlayerInitialize(GameObject* go) {
@@ -272,7 +273,7 @@ void MovableObjectShotDirection(RectangleObject* go, Key* key) {
 }
 
 //フリッカーの発射処理
-void FlickrShot(GameObject* go,Key* key) {
+void FlickrShot(GameObject* go,Key* key,Sounds* sounds) {
 
 	//チャージ開始
 	if (key->keys[DIK_J] && go->player.flickr.ChargeTime <= 20) {
@@ -292,6 +293,8 @@ void FlickrShot(GameObject* go,Key* key) {
 		
 		//発射フラグを立てる
 		go->player.flickr.IsShot = true;
+
+		SoundPlaySE(sounds->flickrShotPlayHandle, sounds->flickrShotSoundHandle, 0.5f);
 
 		//位置をプレイヤーに合わせる
 		go->player.flickr.WorldPos = go->player.WorldPos;
@@ -575,14 +578,14 @@ void PlayerWireMoveY(GameObject* go) {
 }
 
 //フリッカーの処理をまとめた関数
-void FlickrUpdate(GameObject* go, Key* key) {
+void FlickrUpdate(GameObject* go, Key* key,Sounds* sounds) {
 
 	//位置情報の更新
 	SetFourVertexes(&go->player.flickr);
 
 	//発射処理
 	if (!go->player.flickr.IsShot && !go->player.IsHoldObject && go->player.CanShotFlickr) {
-		FlickrShot(go, key);
+		FlickrShot(go, key,sounds);
 	}
 
 	//紐の当たり判定の移動処理
