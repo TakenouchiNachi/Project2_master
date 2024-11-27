@@ -647,6 +647,23 @@ struct Afterimage : RectangleObject {
 
 //=================== [ -普通- ] =======================/
 
+inline int afterNumPcA1 = 0;// Player Afterimage
+
+inline int afterNumPcA2 = 0;// Player Afterimage
+
+inline int afterNumPcA3 = 0;// Player Afterimage
+
+inline int afterNumPcA4 = 0;// Player Afterimage
+
+inline int afterNumPcA1L = 0;// Player Afterimage
+
+inline int afterNumPcA2L = 0;// Player Afterimage
+
+inline int afterNumPcA3L = 0;// Player Afterimage
+
+inline int afterNumPcA4L = 0;// Player Afterimage
+
+
 inline int afterNumPA = 0;// Player Afterimage
 
 inline int afterNumBA = 0;// Boss Afterimage
@@ -655,6 +672,23 @@ inline int afterNumBAR = 0;// Boss Afterimage Right
 
 inline int afterNumBAL = 0;// Boss Afterimage Left
 //============= [ 間隔の設定用の変数 ] ==============/
+
+inline int intervalBul1 = 3;
+
+inline int intervalBul2 = 3;
+
+inline int intervalBul3 = 3;
+
+inline int intervalBul4 = 3;
+
+inline int intervalBul1L = 3;
+
+inline int intervalBul2L = 3;
+
+inline int intervalBul3L = 3;
+
+inline int intervalBul4L = 3;
+
 
 inline int intervalPlayer = 3;//プレイヤー
 
@@ -666,12 +700,29 @@ inline int intervalBossL = 3;//ボス レフトハンド
 
 //================= [ 最大の間隔 ] ===============/
 //パーティクル以外の物
-inline int maxInterval = 3;
+inline int maxInterval = 4;
 //パーティクルの物
-inline int maxIntervalParticle = 2;
+inline int maxIntervalParticle = 4;
 
 //================= [ まとめたもの ] =================/
 struct AFTERIMAGE {
+
+	Afterimage bul1[AFINum];
+
+	Afterimage bul2[AFINum];
+
+	Afterimage bul3[AFINum];
+
+	Afterimage bul4[AFINum];
+
+	Afterimage bul1L[AFINum];
+
+	Afterimage bul2L[AFINum];
+
+	Afterimage bul3L[AFINum];
+
+	Afterimage bul4L[AFINum];
+
 
 	//プレイヤーの残像
 	Afterimage playerPA[AFINum];
