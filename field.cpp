@@ -263,7 +263,7 @@ void ParticleInitialize(PARTICLE* particle) {
 			192.0f,
 
 			//色
-			0xFFFFFFFF,
+			0xFF00FFFF,
 
 			//オブジェクトタイプ（可動or不可動）
 			ImMovable
