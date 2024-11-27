@@ -258,8 +258,8 @@ struct Player :RectangleObject {
 	int IsAggression;
 
 	//無敵時間と無敵フラグ
-	int IsInvicible;
-	int IncivicibleTime;
+	int IsInvincible;
+	int InvincibleTime;
 
 	//プレイ中のライフ
 	int HP;

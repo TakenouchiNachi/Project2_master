@@ -169,10 +169,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
-			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 			  AfterimageUpDate(p_afterimage, p_particle, p_camera,p_gameobject);//@@@
-			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
 				ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
@@ -183,8 +181,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-			CameraTransition_Start(p_gameobject, p_camera,p_sounds);
-			ScrollFunction(p_gameobject, p_camera);
+				CameraTransition_Start(p_gameobject, p_camera,p_sounds);
+				ScrollFunction(p_gameobject, p_camera);
 
 
 				MaskChange(p_scene, p_gameobject, p_key);
@@ -209,7 +207,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				ShakeFanction(p_shake, p_camera, p_key);
 
-				//CameraTransition_Start(p_gameobject, p_camera, p_key);
+				PlayerHudUpdate(p_gameobject);
 
 				CameraUpdate(p_camera, p_key);
 
@@ -217,14 +215,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Col_Update(p_gameobject);
 
 
+
 				//リセット関数
 				RkeyReset(p_gameobject, p_camera, p_key);
 			}
 
-			/*if (p_key->keys[DIK_0]) {
-				p_scene->state = 2;
-			}*/
+			if (gameobject.enemy.LapNum == 1) {
+				if (!gameobject.enemy.IsAlive) {
+					scene.state = 2;
+				}
+			}
 
+			if (gameobject.player.HP <= 0) {
+				scene.state = 3;
+			}
 
 
 
@@ -268,13 +272,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			FlickrDraw(p_gameobject);
 
-			
+			PlayerHudDraw(p_gameobject);
+
 
 			if (p_particle->particleHit.life > 0) {
 				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
 			}
 
-			PlayerHudDraw(p_gameobject);
 
 			MaskDraw(p_scene);
 
@@ -431,7 +435,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			FlickrDraw(p_gameobject);
 
-			MovableObjectDraw(p_gameobject);
 
 
 			if (p_particle->particleHit.life > 0) {
@@ -526,8 +529,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			PlayerDraw(p_gameobject);
 
 			FlickrDraw(p_gameobject);
-
-			MovableObjectDraw(p_gameobject);
 
 
 			if (p_particle->particleHit.life > 0) {

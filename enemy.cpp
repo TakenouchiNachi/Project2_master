@@ -59,11 +59,11 @@ void EnemyInitialize(GameObject* go) {
 	go->enemy.DaiPanInfo.CurrentFrame = 0;
 	go->enemy.RocketPunchInfo.CurrentFrame = 0;
 	go->enemy.BulletShotCurrentFrame = 0;
-
+	go->enemy.IsAlive = true;
 	go->enemy.ShotCount = 0;
 	go->enemy.ShotNumLimit = 0;
 
-	go->enemy.LapNum = 1;
+	go->enemy.LapNum = 0;
 
 	//手
 	go->enemy.hand[Right].BaseInfoInitialize(
@@ -272,11 +272,11 @@ void EnemyInitialize(GameObject* go) {
 			Novice::LoadTexture("./image./bullet_ver2.png"),
 
 			//画像の幅
-			32.0f,
-			30.0f,
+			320.0f,
+			320.0f,
 
 			//色
-			0x9932ccff,
+			0x88ddffff,
 
 			//オブジェクトタイプ（可動or不可動）
 			Movable
@@ -1072,6 +1072,12 @@ void BulletMove(GameObject *go,int VectorUpdateFlame){
 
 			if (go->enemy.RightBullet[i].IsShot) {
 
+				//まいたけまいたけ
+				go->enemy.hand[i].Degree++;
+
+				DegreeToTheta(&go->enemy.hand[i]);
+
+
 				//ベクトルの更新
 				if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
 					go->enemy.RightBullet[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.RightBullet[i].WorldPos);
@@ -1188,6 +1194,7 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 				go->enemy.hand[i].IsAlive = true;
 				go->enemy.hand[i].IsDown = false;
 			}
+			go->enemy.LapNum = 1;
 
 		}
 	}
