@@ -223,14 +223,14 @@ void EnemyInitialize(GameObject* go) {
 			3.0f,
 
 			//画像
-			Novice::LoadTexture("./image./bullet.png"),
+			Novice::LoadTexture("./image./bullet_ver2.png"),
 
 			//画像の幅
-			32.0f,
-			32.0f,
+			320.0f,
+			320.0f,
 
 			//色
-			WHITE,
+			0x9932ccff,
 
 			//オブジェクトタイプ（可動or不可動）
 			Movable
@@ -269,14 +269,14 @@ void EnemyInitialize(GameObject* go) {
 			3.0f,
 
 			//画像
-			Novice::LoadTexture("./image./bullet.png"),
+			Novice::LoadTexture("./image./bullet_ver2.png"),
 
 			//画像の幅
 			32.0f,
 			30.0f,
 
 			//色
-			WHITE,
+			0x9932ccff,
 
 			//オブジェクトタイプ（可動or不可動）
 			Movable
