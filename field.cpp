@@ -227,6 +227,9 @@ void ParticleInitialize(PARTICLE* particle) {
 		//オブジェクトタイプ（可動or不可動）
 		ImMovable
 	);
+
+	particle->particleHit.life = 0;
+
 	for (int i = 0;i < 2;i++) {
 		particle->bar[i].BaseInfoInitialize(
 			//初期座標(x,y)
@@ -454,15 +457,17 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 	if (go->player.GetDamage) {
 		particle->particleHit.life = 51;
 		particle->particleHit.Color = 0xFF0000FF;
+		go->player.GetDamage = false;
+
 	}
 
 	if (particle->particleHit.life > 0) {
-		particle->particleHit.life -= 1;
+		particle->particleHit.life--;
 		particle->particleHit.Color -= 0x05000005;
 	}
+
 	else if (particle->particleHit.life <= 0) {
 		particle->particleHit.Color = 0xFF000000;
-		go->player.GetDamage = false;
 	}
 	/*SetFourVertexes(&particle->particleHit);
 	RenderingPipeline(&particle->particleHit, cr);*/
