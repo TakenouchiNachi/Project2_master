@@ -45,6 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TitleScene title;
 
 	int HandleClear = Novice::LoadTexture("./image/clear.png");
+	Vector2 wid = {};
 
 	//構造体のアドレスを格納する変数の宣言
 	GameObject* p_gameobject = &gameobject;
@@ -104,6 +105,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case GAMEPLAY:
 			clearColor = 0x00000000;
+			isSelectBar = 0;
 			//プレイヤーの更新処理
 
 			PlayerUpdate(p_gameobject, p_camera, p_key);
@@ -155,9 +157,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//リセット関数
 			RkeyReset(p_gameobject, p_camera, p_key);
 
-			if (p_key->keys[DIK_0]) {
-				p_scene->state = 3;
-			}
+			/*if (p_key->keys[DIK_0]) {
+				p_scene->state = 2;
+			}*/
 
 			///
 			/// ↓描画処理ここから
@@ -267,7 +269,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0;i < 2;i++) {
 
 				if (isSelectBar == 1) {
-					Easing(&p_particle->bar[1].Scale, 1.0f, 1.0f, 1.2f, 1.2f, &p_particle->bar[1].nowFrame, p_particle->bar[1].endFrame, &p_particle->bar[1].t, 1.0f, materialOutCirc);
+					wid = { p_particle->bar[1].Width, p_particle->bar[1].Height };
+					Easing(&wid, 320.0f, 192.0f, 384.0f, 230.4f, &p_particle->bar[1].nowFrame, p_particle->bar[1].endFrame, &p_particle->bar[1].t, 1.0f, materialOutCirc);
+					p_particle->bar[1].Width = wid.x;p_particle->bar[1].Height = wid.y;
 					if (p_particle->bar[1].nowFrame >= p_particle->bar[1].endFrame) {
 						p_particle->bar[1].nowFrame = p_particle->bar[1].endFrame;
 					}
@@ -276,7 +280,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						p_particle->bar[0].endFrame = 30;
 					}
 					
-					p_particle->bar[0].Scale = { 1.0f,1.0f };
+					p_particle->bar[0].Width = 320;
+					p_particle->bar[0].Height = 192;
 					p_particle->bar[0].nowFrame = 0;
 					if (p_key->keys[DIK_SPACE]) {
 						p_scene->state = 0;
@@ -288,7 +293,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				if (isSelectBar == 0) {
-					Easing(&p_particle->bar[0].Scale, 1.0f, 1.0f, 1.2f, 1.2f, &p_particle->bar[0].nowFrame, p_particle->bar[0].endFrame, &p_particle->bar[0].t, 1.0f, materialOutCirc);
+					wid = { p_particle->bar[0].Width, p_particle->bar[0].Height };
+					Easing(&wid, 320.0f, 192.0f, 384.0f, 230.4f, &p_particle->bar[0].nowFrame, p_particle->bar[0].endFrame, &p_particle->bar[0].t, 1.0f, materialOutCirc);
+					p_particle->bar[0].Width = wid.x;p_particle->bar[0].Height = wid.y;
 					if (p_particle->bar[0].nowFrame >= p_particle->bar[0].endFrame) {
 						p_particle->bar[0].nowFrame = p_particle->bar[0].endFrame;
 					}
@@ -297,7 +304,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						p_particle->bar[1].endFrame = 30;
 					}
 
-					p_particle->bar[1].Scale = { 1.0f,1.0f };
+					p_particle->bar[1].Width = 320;
+					p_particle->bar[1].Height = 192;
 					p_particle->bar[1].nowFrame = 0;
 					if (p_key->keys[DIK_SPACE]) {
 						p_scene->state = 1;
@@ -308,9 +316,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						CameraInitialize(p_camera);
 					}
 				}
-
-				SetFourVertexes(&p_particle->bar[i]);
-				RenderingPipeline(&p_particle->bar[i], p_camera);
 			}
 			
 
@@ -338,9 +343,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Novice::DrawBox(0, 0, 1280, 720, 0.0f, clearColor, kFillModeSolid);
 			if (clearColor > 0x000000EE) {
-				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, HandleClear, 0xFFFFFFFF);
+				Novice::DrawQuad(0, 0 - 100, 1280, 0 - 100, 0, 720 - 100, 1280, 720 - 100, 0, 0, 1280, 720, HandleClear, 0xFFFFFFFF);
 				for (int i = 0;i < 2;i++) {
-					p_particle->bar[i].RectObjDraw();
+					Novice::DrawQuad(int(p_particle->bar[i].WorldPos.x - p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y - p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x + p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y - p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x - p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y + p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x + p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y + p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].ImagePos.x), int(p_particle->bar[i].ImagePos.y), int(320), int(192), p_particle->bar[i].Image,
+						p_particle->bar[i].Color);
 				}
 				
 			}
@@ -356,7 +366,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0;i < 2;i++) {
 
 				if (isSelectBar == 1) {
-					Easing(&p_particle->bar[1].Scale, 1.0f, 1.0f, 1.2f, 1.2f, &p_particle->bar[1].nowFrame, p_particle->bar[1].endFrame, &p_particle->bar[1].t, 1.0f, materialOutCirc);
+					wid = { p_particle->bar[1].Width, p_particle->bar[1].Height };
+					Easing(&wid, 320.0f, 192.0f, 384.0f, 230.4f, &p_particle->bar[1].nowFrame, p_particle->bar[1].endFrame, &p_particle->bar[1].t, 1.0f, materialOutCirc);
+					p_particle->bar[1].Width = wid.x;p_particle->bar[1].Height = wid.y;
 					if (p_particle->bar[1].nowFrame >= p_particle->bar[1].endFrame) {
 						p_particle->bar[1].nowFrame = p_particle->bar[1].endFrame;
 					}
@@ -365,7 +377,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						p_particle->bar[0].endFrame = 30;
 					}
 
-					p_particle->bar[0].Scale = { 1.0f,1.0f };
+					p_particle->bar[0].Width = 320;
+					p_particle->bar[0].Height = 192;
 					p_particle->bar[0].nowFrame = 0;
 					if (p_key->keys[DIK_SPACE]) {
 						p_scene->state = 0;
@@ -377,7 +390,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				if (isSelectBar == 0) {
-					Easing(&p_particle->bar[0].Scale, 1.0f, 1.0f, 1.2f, 1.2f, &p_particle->bar[0].nowFrame, p_particle->bar[0].endFrame, &p_particle->bar[0].t, 1.0f, materialOutCirc);
+					wid = { p_particle->bar[0].Width, p_particle->bar[0].Height };
+					Easing(&wid, 320.0f, 192.0f, 384.0f, 230.4f, &p_particle->bar[0].nowFrame, p_particle->bar[0].endFrame, &p_particle->bar[0].t, 1.0f, materialOutCirc);
+					p_particle->bar[0].Width = wid.x;p_particle->bar[0].Height = wid.y;
 					if (p_particle->bar[0].nowFrame >= p_particle->bar[0].endFrame) {
 						p_particle->bar[0].nowFrame = p_particle->bar[0].endFrame;
 					}
@@ -386,7 +401,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						p_particle->bar[1].endFrame = 30;
 					}
 
-					p_particle->bar[1].Scale = { 1.0f,1.0f };
+					p_particle->bar[1].Width = 320;
+					p_particle->bar[1].Height = 192;
 					p_particle->bar[1].nowFrame = 0;
 					if (p_key->keys[DIK_SPACE]) {
 						p_scene->state = 1;
@@ -397,9 +413,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						CameraInitialize(p_camera);
 					}
 				}
-
-				SetFourVertexes(&p_particle->bar[i]);
-				RenderingPipeline(&p_particle->bar[i], p_camera);
 			}
 
 			Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
@@ -426,9 +439,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Novice::DrawBox(0, 0, 1280, 720, 0.0f, clearColor, kFillModeSolid);
 			if (clearColor > 0x000000EE) {
-				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 1280, 0, 1280, 720, HandleClear, 0xFFFFFFFF);
+				Novice::DrawQuad(0, 0 - 100, 1280, 0 - 100, 0, 720 - 100, 1280, 720 - 100, 1280, 0, 1280, 720, HandleClear, 0xFFFFFFFF);
 				for (int i = 0;i < 2;i++) {
-					p_particle->bar[i].RectObjDraw();
+					Novice::DrawQuad(int(p_particle->bar[i].WorldPos.x - p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y - p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x + p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y - p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x - p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y + p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x + p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y + p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].ImagePos.x), int(p_particle->bar[i].ImagePos.y), int(320), int(192), p_particle->bar[i].Image,
+						p_particle->bar[i].Color);
 				}
 			}
 			
