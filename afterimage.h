@@ -15,4 +15,8 @@ void AfterimageInitialize(AFTERIMAGE* Af);
 
 void AfterimageUpDate(AFTERIMAGE* Af, PARTICLE* p, CameraRelated* cr, GameObject* go);
 
+
+void AfterimageDraw(GameObject* go, AFTERIMAGE* Af, PARTICLE* p);
+
 void AfterimageDraw(AFTERIMAGE* Af, PARTICLE* p, GameObject* go);
+

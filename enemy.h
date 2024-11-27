@@ -21,6 +21,10 @@ enum {
 	Left
 };
 
+
+//手のダウン時間
+const int HandDownTime = 480;
+
 //ソースファイルの読み込み
 #include<math.h>
 

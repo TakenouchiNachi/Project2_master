@@ -107,10 +107,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-			MovableObjectUpdate(p_gameobject, p_camera, p_key);
+			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
-      AfterimageUpDate(p_afterimage, p_particle, p_camera,p_gameobject);//@@@
-		MovableObjectUpdate(p_gameobject, p_camera, p_key);
+			  AfterimageUpDate(p_afterimage, p_particle, p_camera,p_gameobject);//@@@
+			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
 			ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
@@ -178,8 +178,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			///
 			/// ↓描画処理ここから
 			///
+
+
       AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
 
+
+			StageDraw(p_gameobject);
 
 	        ParticleDraw(p_particle);
 	  
@@ -193,15 +197,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 
 
-			StageDraw(p_gameobject);
 
 			MovableObjectDraw(p_gameobject);
+
 
 			if (p_particle->particleHit.life > 0) {
 				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
 			}
 
 			MaskDraw(p_scene);
+
 
 			//Novice::DrawLine(
 			//	static_cast<int>(gameobject.player.ScreenPos.x),
@@ -235,13 +240,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			////
 			////Novice::ScreenPrintf(20, 200, "Flickr VecX : %f", gameobject.player.flickr.Vector.x);
 			////Novice::ScreenPrintf(20, 220, "Flickr VecY : %f", gameobject.player.flickr.Vector.y);
-			////
+		
 			////Novice::ScreenPrintf(20, 250, "RangeLimit : %d", gameobject.player.flickr.RangeLimit);
 
 			//Novice::ScreenPrintf(10, 10, "posP : %f / isP : %d / ", p_particle->particleCharge[0].DrawLeftTop.y, p_particle->particleCharge[0].isParticle);
 			//Novice::ScreenPrintf(10, 40, "posP : %f / isP : %d / ", p_particle->particleFlicker[5].DrawLeftBottom.y, p_particle->particleFlicker[6].isParticle);
 			//Novice::ScreenPrintf(10, 400, "posP : %f / isP : %f / ", p_camera->CameraPos.x, p_camera->CameraPos.y);
 			//Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_camera->easeCamera.t, p_scene->pos.y);
+			
+			//Novice::ScreenPrintf(20, 20, "Life :%d", gameobject.player.HP);
+			
+			EnemyDebugPrintf(p_gameobject);
 
 			break;
 
