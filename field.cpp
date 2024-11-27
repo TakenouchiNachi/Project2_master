@@ -259,7 +259,7 @@ void ParticleInitialize(PARTICLE* particle) {
 			Novice::LoadTexture("./image./bar.png"),
 
 			//画像の幅
-			640.0f,
+			320.0f,
 			192.0f,
 
 			//色
