@@ -135,7 +135,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 
-			Novice::DrawBox(128, 128 + p_scene->option * 64, 64, 64, 0.0f, WHITE, kFillModeSolid);
+			//Novice::DrawBox(128, 128 + p_scene->option * 64, 64, 64, 0.0f, WHITE, kFillModeSolid);
 			TitleDraw(p_title);
 
 			break;
@@ -183,7 +183,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-			CameraTransition_Start(p_gameobject, p_camera, p_key);
+			CameraTransition_Start(p_gameobject, p_camera,p_sounds);
 			ScrollFunction(p_gameobject, p_camera);
 
 
