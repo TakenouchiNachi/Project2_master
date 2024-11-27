@@ -44,6 +44,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	TitleScene title;
 
+	int HandleClear = Novice::LoadTexture("./image/clear.png");
+
 	//構造体のアドレスを格納する変数の宣言
 	GameObject* p_gameobject = &gameobject;
 	CameraRelated* p_camera = &camera;
@@ -101,6 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 
 		case GAMEPLAY:
+			clearColor = 0x00000000;
 			//プレイヤーの更新処理
 
 			PlayerUpdate(p_gameobject, p_camera, p_key);
@@ -152,7 +155,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//リセット関数
 			RkeyReset(p_gameobject, p_camera, p_key);
 
-
+			if (p_key->keys[DIK_0]) {
+				p_scene->state = 3;
+			}
 
 			///
 			/// ↓描画処理ここから
@@ -255,9 +260,178 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 
 		case CLEAR:
+			
+			if (clearColor <= 0x000000EE) {
+				clearColor += 5;
+			}
+			for (int i = 0;i < 2;i++) {
+
+				if (isSelectBar == 1) {
+					Easing(&p_particle->bar[1].Scale, 1.0f, 1.0f, 1.2f, 1.2f, &p_particle->bar[1].nowFrame, p_particle->bar[1].endFrame, &p_particle->bar[1].t, 1.0f, materialOutCirc);
+					if (p_particle->bar[1].nowFrame >= p_particle->bar[1].endFrame) {
+						p_particle->bar[1].nowFrame = p_particle->bar[1].endFrame;
+					}
+					if (p_key->keys[DIK_A]) {
+						isSelectBar = 0;
+						p_particle->bar[0].endFrame = 30;
+					}
+					
+					p_particle->bar[0].Scale = { 1.0f,1.0f };
+					p_particle->bar[0].nowFrame = 0;
+					if (p_key->keys[DIK_SPACE]) {
+						p_scene->state = 0;
+						PlayerInitialize(p_gameobject);
+
+						StageInitialize(p_gameobject);
+						EnemyInitialize(p_gameobject);
+						CameraInitialize(p_camera);
+					}
+				}
+				if (isSelectBar == 0) {
+					Easing(&p_particle->bar[0].Scale, 1.0f, 1.0f, 1.2f, 1.2f, &p_particle->bar[0].nowFrame, p_particle->bar[0].endFrame, &p_particle->bar[0].t, 1.0f, materialOutCirc);
+					if (p_particle->bar[0].nowFrame >= p_particle->bar[0].endFrame) {
+						p_particle->bar[0].nowFrame = p_particle->bar[0].endFrame;
+					}
+					if (p_key->keys[DIK_D]) {
+						isSelectBar = 1;
+						p_particle->bar[1].endFrame = 30;
+					}
+
+					p_particle->bar[1].Scale = { 1.0f,1.0f };
+					p_particle->bar[1].nowFrame = 0;
+					if (p_key->keys[DIK_SPACE]) {
+						p_scene->state = 1;
+						PlayerInitialize(p_gameobject);
+
+						StageInitialize(p_gameobject);
+						EnemyInitialize(p_gameobject);
+						CameraInitialize(p_camera);
+					}
+				}
+
+				SetFourVertexes(&p_particle->bar[i]);
+				RenderingPipeline(&p_particle->bar[i], p_camera);
+			}
+			
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+			AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
+
+
+			StageDraw(p_gameobject);
+
+			ParticleDraw(p_particle);
+
+			EnemyDraw(p_gameobject);
+
+
+			PlayerDraw(p_gameobject);
+
+			FlickrDraw(p_gameobject);
+
+			MovableObjectDraw(p_gameobject);
+
+
+			if (p_particle->particleHit.life > 0) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
+			}
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, clearColor, kFillModeSolid);
+			if (clearColor > 0x000000EE) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, HandleClear, 0xFFFFFFFF);
+				for (int i = 0;i < 2;i++) {
+					p_particle->bar[i].RectObjDraw();
+				}
+				
+			}
+
 			break;
 
 		case GAMEOVER:
+
+			if (clearColor <= 0x000000EE) {
+				clearColor += 5;
+			}
+
+			for (int i = 0;i < 2;i++) {
+
+				if (isSelectBar == 1) {
+					Easing(&p_particle->bar[1].Scale, 1.0f, 1.0f, 1.2f, 1.2f, &p_particle->bar[1].nowFrame, p_particle->bar[1].endFrame, &p_particle->bar[1].t, 1.0f, materialOutCirc);
+					if (p_particle->bar[1].nowFrame >= p_particle->bar[1].endFrame) {
+						p_particle->bar[1].nowFrame = p_particle->bar[1].endFrame;
+					}
+					if (p_key->keys[DIK_A]) {
+						isSelectBar = 0;
+						p_particle->bar[0].endFrame = 30;
+					}
+
+					p_particle->bar[0].Scale = { 1.0f,1.0f };
+					p_particle->bar[0].nowFrame = 0;
+					if (p_key->keys[DIK_SPACE]) {
+						p_scene->state = 0;
+						PlayerInitialize(p_gameobject);
+
+						StageInitialize(p_gameobject);
+						EnemyInitialize(p_gameobject);
+						CameraInitialize(p_camera);
+					}
+				}
+				if (isSelectBar == 0) {
+					Easing(&p_particle->bar[0].Scale, 1.0f, 1.0f, 1.2f, 1.2f, &p_particle->bar[0].nowFrame, p_particle->bar[0].endFrame, &p_particle->bar[0].t, 1.0f, materialOutCirc);
+					if (p_particle->bar[0].nowFrame >= p_particle->bar[0].endFrame) {
+						p_particle->bar[0].nowFrame = p_particle->bar[0].endFrame;
+					}
+					if (p_key->keys[DIK_D]) {
+						isSelectBar = 1;
+						p_particle->bar[1].endFrame = 30;
+					}
+
+					p_particle->bar[1].Scale = { 1.0f,1.0f };
+					p_particle->bar[1].nowFrame = 0;
+					if (p_key->keys[DIK_SPACE]) {
+						p_scene->state = 1;
+						PlayerInitialize(p_gameobject);
+
+						StageInitialize(p_gameobject);
+						EnemyInitialize(p_gameobject);
+						CameraInitialize(p_camera);
+					}
+				}
+
+				SetFourVertexes(&p_particle->bar[i]);
+				RenderingPipeline(&p_particle->bar[i], p_camera);
+			}
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+			AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
+
+
+			StageDraw(p_gameobject);
+
+			ParticleDraw(p_particle);
+
+			EnemyDraw(p_gameobject);
+
+
+			PlayerDraw(p_gameobject);
+
+			FlickrDraw(p_gameobject);
+
+			MovableObjectDraw(p_gameobject);
+
+
+			if (p_particle->particleHit.life > 0) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
+			}
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, clearColor, kFillModeSolid);
+			if (clearColor > 0x000000EE) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 1280, 0, 1280, 720, HandleClear, 0xFFFFFFFF);
+				for (int i = 0;i < 2;i++) {
+					p_particle->bar[i].RectObjDraw();
+				}
+			}
+			
 			break;
 		}
 

@@ -555,7 +555,10 @@ struct PARTICLE {
 
 	Particle particleMoya[pCC];
 	Particle particleHit;
+	Particle bar[2];
 };
+
+inline int isSelectBar = 0;
 
 //==================================
 //　　　　　　重力場
@@ -630,3 +633,5 @@ struct TitleScene {
 
 inline int isTitle = 1;
 inline int doreTitle = 0;
+
+inline int clearColor = 0x00000000;
