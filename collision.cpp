@@ -1,8 +1,6 @@
 #include"structuer.h"
 #include"enemy.h"
 #include"common.h"
-#include"sceneChange.h"
-
 
 /*=====================================================
               当たり判定の関数をまとめる
@@ -10,7 +8,7 @@
 
 
 //手とプレイヤーの当たり判定
-void Col_Player_Hands(GameObject* go,Shake* shake,CameraRelated* cr) {
+void Col_Player_Hands(GameObject* go) {
 
     //右手との当たり判定
     if (go->enemy.hand[Right].IsAlive) {
@@ -18,12 +16,6 @@ void Col_Player_Hands(GameObject* go,Shake* shake,CameraRelated* cr) {
         if (go->enemy.hand[Right].IsAggression) {
 
             if (RectangleObjectCollision(&go->player, &go->enemy.hand[Right]) == 1) {
-
-                //フラグを立てる
-                go->player.GetDamage = true;
-
-                //シェイク
-                ShakeFanction(shake, cr, 60.0f, 100.0f);
 
                 //プレイヤーのLifeを減らす
                 go->player.HP--;
@@ -38,12 +30,6 @@ void Col_Player_Hands(GameObject* go,Shake* shake,CameraRelated* cr) {
         if (go->enemy.hand[Left].IsAggression) {
 
             if (RectangleObjectCollision(&go->player, &go->enemy.hand[Left]) == 1) {
-
-                //フラグを立てる
-                go->player.GetDamage = true;
-
-                //シェイク
-                ShakeFanction(shake, cr, 60.0f, 10.0f);
 
                 //プレイヤーのLifeを減らす
                 go->player.HP--;
@@ -65,9 +51,6 @@ void Col_Player_Bullet(GameObject* go) {
 
                 if (Distance(go->player.WorldPos, go->enemy.RightBullet[i].WorldPos) <= go->player.Width + go->enemy.RightBullet[i].Width) {
 
-                    //フラグを立てる
-                    go->player.GetDamage = true;
-
                     //弾のフラグを折る
                     go->enemy.RightBullet[i].IsAggression = false;
                     go->enemy.RightBullet[i].IsShot = false;
@@ -88,9 +71,6 @@ void Col_Player_Bullet(GameObject* go) {
             if (go->enemy.LeftBullet[i].IsShot && go->enemy.LeftBullet[i].IsAggression) {
 
                 if (Distance(go->player.WorldPos, go->enemy.LeftBullet[i].WorldPos) <= go->player.Width + go->enemy.LeftBullet[i].Width) {
-
-                    //フラグを立てる
-                    go->player.GetDamage = true;
 
                     //弾のフラグを折る
                     go->enemy.LeftBullet[i].IsAggression = false;
@@ -170,8 +150,8 @@ void Col_PlayerThrowObj_Hand(GameObject* go) {
         if (!go->enemy.LeftBullet[i].IsAggression && go->enemy.LeftBullet[i].IsShot_p) {
 
             //当たったらダウン状態にさせる
-            if (RectangleObjectCollision(&go->enemy.hand[Left], &go->enemy.LeftBullet[i])) {
-                go->enemy.hand[Left].IsDown = true;
+            if (RectangleObjectCollision(&go->enemy.hand[Right], &go->enemy.LeftBullet[i])) {
+                go->enemy.hand[Right].IsDown = true;
 
                 //フラグを折る
                 go->enemy.LeftBullet[i].IsShot_p = false;
@@ -217,10 +197,8 @@ void Col_PlayerThrowObj_Hand(GameObject* go) {
 }
 
 //まとめ関数
-void Col_Update(GameObject* go, Shake* shake, CameraRelated* cr) {
-
-
-    Col_Player_Hands(go, shake, cr);
+void Col_Update(GameObject* go) {
+    Col_Player_Hands(go);
     Col_Player_Bullet(go);
     Col_Player_Enemy(go);
     Col_PlayerThrowObj_Hand(go);

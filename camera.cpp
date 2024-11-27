@@ -18,9 +18,6 @@ void CameraInitialize(CameraRelated* cr) {
 		cr->CameraPos.x,cr->CameraPos.y,1
 	};
 
-	//カメラのシェイク用の変数の初期化
-	cr->CameraShakePos = {};
-
 	cr->O.InitialLeft = -640.0f;
 	cr->O.InitialTop = 360.0f;
 	cr->O.InitialRight = 640.0f;
@@ -50,7 +47,7 @@ void CameraUpdate(CameraRelated* cr, Key* key) {
 	cr->camera = {
 		1,0,0,
 		0,1,0,
-		cr->CameraPos.x + cr->CameraShakePos.x,cr->CameraPos.y + cr->CameraShakePos.y,1
+		cr->CameraPos.x,cr->CameraPos.y,1
 	};
 
 	cr->O.Left = cr->O.InitialLeft * cr->O.Scale;

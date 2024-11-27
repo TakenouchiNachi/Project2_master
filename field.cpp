@@ -369,7 +369,7 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 			particle->particleMoya[i].life = 15 + i % 30;
 			particle->particleMoya[i].Acceleration = {};
 			particle->particleMoya[i].Velocity = {};
-			particle->particleMoya[i].Color = 0x020010FF;
+			particle->particleMoya[i].Color = 0x020002FF;
 			particle->particleMoya[i].Scale = { 1.5f,1.5f };
 		}
 		else if (particle->particleMoya[i].life >= 0) {
@@ -388,10 +388,9 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 	}
 
 	//ヒットの見た目
-	if (go->player.GetDamage) {
+	if (key->keys[DIK_Y]) {
 		particle->particleHit.life = 51;
 		particle->particleHit.Color = 0xFF0000FF;
-		go->player.GetDamage = false;
 	}
 	if (particle->particleHit.life > 0) {
 		particle->particleHit.life -= 1;

@@ -156,21 +156,19 @@ void CameraTransition_Start(GameObject* go, CameraRelated* cr, Key* key)
 }
 
 //シェイクの関数
-void ShakeFanction(Shake* shake, CameraRelated* cr, float ShakeTime, float Amplitude)
+void ShakeFanction(Shake*shake,CameraRelated*cr,Key*key)
 {
-	shake->duration = ShakeTime;
-	shake->amplitude = Amplitude;
-
-
-
-	if (shake->elapsedTime <= shake->duration) {
+	if (key->keys[DIK_E])
+	{
 		shake->isShake = true;
+		
 	}
-	else {
-		shake->isShake = false;
+
+
+	if (shake->elapsedTime > shake->duration)
+	{
 		initializeShake(shake);
 	}
-
 
 	if (shake->isShake)
 	{
@@ -189,14 +187,8 @@ void ShakeFanction(Shake* shake, CameraRelated* cr, float ShakeTime, float Ampli
 		shake->outY = shake->randomY * shake->amplitude * shake->easedProgress * cosf(shake->elapsedTime * shake->frequency);
 
 		//カメラにシェイクの量を追加
-		cr->CameraShakePos.x = shake->outX;
-		cr->CameraShakePos.y = shake->outY;
-
-	}
-	else {
-		cr->CameraShakePos.x = 0;
-		cr->CameraShakePos.y = 0;
-
+		cr->CameraPos.x += shake->outX;
+		cr->CameraPos.y += shake->outY;
 
 	}
 }
