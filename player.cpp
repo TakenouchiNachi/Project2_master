@@ -15,8 +15,8 @@ void PlayerInitialize(GameObject* go) {
 	//自機の初期化
 	go->player.BaseInfoInitialize(
 		//初期座標(x,y)
-		640.0f,
-		360.0f,
+		WorldWidth / 2.0f,
+		100.0f,
 
 		//横幅、縦幅
 		32.0f,
@@ -65,8 +65,8 @@ void PlayerInitialize(GameObject* go) {
 			360.0f,
 
 			//横幅、縦幅
-			30.0f,
-			30.0f,
+			50.0f,
+			50.0f,
 
 			//加速度(x,y)
 			0.0f,
@@ -104,8 +104,8 @@ void PlayerInitialize(GameObject* go) {
 			360.0f,
 
 			//横幅、縦幅
+			80.0f,
 			50.0f,
-			30.0f,
 
 			//加速度(x,y)
 			0.0f,
@@ -820,6 +820,20 @@ void PlayerUpdate(GameObject* go,CameraRelated* cr, Key* key) {
 		go->player.IsAggression = false;
 	}
 
+	//無敵判定の付与
+	if (go->player.GetDamage) {
+		go->player.InvincibleTime = 120;
+	}
+	if (go->player.InvincibleTime > 0) {
+		go->player.IsInvincible = true;
+		go->player.InvincibleTime--;
+	}
+	if (go->player.InvincibleTime <= 0) {
+		go->player.IsInvincible = false;
+	}
+
+
+
 	//フリッカー発射可能状態の制御
 	if (!go->player.CanShotFlickr) {
 
@@ -829,6 +843,16 @@ void PlayerUpdate(GameObject* go,CameraRelated* cr, Key* key) {
 
 		}
 	}
+
+	//色の更新
+	//無敵時間は色をくすませる
+	if (go->player.IsInvincible) {
+		go->player.Color = 0xaaaaaaff;
+	}
+	else {
+		go->player.Color = 0xf8f8f8ff;
+	}
+
 
 	//基本情報の更新
 	SetFourVertexes(&go->player);
@@ -854,7 +878,55 @@ void PlayerDraw(GameObject* go) {
 
 //プレイヤーのHUD描画関数
 void PlayerHudDraw(GameObject* go) {
-	go;
+
+	Novice::DrawQuad(
+
+		static_cast<int>(1050 - go->player.HPGH.Width / 2.0f),
+		static_cast<int>(50 - go->player.HPGH.Height / 2.0f),
+
+		static_cast<int>(1050 + go->player.HPGH.Width / 2.0f),
+		static_cast<int>(50 - go->player.HPGH.Height / 2.0f),
+
+		static_cast<int>(1050 - go->player.HPGH.Width / 2.0f),
+		static_cast<int>(50 + go->player.HPGH.Height / 2.0f),
+
+		static_cast<int>(1050 + go->player.HPGH.Width / 2.0f),
+		static_cast<int>(50 + go->player.HPGH.Height / 2.0f),
+
+		static_cast<int>(go->player.HPGH.ImagePos.x),
+		static_cast<int>(go->player.HPGH.ImagePos.y),
+
+		300, 300,
+
+		go->player.HPGH.Image,
+
+		WHITE
+	);
+
+	Novice::DrawQuad(
+		static_cast<int>(1100 - go->player.RemainingLifeGH.Width / 2.0f),
+		static_cast<int>(50 - go->player.RemainingLifeGH.Height / 2.0f),
+
+		static_cast<int>(1100 + go->player.RemainingLifeGH.Width / 2.0f),
+		static_cast<int>(50 - go->player.RemainingLifeGH.Height / 2.0f),
+
+		static_cast<int>(1100 - go->player.RemainingLifeGH.Width / 2.0f),
+		static_cast<int>(50 + go->player.RemainingLifeGH.Height / 2.0f),
+
+		static_cast<int>(1100 + go->player.RemainingLifeGH.Width / 2.0f),
+		static_cast<int>(50 + go->player.RemainingLifeGH.Height / 2.0f),
+
+		static_cast<int>(go->player.RemainingLifeGH.ImagePos.x),
+		static_cast<int>(go->player.RemainingLifeGH.ImagePos.y),
+
+		500, 300,
+
+		go->player.RemainingLifeGH.Image,
+
+		WHITE
+
+	);
+
 
 }
 
