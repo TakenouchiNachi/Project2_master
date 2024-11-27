@@ -373,7 +373,28 @@ struct Sounds
 	int cursorSoundHandle;
 	int decisionPlayHandle;
 	int  decisionSoundHandle;
+	int gamePlaySoundHandle;
+	int gamePlayPlayHandle;
 	float volume;
+
+	
+	int titlePlayHandle;
+	int titleSoundHandle;
+	
+	int flickrChargePlayHandle;
+	int flickrChargeSoundHandle;
+
+	int flickrShotPlayHandle;
+	int flickrShotSoundHandle;
+
+	int bossShoutPlayHandle;
+	int bossShoutSoundHandle;
+
+	int handPressPlayHandle;
+	int handPressSoundHandle;
+
+	int handAttackPlayHandle;
+	int handAttackSoundHandle;
 };
 
 //シェイクの構造体
@@ -402,6 +423,12 @@ struct sceneChange
 	float startWidth;
 	float startHeight;
 
+	Vector2 titlePos;
+	Vector2 titleStart;
+	Vector2 titleEnd;
+	float titleT;
+	float alphaT;
+
 	float endWidth;
 	float endHeight;
 
@@ -411,7 +438,38 @@ struct sceneChange
 	int image;
 	int state;
 	int option;
+	int startFrame;
+	int isStart;
+	int isTransition;
+	float titleNowFrame;
+
+	float fadeNowFrame;
+	float currentFadeColor[4];
+	unsigned int fadeColor = 0x00000000;
+	float changeFade_t=0.0f;
+
+	float buff_currentColor[4];
+	unsigned int color = WHITE;
+	float changeColor_t = 0.0f;
 };
+
+struct Title :RectangleObject
+{
+	Vector2 allowPos;
+	float allowSpeed;
+	float allowWidth;
+	float allowHeight;
+	int allowImage;
+	int allowColor;
+	Vector2 startOption;
+	float startOptionHeight;
+	float startOptionWidth;
+	int startOptionImage;
+
+	
+};
+
+
 
 enum Scene
 {
@@ -436,6 +494,7 @@ struct EaseCamera
 	float nowFrame;
 	float isEase;
 	float isEaseOut;
+	int isTransionCamera;
 	int state;
 };
 
