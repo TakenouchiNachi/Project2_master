@@ -63,18 +63,23 @@ void initializeSounds(Sounds* sounds)
 	sounds->titlePlayHandle=- 1;
 	sounds->titleSoundHandle= Novice::LoadAudio("./Resources/Sounds/title.mp3");
 
+	//フリッカーのチャージ
 	sounds->flickrChargePlayHandle = false;
 	sounds->flickrChargeSoundHandle = Novice::LoadAudio("./Resources/Sounds/flickrCharge.mp3");
 
+	//フリッカーの発射
 	sounds->flickrShotPlayHandle = false;
 	sounds->flickrShotSoundHandle = Novice::LoadAudio("./Resources/Sounds/flickrShot.mp3");
 
+	//ボスの叫び声
 	sounds->bossShoutPlayHandle = false;
 	sounds->bossShoutSoundHandle = Novice::LoadAudio("./Resources/Sounds/bossShout.mp3");
 
+	//ボスのプレス攻撃
 	sounds->handPressPlayHandle = false;
 	sounds->handPressSoundHandle = Novice::LoadAudio("./Resources/Sounds/handPress.mp3");
 
+	//ボスの手の攻撃
 	sounds->handAttackPlayHandle = false;
 	sounds->handAttackSoundHandle = Novice::LoadAudio("./Resources/Sounds/handAttack.mp3");
 }
@@ -275,7 +280,7 @@ void TitleChange(sceneChange* scene, Key* key,Sounds* sounds, GameObject* go, Ca
 	}
 
 
-	if (key->keys[DIK_SPACE] && !key->preKeys[DIK_SPACE])
+	if (key->keys[DIK_J] && !key->preKeys[DIK_J])
 	{
 		scene->isStart = true;
 		//Novice::StopAudio(sounds->titlePlayHandle);
