@@ -177,7 +177,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
 
-				FlickrUpdate(p_gameobject, p_key);
+				FlickrUpdate(p_gameobject, p_key,p_sounds);
 				RenderingPipeline(&gameobject.player.flickr, p_camera);
 
 
