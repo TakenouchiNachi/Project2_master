@@ -21,6 +21,10 @@ enum {
 	Left
 };
 
+
+//手のダウン時間
+const int HandDownTime = 480;
+
 //ソースファイルの読み込み
 #include<math.h>
 
@@ -54,6 +58,9 @@ const int EnemyBulletNum = 4;
 const float BulletShotWholeFrame = 330.0f;
 void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, Vector2 FixedPos);
 void BulletMove(GameObject* go, int VectorUpdateFlame);
+
+//画像の角度を変更する関数
+void DegreeUpdate(GameObject* go);
 
 //更新処理
 void EnemyUpdate(GameObject* go, CameraRelated* cr);

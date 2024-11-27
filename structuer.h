@@ -56,6 +56,9 @@ struct ObjectBaseInfo {
 	//画像の描画する座標
 	Vector2 ImagePos;
 
+	float ImageWidth;
+	float ImageHeight;
+
 	//アニメーションに用いる
 	float DrawWidth;
 	float DrawHeight;
@@ -111,7 +114,12 @@ struct FoursVertxes {
 
 //矩形のオブジェクトが持つ情報をまとめた構造体
 struct RectangleObject : ObjectBaseInfo, FoursVertxes {
+	
+	//プレイヤーが保持しているか
+	int IsHeld;
 
+	//フリッカーに引っ張られているかの変数
+	int IsAttracted;
 
 	//オブジェクトの種類を判別する変数
 	int ObjectType;
@@ -121,7 +129,7 @@ struct RectangleObject : ObjectBaseInfo, FoursVertxes {
 		   メンバー関数
 	============================*/
 
-	void BaseInfoInitialize(float Ini_PosX, float Ini_PosY, float Ini_width, float Ini_height, float Ini_acceX, float Ini_acceY, float Ini_veloX, float Ini_veloY, float Ini_vecX, float Ini_vecY, float Ini_speed, int Ini_image, int Ini_color,int ObjType) {
+	void BaseInfoInitialize(float Ini_PosX, float Ini_PosY, float Ini_width, float Ini_height, float Ini_acceX, float Ini_acceY, float Ini_veloX, float Ini_veloY, float Ini_vecX, float Ini_vecY, float Ini_speed, int Ini_image, float Ini_ImageWidth,float Ini_ImageHeight,int Ini_color,int ObjType) {
 
 		//座標
 		WorldPos.x = static_cast<float>(Ini_PosX);
@@ -152,6 +160,9 @@ struct RectangleObject : ObjectBaseInfo, FoursVertxes {
 
 		//描画関係
 		ImagePos = {};
+		ImageWidth = Ini_ImageWidth;
+		ImageHeight = Ini_ImageHeight;
+
 
 		DrawWidth = static_cast<float>(Ini_width);
 		DrawHeight = static_cast<float>(Ini_height);
@@ -190,8 +201,8 @@ struct RectangleObject : ObjectBaseInfo, FoursVertxes {
 			static_cast<int>(ImagePos.y),
 
 			//横幅、縦幅
-			static_cast<int>(Width),
-			static_cast<int>(Height),
+			static_cast<int>(ImageWidth),
+			static_cast<int>(ImageHeight),
 
 			//テクスチャハンドル
 			Image,
@@ -231,16 +242,32 @@ const int RemainingLifeNum = 3;
 
 struct Player :RectangleObject {
 
+	//ダメージを受けたか
+	int GetDamage;
+
+	//フリッカーを発射可能状態か
+	int CanShotFlickr;
+
 	//可動オブジェクトを保持しているかのフラグ
 	int IsHoldObject;
 
+	//生存フラグ
+	int IsAlive;
+
+	//ワイヤー中の攻撃判定
+	int IsAggression;
+
+	//無敵時間と無敵フラグ
+	int IsInvicible;
+	int IncivicibleTime;
+
 	//プレイ中のライフ
 	int HP;
-	RectangleObject HPGH[HPNum];
+	RectangleObject HPGH;
 
 	//残機
 	int RemainingLife;
-	RectangleObject RemainingLifeGH[RemainingLifeNum];
+	RectangleObject RemainingLifeGH;
 
 	Flickr flickr;
 };
@@ -257,6 +284,10 @@ struct Hand :RectangleObject {
 	//攻撃判定を持っているか
 	int IsAggression;
 
+	//ダウン状態フラグとその時間
+	int DownTime;
+	int IsDown;
+
 	//イージング用の変数
 	float t;
 	Vector2 EasingStartPos;
@@ -270,6 +301,9 @@ struct Bullet :RectangleObject{
 
 	//攻撃判定を持つか
 	int IsAggression;
+
+	//プレイヤーに打たれたフラグ
+	int IsShot_p;
 };
 
 
@@ -290,6 +324,10 @@ struct RocketPunchstruct : RectangleObject {
 };
 
 struct Enemy : RectangleObject {
+
+	//生存フラグ
+	int IsAlive;
+
 	//一週目か二週目か判断する変数
 	int LapNum;
 
@@ -574,12 +612,21 @@ struct Particle : RectangleObject{
 //プレイヤー周りのパーティクル
 const int pC = 10;
 
+//もやもやパーティクル
+const int pCC = 360;
+
 //パーティクルの処理をまとめるために合併したかった
 struct PARTICLE {
 	Particle particleFlicker[pF];
 	Particle particleFlickerT[pF];
 	Particle particleCharge[pC];
+
+	Particle particleMoya[pCC];
+	Particle particleHit;
+	Particle bar[2];
 };
+
+inline int isSelectBar = 0;
 
 //==================================
 //　　　　　　重力場
@@ -654,3 +701,5 @@ struct TitleScene {
 
 inline int isTitle = 1;
 inline int doreTitle = 0;
+
+inline int clearColor = 0x00000000;

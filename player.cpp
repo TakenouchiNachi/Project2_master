@@ -5,6 +5,7 @@
 //ヘッダーファイルの読み込み
 #include"camera.h"
 #include"enum.h"
+#include"enemy.h"
 #include"structuer.h"
 #include"common.h"
 
@@ -39,26 +40,33 @@ void PlayerInitialize(GameObject* go) {
 		//画像
 		Novice::LoadTexture("./image./player_ver5.png"),
 
+		//画像の幅
+		32.0f,
+		32.0f,
+
 		//色
-		0x2288ffff,
+		0xf8f8f8ff,
 
 		//オブジェクトタイプ（可動or不可動）
 		Else
 	);
 
 	//プレイヤー関連のフラグの初期化
+	go->player.GetDamage = false;
+	go->player.CanShotFlickr = true;
+	go->player.IsAggression = false;
 	go->player.IsHoldObject = false;
+	go->player.IsAlive = true;
+	go->player.HP = 5;
 
-
-	for (int i = 0; i < HPNum; ++i) {
-		go->player.HPGH[i].BaseInfoInitialize(
+		go->player.HPGH.BaseInfoInitialize(
 			//初期座標(x,y)
-			640.0f,
+			0.0f,
 			360.0f,
 
 			//横幅、縦幅
-			32.0f,
-			32.0f,
+			30.0f,
+			30.0f,
 
 			//加速度(x,y)
 			0.0f,
@@ -76,7 +84,11 @@ void PlayerInitialize(GameObject* go) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./Life.png"),
+			Novice::LoadTexture("./image./Number.png"),
+
+			//画像の幅
+			300.0f,
+			300.0f,
 
 			//色
 			WHITE,
@@ -84,18 +96,16 @@ void PlayerInitialize(GameObject* go) {
 			//オブジェクトタイプ（可動or不可動）
 			Else
 		);
-	}
 
 
-	for (int i = 0; i < RemainingLifeNum; ++i) {
-		go->player.RemainingLifeGH[i].BaseInfoInitialize(
+		go->player.RemainingLifeGH.BaseInfoInitialize(
 			//初期座標(x,y)
 			640.0f,
 			360.0f,
 
 			//横幅、縦幅
-			32.0f,
-			32.0f,
+			50.0f,
+			30.0f,
 
 			//加速度(x,y)
 			0.0f,
@@ -113,7 +123,11 @@ void PlayerInitialize(GameObject* go) {
 			2.0f,
 
 			//画像
-			1,
+			Novice::LoadTexture("./image./LifeLimit.png"),
+
+			//画像の幅
+			500.0f,
+			300.0f,
 
 			//色
 			WHITE,
@@ -121,7 +135,6 @@ void PlayerInitialize(GameObject* go) {
 			//オブジェクトタイプ（可動or不可動）
 			Else
 		);
-	}
 
 	/*========================================
 			  フリッカーの初期化
@@ -152,6 +165,10 @@ void PlayerInitialize(GameObject* go) {
 
 		//画像
 		Novice::LoadTexture("./image./flickr.png"),
+
+		//画像の幅
+		0.0f,
+		0.0f,
 
 		//色
 		WHITE,
@@ -213,44 +230,44 @@ void FlickrShotDirection(GameObject* go, Key* key) {
 
 
 //オブジェクトの発射方向を決める関数
-void MovableObjectShotDirection(GameObject* go, Key* key) {
+void MovableObjectShotDirection(RectangleObject* go, Key* key) {
 
 	//垂直・水平方向
 	if (key->keys[DIK_W]) {
-		go->movableobject.Vector.y = 1.0f;
-		go->movableobject.Vector.x = 0.0f;
+		go->Vector.y = 1.0f;
+		go->Vector.x = 0.0f;
 	}
 	if (key->keys[DIK_S]) {
-		go->movableobject.Vector.y = -1.0f;
-		go->movableobject.Vector.x = 0.0f;
+		go->Vector.y = -1.0f;
+		go->Vector.x = 0.0f;
 	}
 	if (key->keys[DIK_A]) {
-		go->movableobject.Vector.x = -1.0f;
-		go->movableobject.Vector.y = 0.0f;
+		go->Vector.x = -1.0f;
+		go->Vector.y = 0.0f;
 
 	}
 	if (key->keys[DIK_D]) {
-		go->movableobject.Vector.x = 1.0f;
-		go->movableobject.Vector.y = 0.0f;
+		go->Vector.x = 1.0f;
+		go->Vector.y = 0.0f;
 
 	}
 
 	//斜め方向
 	if (key->keys[DIK_W] && key->keys[DIK_A]) {
-		go->movableobject.Vector.y = 1.0f;
-		go->movableobject.Vector.x = -1.0f;
+		go->Vector.y = 1.0f;
+		go->Vector.x = -1.0f;
 	}
 	if (key->keys[DIK_W] && key->keys[DIK_D]) {
-		go->movableobject.Vector.y = 1.0f;
-		go->movableobject.Vector.x = 1.0f;
+		go->Vector.y = 1.0f;
+		go->Vector.x = 1.0f;
 	}
 	if (key->keys[DIK_S] && key->keys[DIK_A]) {
-		go->movableobject.Vector.y = -1.0f;
-		go->movableobject.Vector.x = -1.0f;
+		go->Vector.y = -1.0f;
+		go->Vector.x = -1.0f;
 	}
 	if (key->keys[DIK_S] && key->keys[DIK_D]) {
-		go->movableobject.Vector.y = -1.0f;
-		go->movableobject.Vector.x = 1.0f;
+		go->Vector.y = -1.0f;
+		go->Vector.x = 1.0f;
 	}
 }
 
@@ -287,7 +304,7 @@ void FlickrShot(GameObject* go,Key* key) {
 	}
 }
 
-//フリッカートオブジェクトとの当たり判定
+//フリッカーとオブジェクトとの当たり判定
 void FlickrCollision(GameObject* go) {
 
 	//マップとの当たり判定
@@ -311,25 +328,67 @@ void FlickrCollision(GameObject* go) {
 		}
 	}
 
-	//可動オブジェクトとの当たり判定
-	if (go->player.flickr.CollisionLeftTop.x < go->movableobject.CollisionRightBottom.x && go->movableobject.CollisionLeftTop.x < go->player.flickr.CollisionRightBottom.x &&
-		go->player.flickr.CollisionLeftTop.y < go->movableobject.CollisionRightBottom.y && go->movableobject.CollisionLeftTop.y < go->player.flickr.CollisionRightBottom.y) {
 
-		//当たっていたらフラグを立てる
-		go->player.flickr.IsMovableObjHit = true;
+	//敵の弾とフリッカーの当たり判定
+	//右の弾
+	for (int i = 0; i < EnemyBulletNum; ++i) {
+		if (RectangleObjectCollision(&go->enemy.RightBullet[i], &go->player.flickr)) {
+
+			//敵が発射している状態の時
+			if (go->enemy.RightBullet[i].IsShot) {
+
+				//当たっていたらフラグを立てる
+				go->enemy.RightBullet[i].IsAttracted = true;
+
+				//弾に当たっていたらフラグを折る
+				go->player.flickr.IsShot = false;
+
+				//弾の攻撃性をなくす
+				go->enemy.RightBullet[i].IsAggression = false;
+			}
+		}
+	}
+	//左の弾
+	for (int i = 0; i < EnemyBulletNum; ++i) {
+		if (RectangleObjectCollision(&go->enemy.LeftBullet[i], &go->player.flickr)) {
+
+			//敵が発射している状態の時
+			if (go->enemy.LeftBullet[i].IsShot) {
+
+				//当たっていたらフラグを立てる
+				go->enemy.LeftBullet[i].IsAttracted = true;
+
+				//弾に当たっていたらフラグを折る
+				go->player.flickr.IsShot = false;
+
+				//弾の攻撃性をなくす
+				go->enemy.LeftBullet[i].IsAggression = false;
+			}
+		}
 	}
 
+
+	//敵とフリッカーの当たり判定
 	if (go->player.flickr.CollisionLeftTop.x < go->enemy.CollisionRightBottom.x && go->enemy.CollisionLeftTop.x < go->player.flickr.CollisionRightBottom.x &&
 		go->player.flickr.CollisionLeftTop.y < go->enemy.CollisionRightBottom.y && go->enemy.CollisionLeftTop.y < go->player.flickr.CollisionRightBottom.y) {
 
 		//当たっていたらフラグを立てる
 		go->player.flickr.IsHit = true;
+		
+	}
 
+	//手との当たり判定
+	for (int i = 0; i < 2; ++i) {
+		if (RectangleObjectCollision(&go->player.flickr, &go->enemy.hand[i])) {
+			//当たっていたらフラグを立てる
+			go->player.flickr.IsHit = true;
+
+		}
 	}
 }
 
 //引き寄せる・引き寄せられる処理
-void FlickrAttract(RectangleObject* obj,GameObject*go) {
+void FlickrAttract(RectangleObject* obj, GameObject* go) {
 
 	//オブジェクトを引き付ける
 	if (obj->ObjectType == Movable) {
@@ -351,22 +410,29 @@ void FlickrAttract(RectangleObject* obj,GameObject*go) {
 		go->player.Vector.y = go->player.flickr.WorldPos.y - go->player.WorldPos.y;
 	}
 
-
 	//移動終了後の処理
 	if (obj->ObjectType == Movable) {
 
 		//オブジェクトとプレイヤーの距離が一定距離より短くなったらフラグを折る
 
-			if (sqrtf((obj->Vector.x * obj->Vector.x) + (obj->Vector.y * obj->Vector.y)) <= BlockSize) {
-				go->player.flickr.IsMovableObjHit = false;
-				go->player.flickr.IsShot = false;
+		if (sqrtf((obj->Vector.x * obj->Vector.x) + (obj->Vector.y * obj->Vector.y)) <= BlockSize) {
 
-				//限界射程を初期化する
-				go->player.flickr.RangeLimit = 300;
+		
 
-				//ホールドフラグを立てる
-				go->player.IsHoldObject = true;
-			}
+			//限界射程を初期化する
+			go->player.flickr.RangeLimit = 300;
+
+			//ホールドフラグを立てる
+			//go->player.IsHoldObject = true;
+
+			//「引き付けた」フラグを折る
+			obj->IsAttracted = false;
+
+			//「プレイヤーが持っている」フラグを立てる
+			obj->IsHeld = true;
+
+			
+		}
 	}
 	else if (obj->ObjectType == ImMovable) {
 
@@ -375,11 +441,55 @@ void FlickrAttract(RectangleObject* obj,GameObject*go) {
 			go->player.flickr.IsHit = false;
 			go->player.flickr.IsShot = false;
 
+			//攻撃判定をとる
+			//go->player.IsAggression = false;
+
 			//限界射程を初期化する
 			go->player.flickr.RangeLimit = 300;
 
 		}
 	}
+}
+
+//保持しているオブジェクト(弾)の処理
+void ObjectHold(GameObject* go) {
+
+	//右弾
+	for (int i = 0; i < EnemyBulletNum; ++i) {
+
+		//弾をつかんだらIsShotをfalseにする
+		if (go->enemy.RightBullet[i].IsAttracted) {
+			go->enemy.RightBullet[i].IsShot = false;
+		}
+
+		//もし「プレイヤーが保持している」フラグがtrueなら
+		if (go->enemy.RightBullet[i].IsHeld) {
+
+			//座標を固定
+			go->enemy.RightBullet[i].WorldPos.x = go->player.WorldPos.x;
+			go->enemy.RightBullet[i].WorldPos.y = go->player.WorldPos.y + 20.0f;
+
+		}
+	}
+
+	//左弾
+	for (int i = 0; i < EnemyBulletNum; ++i) {
+
+		//弾をつかんだらIsShotをfalseにする
+		if (go->enemy.LeftBullet[i].IsAttracted) {
+			go->enemy.LeftBullet[i].IsShot = false;
+		}
+
+		//もし「プレイヤーが保持している」フラグがtrueなら
+		if (go->enemy.LeftBullet[i].IsHeld) {
+
+			//座標を固定
+			go->enemy.LeftBullet[i].WorldPos.x = go->player.WorldPos.x;
+			go->enemy.LeftBullet[i].WorldPos.y = go->player.WorldPos.y + 20.0f;
+
+		}
+	}
+
 }
 
 
@@ -394,15 +504,17 @@ void FlickrAttractVer(GameObject* go, int x, int y) {
 	if (sqrtf((differX * differX) + (differY * differY))<=BlockSize) {
 		go->player.flickr.IsHit = false;
 		go->player.flickr.IsShot = false;
-
 	}
 }
 
 //プレイヤーのワイヤー移動のX成分
 void PlayerWireMoveX(GameObject* go) {
+
 	//プレイヤーが移動する処理
 	if (go->player.flickr.IsHit) {
+
 		for (int i = 0; i < VerBlockNum; ++i) {
+
 			for (int j = 0; j < HolBlockNum; ++j) {
 
 				if (go->mapchip[i][j].IsHit) {
@@ -416,19 +528,28 @@ void PlayerWireMoveX(GameObject* go) {
 
 		//ボスに向かって移動
 		FlickrAttract(&go->enemy, go);
+
+		//手に向かって移動
+		for (int i = 0; i < 2; ++i) {
+			FlickrAttract(&go->enemy.hand[i], go);
+		}
+
+		//移動処理
 		go->player.WorldPos.x += NormalizeX(go->player.Vector.x, go->player.Vector.y) * 10.0f;
 	}
-
 }
 
 //プレイヤーのワイヤー移動のY成分
 void PlayerWireMoveY(GameObject* go) {
 	//プレイヤーが移動する処理
 	if (go->player.flickr.IsHit) {
+
 		for (int i = 0; i < VerBlockNum; ++i) {
+
 			for (int j = 0; j < HolBlockNum; ++j) {
 
 				if (go->mapchip[i][j].IsHit) {
+
 					FlickrAttract(&go->mapchip[i][j], go);
 					go->player.WorldPos.y += NormalizeY(go->player.Vector.x, go->player.Vector.y) * 10.0f;
 					FlickrAttractVer(go, j, i);
@@ -440,9 +561,13 @@ void PlayerWireMoveY(GameObject* go) {
 
 		//ボスに向かって移動
 		FlickrAttract(&go->enemy, go);
+
+		//手に向かって移動
+		for (int i = 0; i < 2; ++i) {
+			FlickrAttract(&go->enemy.hand[i], go);
+		}
 		go->player.WorldPos.y += NormalizeY(go->player.Vector.x, go->player.Vector.y) * 10.0f;
 	}
-
 }
 
 //フリッカーの処理をまとめた関数
@@ -452,30 +577,40 @@ void FlickrUpdate(GameObject* go, Key* key) {
 	SetFourVertexes(&go->player.flickr);
 
 	//発射処理
-	if (!go->player.flickr.IsShot && !go->player.IsHoldObject) {
+	if (!go->player.flickr.IsShot && !go->player.IsHoldObject && go->player.CanShotFlickr) {
 		FlickrShot(go, key);
 	}
 
 	//紐の当たり判定の移動処理
-	if (go->player.flickr.IsShot && !go->player.flickr.IsHit && !go->player.flickr.IsMovableObjHit) {
+	if (go->player.flickr.IsShot && !go->player.flickr.IsHit && !go->player.IsHoldObject) {
 		go->player.flickr.WorldPos.x += NormalizeX(go->player.flickr.Vector.x, go->player.flickr.Vector.y) * 15.0f;
 		go->player.flickr.WorldPos.y += NormalizeY(go->player.flickr.Vector.x, go->player.flickr.Vector.y) * 15.0f;
 	}
 	
-	//オブジェクトを持っているフラグがtrueならオブジェクトをプレイヤーの位置に固定
-	if (go->player.flickr.IsMovableObjHit) {
-		go->player.flickr.WorldPos = go->movableobject.WorldPos;
+
+	//右弾
+	for (int i = 0; i < EnemyBulletNum; ++i) {
+
+		if (go->enemy.RightBullet[i].IsAttracted) {
+			FlickrAttract(&go->enemy.RightBullet[i], go);
+		}
 	}
 
+	//左弾
+	for (int i = 0; i < EnemyBulletNum; ++i) {
 
-	//可動オブジェクトを引っ張る処理
-	if (go->player.flickr.IsMovableObjHit) {
-		FlickrAttract(&go->movableobject, go);
-		FlickrAttract(&go->enemy, go);
+		if (go->enemy.LeftBullet[i].IsAttracted) {
+			FlickrAttract(&go->enemy.LeftBullet[i], go);
+		}
 	}
+
+	//うんちぶりぶりブリタニア
+
+	//保持しているオブジェクトの固定
+	ObjectHold(go);
 
 	//フラグがおれているとき、判定円をプレイヤーのポジションに移動
-	if (!go->player.flickr.IsMovableObjHit && !go->player.flickr.IsShot) {
+	if (!go->player.IsHoldObject && !go->player.flickr.IsShot) {
 		go->player.flickr.WorldPos = go->player.WorldPos;
 	}
 
@@ -493,24 +628,88 @@ void FlickrUpdate(GameObject* go, Key* key) {
 	}
 }
 
-//保持しているオブジェクトの発射
-void MovableObjectShot(GameObject* go, Key* key) {
+//保持している弾の発射
+void IsPlayerHoldObject(GameObject* go) {
 
-	if (go->player.IsHoldObject && key->keys[DIK_J]) {
-			MovableObjectShotDirection(go, key);
+	//プレイヤーがオブジェクトを持っているかの判別
+	for (int i = 0; i < EnemyBulletNum; ++i) {
 
+		//いずれかのバレットが「保持されている」状態であったら
+		if (go->enemy.RightBullet[i].IsHeld || go->enemy.LeftBullet[i].IsHeld) {
+
+			go->player.IsHoldObject = true;
+		}
+		else {
 			go->player.IsHoldObject = false;
-			go->movableobject.IsShot = true;
+		}
 	}
-
-	if (go->movableobject.IsShot) {
-
-		go->movableobject.WorldPos.x += NormalizeX(go->movableobject.Vector.x, go->movableobject.Vector.y) * 8.0f;
-		go->movableobject.WorldPos.y += NormalizeY(go->movableobject.Vector.x, go->movableobject.Vector.y) * 8.0f;
-	}
-
-
 }
+
+//保持しているオブジェクトの発射
+void HoldObjectShot(GameObject* go, Key* key ,float speed) {
+
+	for (int i = 0; i < EnemyBulletNum; ++i) {
+
+		if (go->enemy.RightBullet[i].IsHeld) {
+
+			if (key->keys[DIK_J] && !key->preKeys[DIK_J]) {
+
+				//プレイヤーに発射らフラグを立てる
+				go->enemy.RightBullet[i].IsShot_p = true;
+
+				//「保持している」フラグを折る
+				go->enemy.RightBullet[i].IsHeld = false;
+
+				//ベクトルの取得
+				MovableObjectShotDirection(&go->enemy.RightBullet[i], key);
+
+				//フリッカー発射不可能
+				go->player.CanShotFlickr = false;
+			}
+		}
+
+		if (go->enemy.LeftBullet[i].IsHeld) {
+
+			if (key->keys[DIK_J] && !key->preKeys[DIK_J]) {
+
+				//プレイヤーに発射らフラグを立てる
+				go->enemy.LeftBullet[i].IsShot_p = true;
+
+				//「保持している」フラグを折る
+				go->enemy.LeftBullet[i].IsHeld = false;
+
+				//ベクトルの取得
+				MovableObjectShotDirection(&go->enemy.LeftBullet[i], key);
+
+				//フリッカー発射不可能
+				go->player.CanShotFlickr = false;
+			}
+		}
+	}
+
+	for (int i = 0; i < EnemyBulletNum; ++i) {
+
+		//弾の挙動
+		if (go->enemy.RightBullet[i].IsShot_p) {
+
+			//右弾
+			if (go->enemy.RightBullet[i].IsShot_p) {
+				go->enemy.RightBullet[i].WorldPos.x += go->enemy.RightBullet[i].Vector.x * speed;
+				go->enemy.RightBullet[i].WorldPos.y += go->enemy.RightBullet[i].Vector.y * speed;
+			}
+		}
+
+		if (go->enemy.LeftBullet[i].IsShot_p) {
+
+			//左弾
+			if (go->enemy.LeftBullet[i].IsShot_p) {
+				go->enemy.LeftBullet[i].WorldPos.x += go->enemy.LeftBullet[i].Vector.x * speed;
+				go->enemy.LeftBullet[i].WorldPos.y += go->enemy.LeftBullet[i].Vector.y * speed;
+			}
+		}
+	}
+}
+
 
 //プレイヤーの動き
 void PlayerMove(GameObject* go, Key* key) {
@@ -605,6 +804,28 @@ void PlayerUpdate(GameObject* go,CameraRelated* cr, Key* key) {
 	//Movement
 	PlayerMove(go, key);
 
+	//オブジェクトの投擲処理
+	IsPlayerHoldObject(go);
+	HoldObjectShot(go, key,8.0f);
+
+	//攻撃判定の付与
+	if (go->player.flickr.IsHit) {
+		go->player.IsAggression = true;
+	}
+	else {
+		go->player.IsAggression = false;
+	}
+
+	//フリッカー発射可能状態の制御
+	if (!go->player.CanShotFlickr) {
+
+		if (!key->keys[DIK_J] && !key->preKeys[DIK_J]) {
+
+			go->player.CanShotFlickr = true;
+
+		}
+	}
+
 	//基本情報の更新
 	SetFourVertexes(&go->player);
 	RenderingPipeline(&go->player, cr);
@@ -613,11 +834,11 @@ void PlayerUpdate(GameObject* go,CameraRelated* cr, Key* key) {
 //プレイヤーのHUD関連の更新処理
 void PlayerHudUpdate(GameObject* go) {
 
-	for (int i = 0; i < HPNum; ++i) {
+	//描画範囲の変更
+	go->player.HPGH.ImagePos.x = 300.0f * (go->player.HP - 1);
 
-		//HUDはスクリーン座標で処理
-		go->player.HPGH[i].ScreenPos = go->player.HPGH[i].WorldPos;
-	}
+	//四つ角
+	SetFourVertexes(&go->player.HPGH);
 }
 
 
@@ -629,9 +850,7 @@ void PlayerDraw(GameObject* go) {
 
 //プレイヤーのHUD描画関数
 void PlayerHudDraw(GameObject* go) {
-
-	go->player.Color;
-
+	go;
 
 }
 

@@ -232,6 +232,16 @@ int RectangleObjectCollision(RectangleObject* obj1, RectangleObject* obj2) {
 
 
 /*=======================================
+		  　　角度変換関数
+ =======================================*/
+void DegreeToTheta(RectangleObject* obj) {
+
+	obj->Theta = (3.1415f / 180.0f) * (obj->Degree);
+
+}
+
+
+/*=======================================
           2物体の距離を測る関数
  =======================================*/
 float Distance(Vector2 obj1, Vector2 obj2) {

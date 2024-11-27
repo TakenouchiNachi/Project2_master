@@ -45,6 +45,10 @@ void StageInitialize(GameObject* go) {
 				//画像
 				Novice::LoadTexture("./image./map.png"),
 
+				//画像の幅
+				32.0f,
+				32.0f,
+
 				//色
 				WHITE,
 
@@ -60,42 +64,42 @@ void StageInitialize(GameObject* go) {
 	}
 
 	//MovableObjectの初期化
-	go->movableobject.BaseInfoInitialize(
+	//go->movableobject.BaseInfoInitialize(
 
-		//初期座標(x,y)
-		700.0f,
-		700.0f,
+	//	//初期座標(x,y)
+	//	700.0f,
+	//	700.0f,
 
-		//横幅、縦幅
-		32.0f,
-		32.0f,
+	//	//横幅、縦幅
+	//	32.0f,
+	//	32.0f,
 
-		//加速度(x,y)
-		0.0f,
-		0.0f,
+	//	//加速度(x,y)
+	//	0.0f,
+	//	0.0f,
 
-		//速度(x,y)
-		0.0f,
-		0.0f,
+	//	//速度(x,y)
+	//	0.0f,
+	//	0.0f,
 
-		//ベクトル(x,y)
-		0.0f,
-		0.0f,
+	//	//ベクトル(x,y)
+	//	0.0f,
+	//	0.0f,
 
-		//スピード
-		10.0f,
+	//	//スピード
+	//	10.0f,
 
-		//画像
-		Novice::LoadTexture("./image./MovableObject.png"),
+	//	//画像
+	//	Novice::LoadTexture("./image./MovableObject.png"),
 
-		//色
-		WHITE,
+	//	//色
+	//	WHITE,
 
-		//オブジェクトタイプ（可動or不可動）
-		Movable
-	);
+	//	//オブジェクトタイプ（可動or不可動）
+	//	Movable
+	//);
 
-	go->movableobject.IsShot = false;
+	//go->movableobject.IsShot = false;
 }
 
 //ステージ情報の更新
@@ -168,9 +172,10 @@ void MovableObjectUpdate(GameObject* go,CameraRelated* cr,Key* key) {
 	RenderingPipeline(&go->movableobject, cr);
 
 	//保持している時の処理
-	MovableObjectHold(go);
+	//MovableObjectHold(go);
 
-	MovableObjectShot(go, key);
+	//MovableObjectShot(go, key);
+	key;
 }
 
 //描画関数

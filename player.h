@@ -16,7 +16,7 @@ void PlayerMove(GameObject* go,Key* key);
 void FlickrShotDirection(GameObject* go, Key* key);
 
 //オブジェクトの発射方向を決める関数
-void MovableObjectShotDirection(GameObject* go, Key* key);
+void MovableObjectShotDirection(RectangleObject* go, Key* key);
 
 //フリッカーの発射処理
 void FlickrShot(GameObject* go,Key* key);
@@ -40,8 +40,14 @@ void FlickrAttractVer(GameObject* go, int x, int y);
 //フリッカーの処理
 void FlickrUpdate(GameObject* go, Key* key);
 
+//プレイヤーがオブジェクトを持っているか判別する関数
+void IsPlayerHoldObject(GameObject* go);
+
 //保持しているオブジェクトの発射
-void MovableObjectShot(GameObject* go, Key* key);
+void HoldObjectShot(GameObject* go, Key* key, float speed);
+
+//保持しているオブジェクトの座標処理
+void ObjectHold(GameObject* go);
 
 //プレイヤーの更新処理
 void PlayerUpdate(GameObject* go,CameraRelated* cr, Key* key);

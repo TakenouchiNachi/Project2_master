@@ -27,7 +27,11 @@ void TitleInitialize(TitleScene *T) {
 		2.0f,
 
 		//画像
-		Novice::LoadTexture("./image./Righthand.png"),
+		Novice::LoadTexture("./image./RightHand_ver3.png"),
+
+		//画像の幅
+		800.0f,
+		800.0f,
 
 		//色
 		0xFFFFFFFF,
@@ -62,7 +66,11 @@ void TitleInitialize(TitleScene *T) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./Righthand.png"),
+			Novice::LoadTexture("./image./RightHand_ver3.png"),
+
+			//画像の幅
+			800.0f,
+			800.0f,
 
 			//色
 			0xFFFFFFFF,
@@ -87,7 +95,7 @@ void TitleDraw(TitleScene* T) {
 
 void TitleSceneUpDate(TitleScene *T,Key *key, CameraRelated* cr) {
 
-	while (isTitle == 1) {
+	
 
 		if (&key->keys[DIK_SPACE] && doreTitle == 0) {
 			doreTitle = 1;
@@ -135,8 +143,8 @@ void TitleSceneUpDate(TitleScene *T,Key *key, CameraRelated* cr) {
 		}
 
 
-		TitleDraw(T);
-	}
+		
+	
 	
 }
 

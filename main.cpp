@@ -45,6 +45,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TitleScene title;
 	Title titleU;
 
+	int HandleClear = Novice::LoadTexture("./image/clear.png");
+	Vector2 wid = {};
+
 	//構造体のアドレスを格納する変数の宣言
 	GameObject* p_gameobject = &gameobject;
 	CameraRelated* p_camera = &camera;
@@ -85,13 +88,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		memcpy(key.preKeys, key.keys, 256);
 		Novice::GetHitKeyStateAll(key.keys);
 
-		TitleSceneUpDate(p_title, p_key, p_camera);
+		
 
 		///
 		/// ↓更新処理ここから
 		///
 
-		switch (p_scene->state)
+		switch (scene.state)
 		{
 		case TITLE:
 			Novice::StopAudio(p_sounds->gamePlayPlayHandle);
@@ -131,10 +134,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					Novice::PlayAudio(p_sounds->titleSoundHandle, true, 0.3f);
 			}
 
+
+			Novice::DrawBox(128, 128 + p_scene->option * 64, 64, 64, 0.0f, WHITE, kFillModeSolid);
+			TitleDraw(p_title);
+
 			break;
 
 
 		case GAMEPLAY:
+
 			//Novice::StopAudio(p_sounds->gamePlayPlayHandle);
 			Novice::StopAudio(p_sounds->titlePlayHandle);
 			if (!p_scene->isTransition)
@@ -147,12 +155,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				PlayerUpdate(p_gameobject, p_camera, p_key);
 
+			clearColor = 0x00000000;
+			isSelectBar = 0;
+			//プレイヤーの更新処理
+
+
 
 
 				MovableObjectUpdate(p_gameobject, p_camera, p_key);
+
 
 				AfterimageUpDate(p_afterimage, p_particle, p_camera, p_gameobject);//@@@
 				MovableObjectUpdate(p_gameobject, p_camera, p_key);
+
+
+			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
+
+			  AfterimageUpDate(p_afterimage, p_particle, p_camera,p_gameobject);//@@@
+			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
 				ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
@@ -161,6 +181,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				RenderingPipeline(&gameobject.player.flickr, p_camera);
 
 
+
+
+			CameraTransition_Start(p_gameobject, p_camera, p_key);
+			ScrollFunction(p_gameobject, p_camera);
 
 
 				MaskChange(p_scene, p_gameobject, p_key);
@@ -192,9 +216,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//当たり判定関数
 				Col_Update(p_gameobject);
 
+
 				//リセット関数
 				RkeyReset(p_gameobject, p_camera, p_key);
 			}
+
+			/*if (p_key->keys[DIK_0]) {
+				p_scene->state = 2;
+			}*/
+
+
 
 
 			///
@@ -204,7 +235,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x222222ff, kFillModeSolid);
 
-			EnemyDraw(p_gameobject);
+			
 
 		///
 		/// ↓描画処理ここから
@@ -221,26 +252,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			///
 			/// ↓描画処理ここから
 			///
-      AfterimageDraw(p_afterimage, p_particle);//@@@
 
 
-			EnemyDraw(p_gameobject);
+		  //AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
+
+
+			StageDraw(p_gameobject);
+
+	        ParticleDraw(p_particle);
+	  
+	        EnemyDraw(p_gameobject);
 
 
 			PlayerDraw(p_gameobject);
 
 			FlickrDraw(p_gameobject);
 
-			ParticleDraw(p_particle);
+			
 
+			if (p_particle->particleHit.life > 0) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
+			}
 
-			StageDraw(p_gameobject);
-
-			MovableObjectDraw(p_gameobject);
+			PlayerHudDraw(p_gameobject);
 
 			MaskDraw(p_scene);
 
+
 			Novice::DrawBox(0, 0, 1280, 720, 0.0f, p_scene->fadeColor, kFillModeSolid);
+
 
 			//Novice::DrawLine(
 			//	static_cast<int>(gameobject.player.ScreenPos.x),
@@ -274,14 +314,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			////
 			////Novice::ScreenPrintf(20, 200, "Flickr VecX : %f", gameobject.player.flickr.Vector.x);
 			////Novice::ScreenPrintf(20, 220, "Flickr VecY : %f", gameobject.player.flickr.Vector.y);
-			////
+		
 			////Novice::ScreenPrintf(20, 250, "RangeLimit : %d", gameobject.player.flickr.RangeLimit);
 
 			//Novice::ScreenPrintf(10, 10, "posP : %f / isP : %d / ", p_particle->particleCharge[0].DrawLeftTop.y, p_particle->particleCharge[0].isParticle);
 			//Novice::ScreenPrintf(10, 40, "posP : %f / isP : %d / ", p_particle->particleFlicker[5].DrawLeftBottom.y, p_particle->particleFlicker[6].isParticle);
 			//Novice::ScreenPrintf(10, 400, "posP : %f / isP : %f / ", p_camera->CameraPos.x, p_camera->CameraPos.y);
+
 			//Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_camera->easeCamera.t, p_scene->startFrame);
 			//プレイヤーの更新処理
+
+			//Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_camera->easeCamera.t, p_scene->pos.y);
+			
+			//Novice::ScreenPrintf(20, 20, "Life :%d", gameobject.player.HP);
+			
+
+			Novice::ScreenPrintf(0, 300, "life : %d", particle.particleHit.life);
+
+			EnemyDebugPrintf(p_gameobject);
+
 
 			//シーンを切り替える
 			if (p_key->keys[DIK_G] && !p_key->preKeys[DIK_G])
@@ -308,9 +359,194 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 
 		case CLEAR:
+			
+			if (clearColor <= 0x000000EE) {
+				clearColor += 5;
+			}
+			for (int i = 0;i < 2;i++) {
+
+				if (isSelectBar == 1) {
+					wid = { p_particle->bar[1].Width, p_particle->bar[1].Height };
+					Easing(&wid, 320.0f, 192.0f, 384.0f, 230.4f, &p_particle->bar[1].nowFrame, p_particle->bar[1].endFrame, &p_particle->bar[1].t, 1.0f, materialOutCirc);
+					p_particle->bar[1].Width = wid.x;p_particle->bar[1].Height = wid.y;
+					if (p_particle->bar[1].nowFrame >= p_particle->bar[1].endFrame) {
+						p_particle->bar[1].nowFrame = p_particle->bar[1].endFrame;
+					}
+					if (p_key->keys[DIK_A]) {
+						isSelectBar = 0;
+						p_particle->bar[0].endFrame = 30;
+					}
+					
+					p_particle->bar[0].Width = 320;
+					p_particle->bar[0].Height = 192;
+					p_particle->bar[0].nowFrame = 0;
+					if (p_key->keys[DIK_J]) {
+						p_scene->state = 0;
+						PlayerInitialize(p_gameobject);
+
+						StageInitialize(p_gameobject);
+						EnemyInitialize(p_gameobject);
+						CameraInitialize(p_camera);
+					}
+				}
+				if (isSelectBar == 0) {
+					wid = { p_particle->bar[0].Width, p_particle->bar[0].Height };
+					Easing(&wid, 320.0f, 192.0f, 384.0f, 230.4f, &p_particle->bar[0].nowFrame, p_particle->bar[0].endFrame, &p_particle->bar[0].t, 1.0f, materialOutCirc);
+					p_particle->bar[0].Width = wid.x;p_particle->bar[0].Height = wid.y;
+					if (p_particle->bar[0].nowFrame >= p_particle->bar[0].endFrame) {
+						p_particle->bar[0].nowFrame = p_particle->bar[0].endFrame;
+					}
+					if (p_key->keys[DIK_D]) {
+						isSelectBar = 1;
+						p_particle->bar[1].endFrame = 30;
+					}
+
+					p_particle->bar[1].Width = 320;
+					p_particle->bar[1].Height = 192;
+					p_particle->bar[1].nowFrame = 0;
+					if (p_key->keys[DIK_J]) {
+						p_scene->state = 1;
+						PlayerInitialize(p_gameobject);
+
+						StageInitialize(p_gameobject);
+						EnemyInitialize(p_gameobject);
+						CameraInitialize(p_camera);
+					}
+				}
+			}
+			
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+			AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
+
+
+			StageDraw(p_gameobject);
+
+			ParticleDraw(p_particle);
+
+			EnemyDraw(p_gameobject);
+
+
+			PlayerDraw(p_gameobject);
+
+			FlickrDraw(p_gameobject);
+
+			MovableObjectDraw(p_gameobject);
+
+
+			if (p_particle->particleHit.life > 0) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
+			}
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, clearColor, kFillModeSolid);
+			if (clearColor > 0x000000EE) {
+				Novice::DrawQuad(0, 0 - 100, 1280, 0 - 100, 0, 720 - 100, 1280, 720 - 100, 0, 0, 1280, 720, HandleClear, 0xFFFFFFFF);
+				for (int i = 0;i < 2;i++) {
+					Novice::DrawQuad(int(p_particle->bar[i].WorldPos.x - p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y - p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x + p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y - p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x - p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y + p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x + p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y + p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].ImagePos.x), int(p_particle->bar[i].ImagePos.y), int(320), int(192), p_particle->bar[i].Image,
+						p_particle->bar[i].Color);
+				}
+				
+			}
+
 			break;
 
 		case GAMEOVER:
+
+			if (clearColor <= 0x000000EE) {
+				clearColor += 5;
+			}
+
+			for (int i = 0;i < 2;i++) {
+
+				if (isSelectBar == 1) {
+					wid = { p_particle->bar[1].Width, p_particle->bar[1].Height };
+					Easing(&wid, 320.0f, 192.0f, 384.0f, 230.4f, &p_particle->bar[1].nowFrame, p_particle->bar[1].endFrame, &p_particle->bar[1].t, 1.0f, materialOutCirc);
+					p_particle->bar[1].Width = wid.x;p_particle->bar[1].Height = wid.y;
+					if (p_particle->bar[1].nowFrame >= p_particle->bar[1].endFrame) {
+						p_particle->bar[1].nowFrame = p_particle->bar[1].endFrame;
+					}
+					if (p_key->keys[DIK_A]) {
+						isSelectBar = 0;
+						p_particle->bar[0].endFrame = 30;
+					}
+
+					p_particle->bar[0].Width = 320;
+					p_particle->bar[0].Height = 192;
+					p_particle->bar[0].nowFrame = 0;
+					if (p_key->keys[DIK_J]) {
+						p_scene->state = 0;
+						PlayerInitialize(p_gameobject);
+
+						StageInitialize(p_gameobject);
+						EnemyInitialize(p_gameobject);
+						CameraInitialize(p_camera);
+					}
+				}
+				if (isSelectBar == 0) {
+					wid = { p_particle->bar[0].Width, p_particle->bar[0].Height };
+					Easing(&wid, 320.0f, 192.0f, 384.0f, 230.4f, &p_particle->bar[0].nowFrame, p_particle->bar[0].endFrame, &p_particle->bar[0].t, 1.0f, materialOutCirc);
+					p_particle->bar[0].Width = wid.x;p_particle->bar[0].Height = wid.y;
+					if (p_particle->bar[0].nowFrame >= p_particle->bar[0].endFrame) {
+						p_particle->bar[0].nowFrame = p_particle->bar[0].endFrame;
+					}
+					if (p_key->keys[DIK_D]) {
+						isSelectBar = 1;
+						p_particle->bar[1].endFrame = 30;
+					}
+
+					p_particle->bar[1].Width = 320;
+					p_particle->bar[1].Height = 192;
+					p_particle->bar[1].nowFrame = 0;
+					if (p_key->keys[DIK_J]) {
+						p_scene->state = 1;
+						PlayerInitialize(p_gameobject);
+
+						StageInitialize(p_gameobject);
+						EnemyInitialize(p_gameobject);
+						CameraInitialize(p_camera);
+					}
+				}
+			}
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+			AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
+
+
+			StageDraw(p_gameobject);
+
+			ParticleDraw(p_particle);
+
+			EnemyDraw(p_gameobject);
+
+
+			PlayerDraw(p_gameobject);
+
+			FlickrDraw(p_gameobject);
+
+			MovableObjectDraw(p_gameobject);
+
+
+			if (p_particle->particleHit.life > 0) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
+			}
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, clearColor, kFillModeSolid);
+			if (clearColor > 0x000000EE) {
+				Novice::DrawQuad(0, 0 - 100, 1280, 0 - 100, 0, 720 - 100, 1280, 720 - 100, 1280, 0, 1280, 720, HandleClear, 0xFFFFFFFF);
+				for (int i = 0;i < 2;i++) {
+					Novice::DrawQuad(int(p_particle->bar[i].WorldPos.x - p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y - p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x + p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y - p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x - p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y + p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].WorldPos.x + p_particle->bar[i].Width / 2), int(p_particle->bar[i].WorldPos.y + p_particle->bar[i].Height / 2),
+						int(p_particle->bar[i].ImagePos.x), int(p_particle->bar[i].ImagePos.y), int(320), int(192), p_particle->bar[i].Image,
+						p_particle->bar[i].Color);
+				}
+			}
+			
 			break;
 		}
 

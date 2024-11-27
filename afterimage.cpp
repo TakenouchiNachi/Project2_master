@@ -52,6 +52,10 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 			//画像
 			Novice::LoadTexture("./image./player_ver5.png"),
 
+			//画像の幅
+			32.0f,
+			32.0f,
+
 			//色
 			0xFFFFFFFF,
 
@@ -86,6 +90,10 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 			//画像
 			Novice::LoadTexture("./image./boss_ver2.png"),
 
+			//画像の幅
+			160.0f,
+			160.0f,
+
 			//色
 			0xFFFFFFFF,
 
@@ -119,7 +127,11 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./RightHand_ver2.png"),
+			Novice::LoadTexture("./image./RightHand_ver3.png"),
+
+			//画像の幅
+			800.0f,
+			800.0f,
 
 			//色
 			0xFFFFFFFF,
@@ -154,7 +166,11 @@ void AfterimageInitialize(AFTERIMAGE* Af) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./LeftHand_ver2.png"),
+			Novice::LoadTexture("./image./LeftHand_ver3.png"),
+
+			//画像の幅
+			800.0f,
+			800.0f,
 
 			//色
 			0xFFFFFFFF,
@@ -209,26 +225,36 @@ void AfterimageUpDate(AFTERIMAGE* Af,PARTICLE* p, CameraRelated* cr, GameObject 
 		SetFourVertexes(&Af->bossBAL[k]);
 		RenderingPipeline(&Af->bossBAL[k], cr);
 		
+		//画像の描画範囲を合わせる
+		Af->bossBAR[k].ImagePos = go->enemy.hand[Right].ImagePos;
+		Af->bossBAL[k].ImagePos = go->enemy.hand[Left].ImagePos;
 	}
 	
 }
 
-void AfterimageDraw(AFTERIMAGE* Af, PARTICLE* p) {
+
+void AfterimageDraw(AFTERIMAGE* Af, PARTICLE* p, GameObject *go) {
+
 	p->particleFlicker;
 	Novice::SetBlendMode(BlendMode::kBlendModeAdd);
 	for (int k = 0;k < AFINum;k++) {
 
 		//プレイヤー
+		if(go->player.flickr.IsShot)
 		Af->playerPA[k].RectObjDraw();
 
 		//ボス
 		Af->bossBA[k].RectObjDraw();
 
 		//ボス R
-		Af->bossBAR[k].RectObjDraw();
+		if (go->enemy.hand[Right].IsAlive) {
+			Af->bossBAR[k].RectObjDraw();
+		}
 
 		//ボス L
-		Af->bossBAL[k].RectObjDraw();
+		if (go->enemy.hand[Left].IsAlive) {
+			Af->bossBAL[k].RectObjDraw();
+		}
 	}
 	Novice::SetBlendMode(BlendMode::kBlendModeNormal);
 }
