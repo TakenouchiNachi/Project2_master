@@ -43,6 +43,10 @@ void EnemyInitialize(GameObject* go) {
 		//画像
 		Novice::LoadTexture("./image./boss_ver2.png"),
 
+		//画像の幅
+		160.0f,
+		160.0f,
+
 		//色
 		0xffff00ff,
 
@@ -51,7 +55,7 @@ void EnemyInitialize(GameObject* go) {
 	);
 
 	go->enemy.Condition = BothHands;
-	go->enemy.MoveType = bulletshot;
+	go->enemy.MoveType = None;
 	go->enemy.DaiPanInfo.CurrentFrame = 0;
 	go->enemy.RocketPunchInfo.CurrentFrame = 0;
 	go->enemy.BulletShotCurrentFrame = 0;
@@ -87,10 +91,14 @@ void EnemyInitialize(GameObject* go) {
 		2.0f,
 
 		//画像
-		Novice::LoadTexture("./image./RightHand_ver2.png"),
+		Novice::LoadTexture("./image./RightHand_ver3.png"),
+
+		//画像の幅
+		800.0f,
+		800.0f,
 
 		//色
-		WHITE,
+		0xffff00ff,
 
 		//オブジェクトタイプ（可動or不可動）
 		ImMovable
@@ -122,10 +130,14 @@ void EnemyInitialize(GameObject* go) {
 		2.0f,
 
 		//画像
-		Novice::LoadTexture("./image./LeftHand_ver2.png"),
+		Novice::LoadTexture("./image./LeftHand_ver3.png"),
+
+		//画像の幅
+		800.0f,
+		800.0f,
 
 		//色
-		WHITE,
+		0xffff00ff,
 
 		//オブジェクトタイプ（可動or不可動）
 		ImMovable
@@ -172,6 +184,10 @@ void EnemyInitialize(GameObject* go) {
 		//画像
 		0,
 
+		//画像の幅
+		0.0f,
+		0.0f,
+
 		//色
 		WHITE,
 
@@ -208,6 +224,10 @@ void EnemyInitialize(GameObject* go) {
 
 			//画像
 			Novice::LoadTexture("./image./bullet.png"),
+
+			//画像の幅
+			32.0f,
+			32.0f,
 
 			//色
 			WHITE,
@@ -250,6 +270,10 @@ void EnemyInitialize(GameObject* go) {
 
 			//画像
 			Novice::LoadTexture("./image./bullet.png"),
+
+			//画像の幅
+			32.0f,
+			30.0f,
 
 			//色
 			WHITE,
@@ -335,7 +359,7 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 
 					Easing(
@@ -464,7 +488,7 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 
 			for (int i = 0; i < 2; ++i) {
 
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 					//攻撃判定を付ける
 					go->enemy.hand[i].IsAggression = true;
@@ -552,7 +576,7 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 
 					Easing(
@@ -652,7 +676,7 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 
 					Easing(
@@ -751,7 +775,7 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 					//攻撃判定を付ける
 					go->enemy.hand[i].IsAggression = true;
@@ -817,7 +841,7 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 
 					Easing(
@@ -966,7 +990,7 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 				for (int i = 0; i < 4; ++i) {
 
 					//右手
-					if (go->enemy.hand[Right].IsAlive) {
+					if (go->enemy.hand[Right].IsAlive && !go->enemy.hand[Right].IsDown) {
 						if (!go->enemy.RightBullet[i].IsShot && !go->enemy.RightBullet[i].IsHeld && !go->enemy.RightBullet[i].IsShot_p) {
 
 							//座標を設定
@@ -990,7 +1014,7 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 
 				//左手
 
-				if (go->enemy.hand[Left].IsAlive) {
+				if (go->enemy.hand[Left].IsAlive && !go->enemy.hand[Left].IsDown) {
 
 					for (int i = 0; i < 4; ++i) {
 
@@ -1097,6 +1121,41 @@ void BulletMove(GameObject *go,int VectorUpdateFlame){
 	//if(go->enemy.DaiPanInfo.CurrentFrame > 0 && go->enemy.DaiPanInfo.CurrentFrame < OccurrenceFrame)
 	//go->enemy.WorldPos.x = (go->enemy.hand[Right].WorldPos.x + go->enemy.hand[Left].WorldPos.x) / 2.0f;
 	//go->enemy.WorldPos.y = (go->enemy.hand[Right].WorldPos.y + go->enemy.hand[Left].WorldPos.y) / 2.0f + 80.0f;
+}
+
+
+//画像の角度を変更する関数
+void DegreeUpdate(GameObject* go) {
+
+	//ロケットパンチと弾打ちの時、プレイヤーの方をむけよこのやろう
+	if (go->enemy.MoveType == locketpunch || go->enemy.MoveType == bulletshot) {
+
+		//ベクトルの取得
+		for (int i = 0; i < 2; ++i) {
+
+			go->enemy.hand[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.hand[i].WorldPos);
+			go->enemy.hand[i].Vector.y = FindVectorY(go->player.WorldPos, go->enemy.hand[i].WorldPos);
+
+		}
+
+		for (int i = 0; i < 2; ++i) {
+
+			//角度を取得
+			go->enemy.hand[i].Theta = static_cast<float> (-atan2(
+				static_cast<double>(go->enemy.hand[i].Vector.x),
+				static_cast<double>(go->enemy.hand[i].Vector.y)
+			));
+
+			//角度変換
+			//DegreeToTheta(&go->enemy.hand[i]);
+
+		}
+	}
+	else {
+		for (int i = 0; i < 2; ++i) {
+			go->enemy.hand[i].Theta = 0.0f;
+		}
+	}
 }
 
 
@@ -1211,6 +1270,15 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 		SetFourVertexes(&go->enemy.LeftBullet[i]);
 		RenderingPipeline(&go->enemy.LeftBullet[i], cr);
 	}
+
+	//画像の描画範囲の変更
+	for (int i = 0; i < 2; ++i) {
+
+		go->enemy.hand[i].ImagePos.x = 800.0f * go->enemy.MoveType;
+	}
+
+	//回転処理
+	DegreeUpdate(go);
 }
 
 

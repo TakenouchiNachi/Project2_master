@@ -56,6 +56,9 @@ struct ObjectBaseInfo {
 	//画像の描画する座標
 	Vector2 ImagePos;
 
+	float ImageWidth;
+	float ImageHeight;
+
 	//アニメーションに用いる
 	float DrawWidth;
 	float DrawHeight;
@@ -126,7 +129,7 @@ struct RectangleObject : ObjectBaseInfo, FoursVertxes {
 		   メンバー関数
 	============================*/
 
-	void BaseInfoInitialize(float Ini_PosX, float Ini_PosY, float Ini_width, float Ini_height, float Ini_acceX, float Ini_acceY, float Ini_veloX, float Ini_veloY, float Ini_vecX, float Ini_vecY, float Ini_speed, int Ini_image, int Ini_color,int ObjType) {
+	void BaseInfoInitialize(float Ini_PosX, float Ini_PosY, float Ini_width, float Ini_height, float Ini_acceX, float Ini_acceY, float Ini_veloX, float Ini_veloY, float Ini_vecX, float Ini_vecY, float Ini_speed, int Ini_image, float Ini_ImageWidth,float Ini_ImageHeight,int Ini_color,int ObjType) {
 
 		//座標
 		WorldPos.x = static_cast<float>(Ini_PosX);
@@ -157,6 +160,9 @@ struct RectangleObject : ObjectBaseInfo, FoursVertxes {
 
 		//描画関係
 		ImagePos = {};
+		ImageWidth = Ini_ImageWidth;
+		ImageHeight = Ini_ImageHeight;
+
 
 		DrawWidth = static_cast<float>(Ini_width);
 		DrawHeight = static_cast<float>(Ini_height);
@@ -195,8 +201,8 @@ struct RectangleObject : ObjectBaseInfo, FoursVertxes {
 			static_cast<int>(ImagePos.y),
 
 			//横幅、縦幅
-			static_cast<int>(Width),
-			static_cast<int>(Height),
+			static_cast<int>(ImageWidth),
+			static_cast<int>(ImageHeight),
 
 			//テクスチャハンドル
 			Image,
@@ -236,6 +242,9 @@ const int RemainingLifeNum = 3;
 
 struct Player :RectangleObject {
 
+	//ダメージを受けたか
+	int GetDamage;
+
 	//フリッカーを発射可能状態か
 	int CanShotFlickr;
 
@@ -254,11 +263,11 @@ struct Player :RectangleObject {
 
 	//プレイ中のライフ
 	int HP;
-	RectangleObject HPGH[HPNum];
+	RectangleObject HPGH;
 
 	//残機
 	int RemainingLife;
-	RectangleObject RemainingLifeGH[RemainingLifeNum];
+	RectangleObject RemainingLifeGH;
 
 	Flickr flickr;
 };

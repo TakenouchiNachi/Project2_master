@@ -60,6 +60,11 @@ void ParticleInitialize(PARTICLE* particle) {
 			//画像
 			Novice::LoadTexture("./image./TD1-2_particle.png"),
 
+			//画像の幅
+			16.0f,
+			16.0f,
+
+
 			//色
 			0xFF00FFDD,
 
@@ -92,6 +97,10 @@ void ParticleInitialize(PARTICLE* particle) {
 
 			//画像
 			Novice::LoadTexture("./image./TD1-2_particle.png"),
+
+			//画像の幅
+			16.0f,
+			16.0f,
 
 			//色
 			0xFF00FFDD,
@@ -129,6 +138,10 @@ void ParticleInitialize(PARTICLE* particle) {
 			//画像
 			Novice::LoadTexture("./image./TD1-2_particle.png"),
 
+			//画像の幅
+			16.0f,
+			16.0f,
+
 			//色
 			WHITE,
 
@@ -165,6 +178,10 @@ void ParticleInitialize(PARTICLE* particle) {
 			//画像
 			Novice::LoadTexture("./image./particle.jpg"),
 
+			//画像の幅
+			80.0f,
+			80.0f,
+
 			//色
 			0x770077FF,
 
@@ -200,6 +217,10 @@ void ParticleInitialize(PARTICLE* particle) {
 		//画像
 		Novice::LoadTexture("./image./Hit.png"),
 
+		//画像の幅
+		1280.0f,
+		720.0f,
+
 		//色
 		0x770077FF,
 
@@ -233,6 +254,10 @@ void ParticleInitialize(PARTICLE* particle) {
 
 			//画像
 			Novice::LoadTexture("./image./bar.png"),
+
+			//画像の幅
+			640.0f,
+			192.0f,
 
 			//色
 			0xFFFFFFFF,
@@ -407,7 +432,7 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 			particle->particleMoya[i].life = 15 + i % 30;
 			particle->particleMoya[i].Acceleration = {};
 			particle->particleMoya[i].Velocity = {};
-			particle->particleMoya[i].Color = 0x020002FF;
+			particle->particleMoya[i].Color = 0x020012FF;
 			particle->particleMoya[i].Scale = { 1.5f,1.5f };
 		}
 		else if (particle->particleMoya[i].life >= 0) {
@@ -426,16 +451,18 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 	}
 
 	//ヒットの見た目
-	if (key->keys[DIK_Y]) {
+	if (go->player.GetDamage) {
 		particle->particleHit.life = 51;
 		particle->particleHit.Color = 0xFF0000FF;
 	}
+
 	if (particle->particleHit.life > 0) {
 		particle->particleHit.life -= 1;
 		particle->particleHit.Color -= 0x05000005;
 	}
 	else if (particle->particleHit.life <= 0) {
 		particle->particleHit.Color = 0xFF000000;
+		go->player.GetDamage = false;
 	}
 	/*SetFourVertexes(&particle->particleHit);
 	RenderingPipeline(&particle->particleHit, cr);*/
