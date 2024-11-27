@@ -61,7 +61,7 @@ void EnemyInitialize(GameObject* go) {
 	go->enemy.BulletShotCurrentFrame = 0;
 	go->enemy.IsAlive = true;
 	go->enemy.ShotCount = 0;
-	go->enemy.ShotNumLimit = 0;
+	go->enemy.ShotNumLimit = 2;
 
 	go->enemy.LapNum = 0;
 
@@ -987,7 +987,7 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 
 			if (go->enemy.ShotIntervalTime <= 0) {
 
-				for (int i = 0; i < 4; ++i) {
+				for (int i = 0; i < EnemyBulletNum; ++i) {
 
 					//右手
 					if (go->enemy.hand[Right].IsAlive && !go->enemy.hand[Right].IsDown) {
@@ -1016,7 +1016,7 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 
 				if (go->enemy.hand[Left].IsAlive && !go->enemy.hand[Left].IsDown) {
 
-					for (int i = 0; i < 4; ++i) {
+					for (int i = 0; i < EnemyBulletNum; ++i) {
 
 						if (!go->enemy.LeftBullet[i].IsShot && !go->enemy.RightBullet[i].IsHeld && !go->enemy.LeftBullet[i].IsShot_p) {
 
@@ -1062,7 +1062,7 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 void BulletMove(GameObject *go,int VectorUpdateFlame){
 
 	//弾の挙動
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < EnemyBulletNum; ++i) {
 
 
 		//右
@@ -1200,10 +1200,10 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 	}
 
 	//弾の上限数の更新
-	if (go->enemy.LapNum == 1) {
+	if (go->enemy.LapNum == 0) {
 		go->enemy.ShotNumLimit = 2;
 	}
-	else if (go->enemy.LapNum == 2) {
+	else if (go->enemy.LapNum == 1) {
 		go->enemy.ShotNumLimit = 4;
 	}
 
@@ -1260,7 +1260,7 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 		Daipan(go, DaiPanWholeFrame, 150.0f, 200.0f, 5.0f);
 	}
 	else if (go->enemy.MoveType == locketpunch) {
-		LocketPunch(go, LocketPunchWholeFrame, 90.0f, 200.0f, 5.0f);
+		LocketPunch(go, LocketPunchWholeFrame, 90.0f, 180.0f, 5.0f);
 	}
 	else if (go->enemy.MoveType == bulletshot) {
 		BulletShot(go, BulletShotWholeFrame, 90.0f, 100.0f, { WorldWidth / 2.0f ,WorldHeight / 2.0 });
@@ -1284,7 +1284,7 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 		SetFourVertexes(&go->enemy.RightBullet[i]);
 		RenderingPipeline(&go->enemy.RightBullet[i], cr);
 
-		SetFourVertexes(&go->enemy.LeftBullet[i]);
+		SetFourVertexes(&go->enemy.LeftBullet[i] );
 		RenderingPipeline(&go->enemy.LeftBullet[i], cr);
 	}
 
@@ -1319,7 +1319,7 @@ void EnemyDraw(GameObject* go) {
 		}
 	}
 
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < EnemyBulletNum; ++i) {
 
 		if (go->enemy.RightBullet[i].IsShot || go->enemy.RightBullet[i].IsAttracted || go->enemy.RightBullet[i].IsHeld || go->enemy.RightBullet[i].IsShot_p) {
 			go->enemy.RightBullet[i].RectObjDraw();

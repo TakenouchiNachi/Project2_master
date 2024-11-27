@@ -335,8 +335,8 @@ struct Enemy : RectangleObject {
 	Hand hand[2];
 
 	//弾の構造体
-	Bullet RightBullet[4];
-	Bullet LeftBullet[4];
+	Bullet RightBullet[8];
+	Bullet LeftBullet[8];
 
 	//発射間隔
 	int ShotIntervalTime;
@@ -754,3 +754,11 @@ inline int isTitle = 1;
 inline int doreTitle = 0;
 
 inline int clearColor = 0x00000000;
+
+struct Explain : RectangleObject {
+};
+
+struct AllExplain {
+	Explain J;
+	Explain explain;
+};

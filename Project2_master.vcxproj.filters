@@ -24,6 +24,7 @@
     <ClCompile Include="system.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="colorname.cpp" />
+    <ClCompile Include="Explain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="afterimage.h" />
@@ -71,6 +72,7 @@
     <ClInclude Include="system.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="colorname.h" />
+    <ClInclude Include="Explain.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
