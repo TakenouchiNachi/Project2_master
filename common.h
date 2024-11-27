@@ -39,6 +39,9 @@ float NormalizeY(float vecx, float vecy);
 //矩形の当たり判定をとる関数(引数に対象の２つのオブジェクトを指定,trueなら1を返す falseなら0を返す)
 int RectangleObjectCollision(RectangleObject* obj1, RectangleObject* obj2);
 
+//角度変換関数
+void DegreeToTheta(RectangleObject* obj);
+
 //2物体の距離を測る関数
 float Distance(Vector2 obj1, Vector2 obj2);
 

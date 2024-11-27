@@ -17,6 +17,12 @@ void Col_Player_Hands(GameObject* go) {
 
             if (RectangleObjectCollision(&go->player, &go->enemy.hand[Right]) == 1) {
 
+                //ダメ―ジフラグを立てる
+                if (!go->player.GetDamage) {
+
+                    go->player.GetDamage = true;
+                }
+
                 //プレイヤーのLifeを減らす
                 go->player.HP--;
             }
@@ -30,6 +36,12 @@ void Col_Player_Hands(GameObject* go) {
         if (go->enemy.hand[Left].IsAggression) {
 
             if (RectangleObjectCollision(&go->player, &go->enemy.hand[Left]) == 1) {
+
+                //ダメ―ジフラグを立てる
+                if (!go->player.GetDamage) {
+
+                    go->player.GetDamage = true;
+                }
 
                 //プレイヤーのLifeを減らす
                 go->player.HP--;
@@ -55,6 +67,13 @@ void Col_Player_Bullet(GameObject* go) {
                     go->enemy.RightBullet[i].IsAggression = false;
                     go->enemy.RightBullet[i].IsShot = false;
 
+                    //ダメ―ジフラグを立てる
+                    if (!go->player.GetDamage) {
+
+                        go->player.GetDamage = true;
+
+                    }
+
                     //プレイヤーのLifeを減らす
                     go->player.HP--;
                 }
@@ -75,6 +94,12 @@ void Col_Player_Bullet(GameObject* go) {
                     //弾のフラグを折る
                     go->enemy.LeftBullet[i].IsAggression = false;
                     go->enemy.LeftBullet[i].IsShot = false;
+
+                    if (!go->player.GetDamage) {
+
+                        //ダメ―ジフラグを立てる
+                        go->player.GetDamage = true;
+                    }
 
                     //プレイヤーのLifeを減らす
                     go->player.HP--;
@@ -150,8 +175,8 @@ void Col_PlayerThrowObj_Hand(GameObject* go) {
         if (!go->enemy.LeftBullet[i].IsAggression && go->enemy.LeftBullet[i].IsShot_p) {
 
             //当たったらダウン状態にさせる
-            if (RectangleObjectCollision(&go->enemy.hand[Right], &go->enemy.LeftBullet[i])) {
-                go->enemy.hand[Right].IsDown = true;
+            if (RectangleObjectCollision(&go->enemy.hand[Left], &go->enemy.LeftBullet[i])) {
+                go->enemy.hand[Left].IsDown = true;
 
                 //フラグを折る
                 go->enemy.LeftBullet[i].IsShot_p = false;

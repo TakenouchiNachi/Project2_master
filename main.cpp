@@ -161,6 +161,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				p_scene->state = 2;
 			}*/
 
+
+
 			///
 			/// ↓描画処理ここから
 			///
@@ -187,7 +189,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			///
 
 
-      AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
+		  //AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
 
 
 			StageDraw(p_gameobject);
@@ -203,14 +205,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			
 
-
-
-			MovableObjectDraw(p_gameobject);
-
-
 			if (p_particle->particleHit.life > 0) {
 				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
 			}
+
+			PlayerHudDraw(p_gameobject);
 
 			MaskDraw(p_scene);
 

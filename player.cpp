@@ -40,29 +40,33 @@ void PlayerInitialize(GameObject* go) {
 		//画像
 		Novice::LoadTexture("./image./player_ver5.png"),
 
+		//画像の幅
+		32.0f,
+		32.0f,
+
 		//色
-		0x2288ffff,
+		0xf8f8f8ff,
 
 		//オブジェクトタイプ（可動or不可動）
 		Else
 	);
 
 	//プレイヤー関連のフラグの初期化
+	go->player.GetDamage = false;
 	go->player.CanShotFlickr = true;
 	go->player.IsAggression = false;
 	go->player.IsHoldObject = false;
 	go->player.IsAlive = true;
-	go->player.HP = 3;
+	go->player.HP = 5;
 
-	for (int i = 0; i < HPNum; ++i) {
-		go->player.HPGH[i].BaseInfoInitialize(
+		go->player.HPGH.BaseInfoInitialize(
 			//初期座標(x,y)
-			640.0f,
+			0.0f,
 			360.0f,
 
 			//横幅、縦幅
-			32.0f,
-			32.0f,
+			30.0f,
+			30.0f,
 
 			//加速度(x,y)
 			0.0f,
@@ -80,7 +84,11 @@ void PlayerInitialize(GameObject* go) {
 			2.0f,
 
 			//画像
-			Novice::LoadTexture("./image./Life.png"),
+			Novice::LoadTexture("./image./Number.png"),
+
+			//画像の幅
+			300.0f,
+			300.0f,
 
 			//色
 			WHITE,
@@ -88,18 +96,16 @@ void PlayerInitialize(GameObject* go) {
 			//オブジェクトタイプ（可動or不可動）
 			Else
 		);
-	}
 
 
-	for (int i = 0; i < RemainingLifeNum; ++i) {
-		go->player.RemainingLifeGH[i].BaseInfoInitialize(
+		go->player.RemainingLifeGH.BaseInfoInitialize(
 			//初期座標(x,y)
 			640.0f,
 			360.0f,
 
 			//横幅、縦幅
-			32.0f,
-			32.0f,
+			50.0f,
+			30.0f,
 
 			//加速度(x,y)
 			0.0f,
@@ -117,7 +123,11 @@ void PlayerInitialize(GameObject* go) {
 			2.0f,
 
 			//画像
-			1,
+			Novice::LoadTexture("./image./LifeLimit.png"),
+
+			//画像の幅
+			500.0f,
+			300.0f,
 
 			//色
 			WHITE,
@@ -125,7 +135,6 @@ void PlayerInitialize(GameObject* go) {
 			//オブジェクトタイプ（可動or不可動）
 			Else
 		);
-	}
 
 	/*========================================
 			  フリッカーの初期化
@@ -156,6 +165,10 @@ void PlayerInitialize(GameObject* go) {
 
 		//画像
 		Novice::LoadTexture("./image./flickr.png"),
+
+		//画像の幅
+		0.0f,
+		0.0f,
 
 		//色
 		WHITE,
@@ -821,11 +834,11 @@ void PlayerUpdate(GameObject* go,CameraRelated* cr, Key* key) {
 //プレイヤーのHUD関連の更新処理
 void PlayerHudUpdate(GameObject* go) {
 
-	for (int i = 0; i < HPNum; ++i) {
+	//描画範囲の変更
+	go->player.HPGH.ImagePos.x = 300.0f * (go->player.HP - 1);
 
-		//HUDはスクリーン座標で処理
-		go->player.HPGH[i].ScreenPos = go->player.HPGH[i].WorldPos;
-	}
+	//四つ角
+	SetFourVertexes(&go->player.HPGH);
 }
 
 
@@ -837,9 +850,7 @@ void PlayerDraw(GameObject* go) {
 
 //プレイヤーのHUD描画関数
 void PlayerHudDraw(GameObject* go) {
-
-	go->player.Color;
-
+	go;
 
 }
 
