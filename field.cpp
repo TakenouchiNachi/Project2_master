@@ -206,6 +206,44 @@ void ParticleInitialize(PARTICLE* particle) {
 		//オブジェクトタイプ（可動or不可動）
 		ImMovable
 	);
+	for (int i = 0;i < 2;i++) {
+		particle->bar[i].BaseInfoInitialize(
+			//初期座標(x,y)
+			0.0f,
+			0.0f,
+
+			//横幅、縦幅
+			320.0f,
+			192.0f,
+
+			//加速度(x,y)
+			0.0f,
+			0.0f,
+
+			//速度(x,y)
+			0.0f,
+			0.0f,
+
+			//ベクトル(x,y)
+			0.0f,
+			0.0f,
+
+			//スピード
+			2.0f,
+
+			//画像
+			Novice::LoadTexture("./image./bar.png"),
+
+			//色
+			0xFFFFFFFF,
+
+			//オブジェクトタイプ（可動or不可動）
+			ImMovable
+		);
+		particle->bar[i].ImagePos = { i * 320.0f,0 };
+		particle->bar[0].WorldPos = { 192 + 160, 464 + 96 };
+		particle->bar[1].WorldPos = { 767 + 160, 464 + 96 };
+	}
 }
 
 void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *key) {
