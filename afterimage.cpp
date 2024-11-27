@@ -213,6 +213,7 @@ void AfterimageUpDate(AFTERIMAGE* Af,PARTICLE* p, CameraRelated* cr, GameObject 
 	
 }
 
+
 void AfterimageDraw(AFTERIMAGE* Af, PARTICLE* p, GameObject *go) {
 	p->particleFlicker;
 	Novice::SetBlendMode(BlendMode::kBlendModeAdd);
@@ -226,10 +227,14 @@ void AfterimageDraw(AFTERIMAGE* Af, PARTICLE* p, GameObject *go) {
 		Af->bossBA[k].RectObjDraw();
 
 		//ボス R
-		Af->bossBAR[k].RectObjDraw();
+		if (go->enemy.hand[Right].IsAlive) {
+			Af->bossBAR[k].RectObjDraw();
+		}
 
 		//ボス L
-		Af->bossBAL[k].RectObjDraw();
+		if (go->enemy.hand[Left].IsAlive) {
+			Af->bossBAL[k].RectObjDraw();
+		}
 	}
 	Novice::SetBlendMode(BlendMode::kBlendModeNormal);
 }

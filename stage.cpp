@@ -166,9 +166,10 @@ void MovableObjectUpdate(GameObject* go,CameraRelated* cr,Key* key) {
 	RenderingPipeline(&go->movableobject, cr);
 
 	//保持している時の処理
-	MovableObjectHold(go);
+	//MovableObjectHold(go);
 
-	MovableObjectShot(go, key);
+	//MovableObjectShot(go, key);
+	key;
 }
 
 //描画関数

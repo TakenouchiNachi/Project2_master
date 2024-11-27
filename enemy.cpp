@@ -133,10 +133,14 @@ void EnemyInitialize(GameObject* go) {
 
 	for (int i = 0; i < 2; ++i) {
 		go->enemy.hand[i].EasingStartPos = {};
+		go->enemy.hand[i].IsDown = false;
+
+		go->enemy.hand[i].DownTime = HandDownTime;
 	}
 
 	go->enemy.hand[Right].IsAlive = true;
 	go->enemy.hand[Left].IsAlive = true;
+	
 
 	//各攻撃の初期化
 	
@@ -213,7 +217,10 @@ void EnemyInitialize(GameObject* go) {
 		);
 		
 		go->enemy.RightBullet[i].IsShot = false;
+		go->enemy.RightBullet[i].IsShot_p = false;
 		go->enemy.RightBullet[i].IsAggression = true;
+		go->enemy.RightBullet[i].IsAttracted = false;
+		go->enemy.RightBullet[i].IsHeld = false;
 	}
 
 	for (int i = 0; i < EnemyBulletNum; ++i) {
@@ -252,7 +259,10 @@ void EnemyInitialize(GameObject* go) {
 		);
 
 		go->enemy.LeftBullet[i].IsShot = false;
+		go->enemy.LeftBullet[i].IsShot_p = false;
 		go->enemy.LeftBullet[i].IsAggression = true;
+		go->enemy.LeftBullet[i].IsAttracted = false;
+		go->enemy.LeftBullet[i].IsHeld = false;
 	}
 
 	//発射間隔
@@ -410,10 +420,18 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 			EasingInitialize(&go->enemy.hand[i].t, &go->enemy.hand[i].NowFrame, &go->enemy.hand[i].EasingStartPos, &go->enemy.hand[i].WorldPos);
 		}
 	}
-	else if (go->enemy.DaiPanInfo.CurrentFrame >= OccurrenceFrame && go->enemy.DaiPanInfo.CurrentFrame < OccurrenceFrame + 30.0f) {
-		
+
+
+	if (go->enemy.DaiPanInfo.CurrentFrame >= OccurrenceFrame && go->enemy.DaiPanInfo.CurrentFrame < OccurrenceFrame + 30.0f) {
+
 		if (go->enemy.Condition == BothHands) {
+
 			for (int i = 0; i < 2; ++i) {
+
+				//攻撃判定を付ける
+				go->enemy.hand[i].IsAggression = true;
+
+				//モーション
 				Easing(
 					&go->enemy.hand[i].WorldPos,
 
@@ -445,8 +463,13 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
+
 				if (go->enemy.hand[i].IsAlive) {
 
+					//攻撃判定を付ける
+					go->enemy.hand[i].IsAggression = true;
+
+					//モーション
 					Easing(
 						&go->enemy.hand[i].WorldPos,
 
@@ -475,6 +498,12 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 					);
 				}
 			}
+		}
+	}
+	else {
+		//攻撃判定をとる
+		for (int i = 0; i < 2; ++i) {
+			go->enemy.hand[i].IsAggression = false;
 		}
 	}
 
@@ -711,21 +740,36 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 		if (go->enemy.Condition == BothHands) {
 			for (int i = 0; i < 2; ++i) {
 
+				//攻撃判定を付ける
+				go->enemy.hand[i].IsAggression = true;
+
 				//移動処理
-				go->enemy.hand[i].WorldPos.x += NormalizeX(go->enemy.hand[i].Vector.x, go->enemy.hand[i].Vector.y) * 16;
-				go->enemy.hand[i].WorldPos.y += NormalizeY(go->enemy.hand[i].Vector.y, go->enemy.hand[i].Vector.y) * 16;
+				go->enemy.hand[i].WorldPos.x += NormalizeX(go->enemy.hand[i].Vector.x, go->enemy.hand[i].Vector.y) * 20;
+				go->enemy.hand[i].WorldPos.y += NormalizeY(go->enemy.hand[i].Vector.y, go->enemy.hand[i].Vector.y) * 20;
 			}
 		}
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
 				if (go->enemy.hand[i].IsAlive) {
+
+					//攻撃判定を付ける
+					go->enemy.hand[i].IsAggression = true;
+
 					//移動処理
-					go->enemy.hand[i].WorldPos.x += NormalizeX(go->enemy.hand[i].Vector.x, go->enemy.hand[i].Vector.y) * 16;
-					go->enemy.hand[i].WorldPos.y += NormalizeY(go->enemy.hand[i].Vector.y, go->enemy.hand[i].Vector.y) * 16;
+					go->enemy.hand[i].WorldPos.x += NormalizeX(go->enemy.hand[i].Vector.x, go->enemy.hand[i].Vector.y) * 20;
+					go->enemy.hand[i].WorldPos.y += NormalizeY(go->enemy.hand[i].Vector.y, go->enemy.hand[i].Vector.y) * 20;
 
 				}
 			}
+		}
+	}
+	else {
+		for (int i = 0; i < 2; ++i) {
+
+			//攻撃判定をとる
+			go->enemy.hand[i].IsAggression = false;
+
 		}
 	}
 
@@ -923,10 +967,13 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 
 					//右手
 					if (go->enemy.hand[Right].IsAlive) {
-						if (!go->enemy.RightBullet[i].IsShot) {
+						if (!go->enemy.RightBullet[i].IsShot && !go->enemy.RightBullet[i].IsHeld && !go->enemy.RightBullet[i].IsShot_p) {
 
 							//座標を設定
 							go->enemy.RightBullet[i].WorldPos = go->enemy.hand[Right].WorldPos;
+
+							//プレイヤーが発射した状態をリセットする
+							go->enemy.RightBullet[i].IsShot_p = false;
 
 							//ベクトルを求める
 							FindVectorX(go->player.WorldPos, go->enemy.RightBullet[i].WorldPos);
@@ -940,16 +987,20 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 					}
 				}
 
-				for (int i = 0; i < 4; ++i) {
 
-					//左手
+				//左手
 
-					if (go->enemy.hand[Left].IsAlive) {
+				if (go->enemy.hand[Left].IsAlive) {
 
-						if (!go->enemy.LeftBullet[i].IsShot) {
+					for (int i = 0; i < 4; ++i) {
+
+						if (!go->enemy.LeftBullet[i].IsShot && !go->enemy.RightBullet[i].IsHeld && !go->enemy.LeftBullet[i].IsShot_p) {
 
 							//座標を設定
 							go->enemy.LeftBullet[i].WorldPos = go->enemy.hand[Left].WorldPos;
+
+							//プレイヤーが発射した状態をリセットする
+							go->enemy.LeftBullet[i].IsShot_p = false;
 
 							//ベクトルを求める
 							go->enemy.LeftBullet[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.LeftBullet[i].WorldPos);
@@ -961,8 +1012,9 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 							break;
 						}
 					}
-
 				}
+
+				
 				go->enemy.ShotIntervalTime = 45;
 				go->enemy.ShotCount++;
 			}
@@ -973,6 +1025,7 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 	if (go->enemy.BulletShotCurrentFrame == WholeFrame) {
 		go->enemy.MoveType = None;
 		go->enemy.BulletShotCurrentFrame = 0;
+		go->enemy.ShotCount = 0;
 
 		for (int i = 0; i < EnemyBulletNum; ++i) {
 			go->enemy.RightBullet[i].IsShot = false;
@@ -987,48 +1040,57 @@ void BulletMove(GameObject *go,int VectorUpdateFlame){
 	//弾の挙動
 	for (int i = 0; i < 4; ++i) {
 
+
 		//右
-		if (go->enemy.RightBullet[i].IsShot) {
-			
-			//ベクトルの更新
-			if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
-				go->enemy.RightBullet[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.RightBullet[i].WorldPos);
+
+		//引き付けられていないとき
+		if (!go->enemy.RightBullet[i].IsAttracted) {
+
+			if (go->enemy.RightBullet[i].IsShot) {
+
+				//ベクトルの更新
+				if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
+					go->enemy.RightBullet[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.RightBullet[i].WorldPos);
+				}
+
+				if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
+					go->enemy.RightBullet[i].Vector.y = FindVectorY(go->player.WorldPos, go->enemy.RightBullet[i].WorldPos);
+
+				}
+
+
+				//弾を動かす
+				go->enemy.RightBullet[i].WorldPos.x += NormalizeX(go->enemy.RightBullet[i].Vector.x, go->enemy.RightBullet[i].Vector.y) * go->enemy.RightBullet[i].Speed;
+				go->enemy.RightBullet[i].WorldPos.y += NormalizeY(go->enemy.RightBullet[i].Vector.x, go->enemy.RightBullet[i].Vector.y) * go->enemy.RightBullet[i].Speed;
+
 			}
-
-			if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
-				go->enemy.RightBullet[i].Vector.y = FindVectorY(go->player.WorldPos, go->enemy.RightBullet[i].WorldPos);
-
-			}
-			
-
-			//弾を動かす
-			go->enemy.RightBullet[i].WorldPos.x += NormalizeX(go->enemy.RightBullet[i].Vector.x, go->enemy.RightBullet[i].Vector.y) * go->enemy.RightBullet[i].Speed;
-			go->enemy.RightBullet[i].WorldPos.y += NormalizeY(go->enemy.RightBullet[i].Vector.x, go->enemy.RightBullet[i].Vector.y) * go->enemy.RightBullet[i].Speed;
-
 		}
 
-	
 
-		//右
-		if (go->enemy.LeftBullet[i].IsShot) {
+		//左
 
-			//ベクトルの更新
-			if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
-				go->enemy.LeftBullet[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.LeftBullet[i].WorldPos);
+		//引き付けられていないとき
+		if (!go->enemy.LeftBullet[i].IsAttracted) {
+
+			if (go->enemy.LeftBullet[i].IsShot) {
+
+				//ベクトルの更新
+				if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
+					go->enemy.LeftBullet[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.LeftBullet[i].WorldPos);
+				}
+
+				if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
+					go->enemy.LeftBullet[i].Vector.y = FindVectorY(go->player.WorldPos, go->enemy.LeftBullet[i].WorldPos);
+
+				}
+
+
+				//弾を動かす
+				go->enemy.LeftBullet[i].WorldPos.x += NormalizeX(go->enemy.LeftBullet[i].Vector.x, go->enemy.LeftBullet[i].Vector.y) * go->enemy.LeftBullet[i].Speed;
+				go->enemy.LeftBullet[i].WorldPos.y += NormalizeY(go->enemy.LeftBullet[i].Vector.x, go->enemy.LeftBullet[i].Vector.y) * go->enemy.LeftBullet[i].Speed;
 			}
-
-			if (go->enemy.FlameCount % (VectorUpdateFlame) == 0) {
-				go->enemy.LeftBullet[i].Vector.y = FindVectorY(go->player.WorldPos, go->enemy.LeftBullet[i].WorldPos);
-
-			}
-
-
-			//弾を動かす
-			go->enemy.LeftBullet[i].WorldPos.x += NormalizeX(go->enemy.LeftBullet[i].Vector.x, go->enemy.LeftBullet[i].Vector.y) * go->enemy.LeftBullet[i].Speed;
-			go->enemy.LeftBullet[i].WorldPos.y += NormalizeY(go->enemy.LeftBullet[i].Vector.x, go->enemy.LeftBullet[i].Vector.y) * go->enemy.LeftBullet[i].Speed;
 		}
 	}
-
 
 
 	//頭の動き
@@ -1069,19 +1131,50 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 		go->enemy.ShotNumLimit = 4;
 	}
 
-	//状態判別
+	//状態判別（IsAlive）
 	if (go->enemy.hand[Right].IsAlive && go->enemy.hand[Left].IsAlive) {
 
-		go->enemy.Condition = BothHands;
+			go->enemy.Condition = BothHands;
 	}
 	else if (go->enemy.hand[Right].IsAlive || go->enemy.hand[Left].IsAlive) {
 		
-		go->enemy.Condition = OneHand;
+			go->enemy.Condition = OneHand;
 	}
 	else {
 
 		go->enemy.Condition = HeadOnly;
 	}
+
+	//状態判別(IsDown)
+	if (go->enemy.Condition == BothHands) {
+
+		//どちらかがダウン状態なら状態を「OneHand」にする
+		if (go->enemy.hand[Right].IsDown || go->enemy.hand[Left].IsDown) {
+			go->enemy.Condition = OneHand;
+		}
+	}
+
+
+	//ダウン状態からの回復
+	for (int i = 0; i < 2; ++i) {
+
+		if (go->enemy.hand[i].IsDown) {
+
+			//ダウン時間を減らす
+			go->enemy.hand[i].DownTime--;
+
+			//時間が０以下になったらダウン状態から回復
+			if (go->enemy.hand[i].DownTime <= 0) {
+				
+				//ダウンタイムの初期化
+				go->enemy.hand[i].DownTime = HandDownTime;
+
+				//ダウン状態から復帰
+				go->enemy.hand[i].IsDown = false;
+			}
+		}
+	}
+
 
 	//行動パターンの決定関数
 	if (go->enemy.MoveType == None) {
@@ -1109,7 +1202,6 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 	}
 
 	//弾
-
 	BulletMove(go, 15);
 
 	for (int i = 0; i < EnemyBulletNum; ++i) {
@@ -1125,17 +1217,21 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 //描画関数
 void EnemyDraw(GameObject* go) {
 	go->enemy.RectObjDraw();
-	for (int i = 0; i < 2; ++i) {
-		go->enemy.hand[i].RectObjDraw();
+	for (int i = 0; i < 2; i++) {
+
+		if (go->enemy.hand[i].IsAlive) {
+
+			go->enemy.hand[i].RectObjDraw();
+		}
 	}
 
 	for (int i = 0; i < 4; ++i) {
 
-		if (go->enemy.RightBullet[i].IsShot) {
+		if (go->enemy.RightBullet[i].IsShot || go->enemy.RightBullet[i].IsAttracted || go->enemy.RightBullet[i].IsHeld || go->enemy.RightBullet[i].IsShot_p) {
 			go->enemy.RightBullet[i].RectObjDraw();
 		}
 
-		if (go->enemy.LeftBullet[i].IsShot) {
+		if (go->enemy.LeftBullet[i].IsShot || go->enemy.LeftBullet[i].IsAttracted || go->enemy.LeftBullet[i].IsHeld || go->enemy.LeftBullet[i].IsShot_p) {
 			go->enemy.LeftBullet[i].RectObjDraw();
 		}
 	}
@@ -1144,5 +1240,21 @@ void EnemyDraw(GameObject* go) {
 
 //デバッグ表示関数
 void EnemyDebugPrintf(GameObject* go) {
-	Novice::ScreenPrintf(850, 0, "posX : %f", go->enemy.hand[0].EasingStartPos.x);
+
+	Novice::ScreenPrintf(0, 0, "IsShot : %d", go->enemy.LeftBullet[0].IsShot);
+	Novice::ScreenPrintf(0, 20, "IsAttracted : %d", go->enemy.LeftBullet[0].IsAttracted);
+	Novice::ScreenPrintf(0, 40, "IsHeld : %d", go->enemy.LeftBullet[0].IsHeld);
+	Novice::ScreenPrintf(0, 60, "IsShot_p : %d", go->enemy.LeftBullet[0].IsShot_p);
+
+	Novice::ScreenPrintf(0, 100, "RIsAlive : %d", go->enemy.hand[Right].IsAlive);
+	Novice::ScreenPrintf(0, 120, "RIsDown : %d", go->enemy.hand[Right].IsDown);
+
+	Novice::ScreenPrintf(0, 150, "LIsAlive : %d", go->enemy.hand[1].IsAlive);
+	Novice::ScreenPrintf(0, 170, "LIsDown : %d", go->enemy.hand[1].IsDown);
+
+	Novice::ScreenPrintf(0, 200, "IsAggression : %d", go->player.IsAggression);
+
+	Novice::ScreenPrintf(0, 220, "Condition : %d", go->enemy.Condition);
+
+	Novice::ScreenPrintf(0, 240, "MoveType : %d", go->enemy.MoveType);
 }

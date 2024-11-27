@@ -111,7 +111,12 @@ struct FoursVertxes {
 
 //矩形のオブジェクトが持つ情報をまとめた構造体
 struct RectangleObject : ObjectBaseInfo, FoursVertxes {
+	
+	//プレイヤーが保持しているか
+	int IsHeld;
 
+	//フリッカーに引っ張られているかの変数
+	int IsAttracted;
 
 	//オブジェクトの種類を判別する変数
 	int ObjectType;
@@ -231,8 +236,21 @@ const int RemainingLifeNum = 3;
 
 struct Player :RectangleObject {
 
+	//フリッカーを発射可能状態か
+	int CanShotFlickr;
+
 	//可動オブジェクトを保持しているかのフラグ
 	int IsHoldObject;
+
+	//生存フラグ
+	int IsAlive;
+
+	//ワイヤー中の攻撃判定
+	int IsAggression;
+
+	//無敵時間と無敵フラグ
+	int IsInvicible;
+	int IncivicibleTime;
 
 	//プレイ中のライフ
 	int HP;
@@ -257,6 +275,10 @@ struct Hand :RectangleObject {
 	//攻撃判定を持っているか
 	int IsAggression;
 
+	//ダウン状態フラグとその時間
+	int DownTime;
+	int IsDown;
+
 	//イージング用の変数
 	float t;
 	Vector2 EasingStartPos;
@@ -270,6 +292,9 @@ struct Bullet :RectangleObject{
 
 	//攻撃判定を持つか
 	int IsAggression;
+
+	//プレイヤーに打たれたフラグ
+	int IsShot_p;
 };
 
 
@@ -290,6 +315,10 @@ struct RocketPunchstruct : RectangleObject {
 };
 
 struct Enemy : RectangleObject {
+
+	//生存フラグ
+	int IsAlive;
+
 	//一週目か二週目か判断する変数
 	int LapNum;
 
