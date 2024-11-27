@@ -139,10 +139,14 @@ void Col_Player_Enemy(GameObject* go) {
         //顔しか残っていないなら
         if (go->enemy.Condition == HeadOnly) {
 
-            //衝突判定をとる
-            if (RectangleObjectCollision(&go->player, &go->enemy) == 1) {
+            if (go->player.IsAggression){
 
-                go->enemy.IsAlive = false;
+                //衝突判定をとる
+                if (RectangleObjectCollision(&go->player, &go->enemy) == 1) {
+
+                    go->enemy.IsAlive = false;
+                }
+        
             }
         }
     }
