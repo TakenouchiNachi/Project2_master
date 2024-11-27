@@ -91,7 +91,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		switch (p_scene->state)
+		switch (scene.state)
 		{
 		case TITLE:
 
@@ -256,6 +256,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			//Novice::ScreenPrintf(20, 20, "Life :%d", gameobject.player.HP);
 			
+
+			Novice::ScreenPrintf(0, 300, "life : %d", particle.particleHit.life);
+
 			EnemyDebugPrintf(p_gameobject);
 
 			break;
@@ -282,7 +285,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					p_particle->bar[0].Width = 320;
 					p_particle->bar[0].Height = 192;
 					p_particle->bar[0].nowFrame = 0;
-					if (p_key->keys[DIK_SPACE]) {
+					if (p_key->keys[DIK_J]) {
 						p_scene->state = 0;
 						PlayerInitialize(p_gameobject);
 
@@ -306,7 +309,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					p_particle->bar[1].Width = 320;
 					p_particle->bar[1].Height = 192;
 					p_particle->bar[1].nowFrame = 0;
-					if (p_key->keys[DIK_SPACE]) {
+					if (p_key->keys[DIK_J]) {
 						p_scene->state = 1;
 						PlayerInitialize(p_gameobject);
 
@@ -379,7 +382,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					p_particle->bar[0].Width = 320;
 					p_particle->bar[0].Height = 192;
 					p_particle->bar[0].nowFrame = 0;
-					if (p_key->keys[DIK_SPACE]) {
+					if (p_key->keys[DIK_J]) {
 						p_scene->state = 0;
 						PlayerInitialize(p_gameobject);
 
@@ -403,7 +406,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					p_particle->bar[1].Width = 320;
 					p_particle->bar[1].Height = 192;
 					p_particle->bar[1].nowFrame = 0;
-					if (p_key->keys[DIK_SPACE]) {
+					if (p_key->keys[DIK_J]) {
 						p_scene->state = 1;
 						PlayerInitialize(p_gameobject);
 
