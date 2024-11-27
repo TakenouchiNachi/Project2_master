@@ -515,11 +515,17 @@ struct Particle : RectangleObject{
 //プレイヤー周りのパーティクル
 const int pC = 10;
 
+//もやもやパーティクル
+const int pCC = 360;
+
 //パーティクルの処理をまとめるために合併したかった
 struct PARTICLE {
 	Particle particleFlicker[pF];
 	Particle particleFlickerT[pF];
 	Particle particleCharge[pC];
+
+	Particle particleMoya[pCC];
+	Particle particleHit;
 };
 
 //==================================
