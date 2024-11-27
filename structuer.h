@@ -245,6 +245,9 @@ struct Player :RectangleObject {
 	//生存フラグ
 	int IsAlive;
 
+	//ダメージを受けたフラグ
+	int GetDamage;
+
 	//ワイヤー中の攻撃判定
 	int IsAggression;
 
@@ -506,9 +509,10 @@ struct CameraRelated {
 	Viewport view;
 
 	Matrix3x3 camera;
-  
 
-  Vector2 CameraPos;
+	Vector2 CameraPos;
+
+	Vector2 CameraShakePos;
 
 	EaseCamera easeCamera;
 };

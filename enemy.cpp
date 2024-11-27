@@ -51,7 +51,7 @@ void EnemyInitialize(GameObject* go) {
 	);
 
 	go->enemy.Condition = BothHands;
-	go->enemy.MoveType = bulletshot;
+	go->enemy.MoveType = None;
 	go->enemy.DaiPanInfo.CurrentFrame = 0;
 	go->enemy.RocketPunchInfo.CurrentFrame = 0;
 	go->enemy.BulletShotCurrentFrame = 0;
@@ -335,7 +335,7 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 
 					Easing(
@@ -464,7 +464,7 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 
 			for (int i = 0; i < 2; ++i) {
 
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 					//攻撃判定を付ける
 					go->enemy.hand[i].IsAggression = true;
@@ -552,7 +552,7 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 
 					Easing(
@@ -652,7 +652,8 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 
 					Easing(
@@ -751,7 +752,8 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 					//攻撃判定を付ける
 					go->enemy.hand[i].IsAggression = true;
@@ -817,7 +819,8 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 		else if (go->enemy.Condition == OneHand) {
 
 			for (int i = 0; i < 2; ++i) {
-				if (go->enemy.hand[i].IsAlive) {
+
+				if (go->enemy.hand[i].IsAlive && !go->enemy.hand[i].IsDown) {
 
 
 					Easing(
@@ -1113,15 +1116,33 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 	}
 
 	//周回数の更新
-	if (!go->enemy.hand[Right].IsAlive && !go->enemy.hand[Left].IsAlive) {
+	if (!go->enemy.IsAlive) {
+		
+		//周回数が0(1ラップ目)だったら顔を殺した後、五体満足で復活
+		if (go->enemy.LapNum == 0) {
 
-		if (go->enemy.LapNum < 2) {
-			go->enemy.LapNum++;
+			//手の復活処理
+			for (int i = 0; i < 2; ++i) {
+				go->enemy.hand[i].IsAlive = true;
+			}
 
-			go->enemy.hand[Right].IsAlive = true;
-			go->enemy.hand[Left].IsAlive = true;
+			//顔の復活処理
+			go->enemy.IsAlive = true;
+
+			//ラップ数をインクリメント
+			go->enemy.LapNum = 1;
 		}
 	}
+
+	//if (!go->enemy.hand[Right].IsAlive && !go->enemy.hand[Left].IsAlive) {
+
+	//	if (go->enemy.LapNum < 2) {
+	//		go->enemy.LapNum++;
+
+	//		go->enemy.hand[Right].IsAlive = true;
+	//		go->enemy.hand[Left].IsAlive = true;
+	//	}
+	//}
 
 	//弾の上限数の更新
 	if (go->enemy.LapNum == 1) {
@@ -1153,6 +1174,27 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 			go->enemy.Condition = OneHand;
 		}
 	}
+	//else if (go->enemy.Condition == OneHand) {
+
+	//	//右手が死んでいる時
+	//	if (!go->enemy.hand[Right].IsAlive) {
+
+	//		//左手がダウンしていたら
+	//		if (go->enemy.hand[Left].IsDown) {
+	// 
+	//			go->enemy.Condition = HeadOnly;
+	//		}
+	//	}
+
+	//	//左手が死んでいる時
+	//	else if (!go->enemy.hand[Left].IsAlive) {
+
+	//		//右手がダウンしていたら
+	//		if (go->enemy.hand[Right].IsDown) {
+	//			go->enemy.Condition = HeadOnly;
+	//		}
+	//	}
+	//}
 
 
 	//ダウン状態からの回復
@@ -1240,6 +1282,7 @@ void EnemyDraw(GameObject* go) {
 
 //デバッグ表示関数
 void EnemyDebugPrintf(GameObject* go) {
+
 
 	Novice::ScreenPrintf(0, 0, "IsShot : %d", go->enemy.LeftBullet[0].IsShot);
 	Novice::ScreenPrintf(0, 20, "IsAttracted : %d", go->enemy.LeftBullet[0].IsAttracted);

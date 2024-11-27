@@ -41,7 +41,8 @@ void PlayerInitialize(GameObject* go) {
 		Novice::LoadTexture("./image./player_ver5.png"),
 
 		//色
-		0x2288ffff,
+		//0x2288ffff,
+		0xffffffff,
 
 		//オブジェクトタイプ（可動or不可動）
 		Else
@@ -52,6 +53,7 @@ void PlayerInitialize(GameObject* go) {
 	go->player.IsAggression = false;
 	go->player.IsHoldObject = false;
 	go->player.IsAlive = true;
+	go->player.GetDamage = false;
 	go->player.HP = 3;
 
 	for (int i = 0; i < HPNum; ++i) {
@@ -366,10 +368,15 @@ void FlickrCollision(GameObject* go) {
 
 	//手との当たり判定
 	for (int i = 0; i < 2; ++i) {
-		if (RectangleObjectCollision(&go->player.flickr, &go->enemy.hand[i])) {
-			//当たっていたらフラグを立てる
-			go->player.flickr.IsHit = true;
 
+		//手が生きていたら
+		if (go->enemy.hand[i].IsAlive) {
+
+			if (RectangleObjectCollision(&go->player.flickr, &go->enemy.hand[i])) {
+				//当たっていたらフラグを立てる
+				go->player.flickr.IsHit = true;
+
+			}
 		}
 	}
 }
@@ -402,7 +409,7 @@ void FlickrAttract(RectangleObject* obj, GameObject* go) {
 
 		//オブジェクトとプレイヤーの距離が一定距離より短くなったらフラグを折る
 
-		if (sqrtf((obj->Vector.x * obj->Vector.x) + (obj->Vector.y * obj->Vector.y)) <= BlockSize) {
+		if (sqrtf((obj->Vector.x * obj->Vector.x) + (obj->Vector.y * obj->Vector.y)) <= 25) {
 
 		
 
@@ -518,7 +525,9 @@ void PlayerWireMoveX(GameObject* go) {
 
 		//手に向かって移動
 		for (int i = 0; i < 2; ++i) {
-			FlickrAttract(&go->enemy.hand[i], go);
+
+
+				FlickrAttract(&go->enemy.hand[i], go);
 		}
 
 		//移動処理

@@ -8,7 +8,7 @@
  =====================================================*/
 
  //手とプレイヤーの当たり判定
-void Col_Player_Hands(GameObject* go);
+void Col_Player_Hands(GameObject* go, Shake* shake, CameraRelated* cr);
 
 //弾とプレイヤーの当たり判定
 void Col_Player_Bullet(GameObject* go);
@@ -20,4 +20,4 @@ void Col_Player_Enemy(GameObject* go);
 void Col_PlayerThrowObj_Hand(GameObject* go);
 
 //まとめ関数
-void Col_Update(GameObject* go);
+void Col_Update(GameObject* go, Shake* shake, CameraRelated* cr);

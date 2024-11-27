@@ -135,10 +135,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-
-			ShakeFanction(p_shake, p_camera, p_key);
-
-
 			//エネミーの更新処理
 			EnemyUpdate(p_gameobject, p_camera);
 
@@ -147,7 +143,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			CameraUpdate(p_camera, p_key);
 
 			//当たり判定関数
-			Col_Update(p_gameobject);
+			Col_Update(p_gameobject,p_shake,p_camera);
 
 			//リセット関数
 			RkeyReset(p_gameobject, p_camera, p_key);
@@ -192,7 +188,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			PlayerDraw(p_gameobject);
 
-			FlickrDraw(p_gameobject);
+			//FlickrDraw(p_gameobject);
 
 			
 
