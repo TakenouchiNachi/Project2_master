@@ -213,12 +213,15 @@ void AfterimageUpDate(AFTERIMAGE* Af,PARTICLE* p, CameraRelated* cr, GameObject 
 	
 }
 
-void AfterimageDraw(GameObject* go, AFTERIMAGE* Af, PARTICLE* p) {
+
+void AfterimageDraw(AFTERIMAGE* Af, PARTICLE* p, GameObject *go) {
+
 	p->particleFlicker;
 	Novice::SetBlendMode(BlendMode::kBlendModeAdd);
 	for (int k = 0;k < AFINum;k++) {
 
 		//プレイヤー
+		if(go->player.flickr.IsShot)
 		Af->playerPA[k].RectObjDraw();
 
 		//ボス

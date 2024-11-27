@@ -36,7 +36,7 @@ void CameraInitialize(CameraRelated* cr) {
 	cr->easeCamera.nowFrame = 1.0f;
 	cr->easeCamera.isEase = false;
 	cr->easeCamera.isEaseOut = false;
-	
+	cr->easeCamera.state = NONE;
 }
 
 

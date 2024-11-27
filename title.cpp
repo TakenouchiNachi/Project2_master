@@ -87,7 +87,7 @@ void TitleDraw(TitleScene* T) {
 
 void TitleSceneUpDate(TitleScene *T,Key *key, CameraRelated* cr) {
 
-	while (isTitle == 1) {
+	
 
 		if (&key->keys[DIK_SPACE] && doreTitle == 0) {
 			doreTitle = 1;
@@ -135,8 +135,8 @@ void TitleSceneUpDate(TitleScene *T,Key *key, CameraRelated* cr) {
 		}
 
 
-		TitleDraw(T);
-	}
+		
+	
 	
 }
 
