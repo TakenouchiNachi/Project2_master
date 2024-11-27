@@ -137,7 +137,75 @@ void ParticleInitialize(PARTICLE* particle) {
 		);
 	}
 	
+	for (int i = 0;i < pCC;i++) {
+		particle->particleMoya[i].BaseInfoInitialize(
+			//初期座標(x,y)
+			0.0f,
+			0.0f,
 
+			//横幅、縦幅
+			80.0f,
+			80.0f,
+
+			//加速度(x,y)
+			0.0f,
+			0.0f,
+
+			//速度(x,y)
+			0.0f,
+			0.0f,
+
+			//ベクトル(x,y)
+			0.0f,
+			0.0f,
+
+			//スピード
+			2.0f,
+
+			//画像
+			Novice::LoadTexture("./image./particle.jpg"),
+
+			//色
+			0x770077FF,
+
+			//オブジェクトタイプ（可動or不可動）
+			ImMovable
+		);
+		particle->particleMoya[i].weight = 1.0f;
+	}
+	particle->particleHit.BaseInfoInitialize(
+		//初期座標(x,y)
+		640.0f,
+		360.0f,
+
+		//横幅、縦幅
+		1280.0f,
+		720.0f,
+
+		//加速度(x,y)
+		0.0f,
+		0.0f,
+
+		//速度(x,y)
+		0.0f,
+		0.0f,
+
+		//ベクトル(x,y)
+		0.0f,
+		0.0f,
+
+		//スピード
+		2.0f,
+
+		//画像
+		Novice::LoadTexture("./image./Hit.png"),
+
+		//色
+		0x770077FF,
+
+		//オブジェクトタイプ（可動or不可動）
+		ImMovable
+	);
 }
 
 void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *key) {
@@ -147,7 +215,7 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 	for (int k = 0;k < pF;k++) {
 
 		if (!go->player.flickr.IsShot) {
-			if (key->keys[DIK_A] || key->keys[DIK_D] && key->keys[DIK_W] || key->keys[DIK_S]) {
+			if ((key->keys[DIK_A] || key->keys[DIK_D]) && (key->keys[DIK_W] || key->keys[DIK_S])) {
 				particleIsKey = 3;
 			}
 			else if (key->keys[DIK_W] || key->keys[DIK_S]) {
@@ -162,6 +230,12 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 		//弾を撃っている時はパーティクルを出す
 		if (go->player.flickr.IsShot) {
 			particle->particleFlicker[k].isParticle = 1;
+		}
+
+		if (!go->player.flickr.IsShot) {
+			particle->particleFlicker[k].life = 10;
+			particle->particleFlickerT[k].life = 10;
+			
 		}
 
 		//フラグが立っている間パーティクルの処理を施す
@@ -191,8 +265,8 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 						particleRand = { 0,-50 };
 				}
 				if (particleIsKey == 3) {
-					particle->particleFlicker[k].Scale = { 1.4f,1.4f };
-					particle->particleFlickerT[k].Scale = { 1.4f,1.4f };
+					particle->particleFlicker[k].Scale = { 2.2f,2.2f };
+					particle->particleFlickerT[k].Scale = { 2.2f,2.2f };
 					if (i == 0)
 						particleRand = {14,14};
 					if (i == 1)
@@ -201,7 +275,8 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 
 				p1[i].x = go->player.WorldPos.x + (go->player.flickr.WorldPos.x - go->player.WorldPos.x) / 2.0f + particleRand.x;
 				p1[i].y = go->player.flickr.WorldPos.y + particleRand.y;
-
+				SelectColor(&particle->particleFlicker[k].Color, rand() % 12);
+				SelectColor(&particle->particleFlickerT[k].Color, rand() % 12);
 				particle->particleFlicker[k].t = k / float(pF);//for文外でもいい説
 				particle->particleFlicker[k].WorldPos = Bezier(&go->player.WorldPos, &p1[0], &go->player.flickr.WorldPos, particle->particleFlicker[k].t);
 				particle->particleFlickerT[k].t = k / float(pF);//for文外でもいい説
@@ -212,24 +287,18 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 			//================================== [ 弾が着弾した際の処理 ] ==============================/
 
 	        //弾のフラグが０なら、寿命を決定する -> （透明度のため）　
-			if (!go->player.flickr.IsShot) {
-				particle->particleFlicker[k].life = 10;
-				particle->particleFlickerT[k].life = 10;
-			}
+			
 
 			if (particle->particleFlicker[k].life > 0) {
-				if (particle->particleFlicker[k].Color > 0xFF00FF00) {
-					particle->particleFlicker[k].Color -= 255 / particle->particleFlicker[k].life;
-					particle->particleFlickerT[k].Color -= 255 / particle->particleFlickerT[k].life;
-				}
-				else if (particle->particleFlicker[k].Color <= 0xFF00FF00) {
+				
+				if (particle->particleFlicker[k].Color <= 0xFF00FF00) {
 					particle->particleFlicker[k].isParticle = 0;
 					particle->particleFlicker[k].life = 0;
-					particle->particleFlicker[k].Color = 0xFF00FFFF;
+					
 
 					particle->particleFlickerT[k].isParticle = 0;
 					particle->particleFlickerT[k].life = 0;
-					particle->particleFlickerT[k].Color = 0xFF00FFFF;
+					
 				}
 			}
 
@@ -285,18 +354,68 @@ void ParticleUpDate(PARTICLE* particle, CameraRelated* cr ,GameObject *go, Key *
 		RenderingPipeline(&particle->particleCharge[i], cr);
 	}
 
+	Field field = {};
+
+	//もやもやのパーティクル
+	for (int i = 0;i < pCC;i++) {
+
+		field.pos = go->player.WorldPos;
+		field.wid = { 1280,720 };
+
+		//エミッターが自機の位置
+		if (particle->particleMoya[i].life < 0) {
+			particle->particleMoya[i].WorldPos.x = go->player.WorldPos.x + ((go->player.Width + 50 + rand()%41-25) * cosf((i * (360.0f / pCC)) / 180.0f * 3.14f));
+			particle->particleMoya[i].WorldPos.y = go->player.WorldPos.y + ((go->player.Height + 50 + rand()%41-25) * sinf((i * (360.0f / pCC)) / 180.0f * 3.14f));
+			particle->particleMoya[i].life = 15 + i % 30;
+			particle->particleMoya[i].Acceleration = {};
+			particle->particleMoya[i].Velocity = {};
+			particle->particleMoya[i].Color = 0x020002FF;
+			particle->particleMoya[i].Scale = { 1.5f,1.5f };
+		}
+		else if (particle->particleMoya[i].life >= 0) {
+			if (key->preKeys[DIK_W] || key->preKeys[DIK_A] || key->preKeys[DIK_S] || key->preKeys[DIK_D]) {
+				particle->particleMoya[i].life -= 1;
+			}
+			particle->particleMoya[i].Scale.x += 0.025f;
+			particle->particleMoya[i].Scale.y += 0.025f;
+			field.F.x = -NormalizeX(go->player.WorldPos.x - particle->particleMoya[i].WorldPos.x, go->player.WorldPos.y - particle->particleMoya[i].WorldPos.y) * 0.00375f;
+			field.F.y = -NormalizeY(go->player.WorldPos.x - particle->particleMoya[i].WorldPos.x, go->player.WorldPos.y - particle->particleMoya[i].WorldPos.y) * 0.00375f;
+			Effect(&particle->particleMoya[i], &field);
+		}
+
+		SetFourVertexes(&particle->particleMoya[i]);
+		RenderingPipeline(&particle->particleMoya[i], cr);
+	}
+
+	//ヒットの見た目
+	if (key->keys[DIK_Y]) {
+		particle->particleHit.life = 51;
+		particle->particleHit.Color = 0xFF0000FF;
+	}
+	if (particle->particleHit.life > 0) {
+		particle->particleHit.life -= 1;
+		particle->particleHit.Color -= 0x05000005;
+	}
+	else if (particle->particleHit.life <= 0) {
+		particle->particleHit.Color = 0xFF000000;
+	}
+	/*SetFourVertexes(&particle->particleHit);
+	RenderingPipeline(&particle->particleHit, cr);*/
 }
 
 //描画関数
 void ParticleDraw(PARTICLE* particle) {
 	Novice::SetBlendMode(BlendMode::kBlendModeAdd);
-
-
+	int randDraw = 0;
+	
 	for (int i = 0;i < pF;i++) {
 		//ひものフラグが立っているなら描画する
+		randDraw = rand() % 2;
 		if (particle->particleFlicker[i].isParticle) {
-			particle->particleFlicker[i].RectObjDraw();
-			particle->particleFlickerT[i].RectObjDraw();
+			if (randDraw) {
+				particle->particleFlicker[i].RectObjDraw();
+				particle->particleFlickerT[i].RectObjDraw();
+			}
 		}
 	}
 	for (int i = 0;i < pC;i++) {
@@ -306,6 +425,13 @@ void ParticleDraw(PARTICLE* particle) {
 		}
 	}
 
+	for (int i = 0;i < pCC;i++) {
+		
+			particle->particleMoya[i].RectObjDraw();
+		
+	}
+
+	
 
 	Novice::SetBlendMode(BlendMode::kBlendModeNormal);
 }

@@ -82,7 +82,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		memcpy(key.preKeys, key.keys, 256);
 		Novice::GetHitKeyStateAll(key.keys);
 
-		TitleSceneUpDate(p_title, p_key, p_camera);
+		
 
 		///
 		/// ↓更新処理ここから
@@ -97,7 +97,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//描画処理
 			Novice::DrawBox(128, 128 + p_scene->option * 64, 64, 64, 0.0f, WHITE, kFillModeSolid);
-
+			TitleDraw(p_title);
 			break;
 
 		case GAMEPLAY:
@@ -120,6 +120,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			CameraTransition_Start(p_gameobject, p_camera, p_key);
+			ScrollFunction(p_gameobject, p_camera);
 
 			MaskChange(p_scene, p_gameobject, p_key);
 
@@ -160,7 +161,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x222222ff, kFillModeSolid);
 
-			EnemyDraw(p_gameobject);
+			
 
 		///
 		/// ↓描画処理ここから
@@ -177,24 +178,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			///
 			/// ↓描画処理ここから
 			///
-		  AfterimageDraw(p_gameobject,p_afterimage, p_particle);//@@@
+
+      AfterimageDraw(p_afterimage, p_particle, p_gameobject);//@@@
 
 			StageDraw(p_gameobject);
 
-			EnemyDraw(p_gameobject);
+	        ParticleDraw(p_particle);
+	  
+	        EnemyDraw(p_gameobject);
 
 
 			PlayerDraw(p_gameobject);
 
 			FlickrDraw(p_gameobject);
 
-			ParticleDraw(p_particle);
+			
 
 
 
 			MovableObjectDraw(p_gameobject);
 
-			//MaskDraw(p_scene);
+
+			if (p_particle->particleHit.life > 0) {
+				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
+			}
+
+			MaskDraw(p_scene);
 
 			//Novice::DrawLine(
 			//	static_cast<int>(gameobject.player.ScreenPos.x),

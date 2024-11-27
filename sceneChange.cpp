@@ -45,6 +45,7 @@ void initializeShake(Shake* shake)
 	shake->isShake = false;
 }
 
+
 //マスク処理の描画
 void MaskDraw(sceneChange* scene)
 {
@@ -61,8 +62,6 @@ void MaskChange(sceneChange* scene,GameObject* go,Key* key)
 	if (key->keys[DIK_SPACE]) 
 	{
 		scene->isEase = true;
-
-
 
 		scene->pos.x = go->player.ScreenPos.x + go->player.Width / 2.0f;
 		scene->pos.y = go->player.ScreenPos.y + go->player.Height / 2.0f;
@@ -104,11 +103,12 @@ void MaskChange(sceneChange* scene,GameObject* go,Key* key)
 	}
 }
 
-//今編集中です
+//タイトルからスタートの処理
 void CameraTransition_Start(GameObject* go, CameraRelated* cr, Key* key)
 {
-	if (key->keys[DIK_Q])
+	if (key->keys[DIK_Q] && cr->easeCamera.state == NONE)
 	{
+		cr->easeCamera.state = TO_ENEMY;
 		cr->easeCamera.isEase = true;
 
 		cr->easeCamera.start.x = cr->CameraPos.x;
@@ -116,57 +116,43 @@ void CameraTransition_Start(GameObject* go, CameraRelated* cr, Key* key)
 		cr->easeCamera.end.x = -go->enemy.WorldPos.x;
 		cr->easeCamera.end.y = -go->enemy.WorldPos.y;
 
-		
+		// 初期化
+		cr->easeCamera.t = 0.0f;
+		cr->easeCamera.nowFrame = 0;
 	}
 
-	if (cr->easeCamera.isEase)
+	if (cr->easeCamera.state == TO_ENEMY || cr->easeCamera.state == TO_PLAYER)
 	{
 		Easing(&cr->CameraPos,
 			cr->easeCamera.start.x, cr->easeCamera.start.y,
 			cr->easeCamera.end.x, cr->easeCamera.end.y,
 			&cr->easeCamera.nowFrame, 60,
 			&cr->easeCamera.t, 1.0f, materialOutQuart);
-	}
-	else if (cr->easeCamera.isEaseOut)
-	{
-		Easing(&cr->CameraPos,
-			cr->easeCamera.start.x, cr->easeCamera.start.y,
-			cr->easeCamera.end.x, cr->easeCamera.end.y,
-			&cr->easeCamera.nowFrame, 60,
-			&cr->easeCamera.t, 1.0f, materialOutQuart);
-	}
 
-	if (cr->easeCamera.t >= 1.0f)
-	{
-		if (cr->easeCamera.isEaseOut)
+		if (cr->easeCamera.t >= 1.0f)
 		{
-			cr->easeCamera.isEaseOut = false;
 			cr->easeCamera.t = 0.0f;
+
+			if (cr->easeCamera.state == TO_ENEMY)
+			{
+				// 帰りの準備
+				cr->easeCamera.state = TO_PLAYER;
+
+				cr->easeCamera.start.x = cr->CameraPos.x;
+				cr->easeCamera.start.y = cr->CameraPos.y;
+
+				cr->easeCamera.end.x = -go->player.WorldPos.x;
+				cr->easeCamera.end.y = -go->player.WorldPos.y;
+
+				cr->easeCamera.nowFrame = 0; // フレームカウントをリセット
+			}
+			else if (cr->easeCamera.state == TO_PLAYER)
+			{
+				// イージング終了
+				cr->easeCamera.state = NONE;
+			}
 		}
-
-		if (cr->easeCamera.isEase)
-		{
-			
-			cr->easeCamera.isEase = false;
-			cr->easeCamera.isEaseOut = true;
-
-			cr->easeCamera.start.x = cr->CameraPos.x;
-			cr->easeCamera.start.y = cr->CameraPos.y;
-			cr->easeCamera.end.x = -go->player.WorldPos.x;
-			cr->easeCamera.end.y = -go->player.WorldPos.y;
-			cr->easeCamera.t = 0.0f;
-		}
-		
-		
-
-		
-
-
-		//cr->easeCamera.end.x = -640.0f;
-		//cr->easeCamera.end.y = -360.0f;
-		
 	}
-
 }
 
 //シェイクの関数
@@ -242,6 +228,8 @@ void TitleChange(sceneChange* scene, Key* key,Sounds* sounds)
 		}
 	}
 }
+
+
 
 //seの関数
 void SoundPlaySE(int playHandle, int soundHandle, float volume)

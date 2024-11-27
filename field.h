@@ -6,6 +6,7 @@
 #include "player.h"
 #include "rope.h"
 #include "easing.h"
+#include "colorname.h"
 
 
 void Effect(Particle* particle, Field* field);
