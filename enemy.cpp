@@ -1127,27 +1127,33 @@ void BulletMove(GameObject *go,int VectorUpdateFlame){
 //画像の角度を変更する関数
 void DegreeUpdate(GameObject* go) {
 
+	//ダウンしていないとき
+
 	//ロケットパンチと弾打ちの時、プレイヤーの方をむけよこのやろう
 	if (go->enemy.MoveType == locketpunch || go->enemy.MoveType == bulletshot) {
 
 		//ベクトルの取得
 		for (int i = 0; i < 2; ++i) {
 
-			go->enemy.hand[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.hand[i].WorldPos);
-			go->enemy.hand[i].Vector.y = FindVectorY(go->player.WorldPos, go->enemy.hand[i].WorldPos);
+			if (!go->enemy.hand[i].IsDown) {
 
+				go->enemy.hand[i].Vector.x = FindVectorX(go->player.WorldPos, go->enemy.hand[i].WorldPos);
+				go->enemy.hand[i].Vector.y = FindVectorY(go->player.WorldPos, go->enemy.hand[i].WorldPos);
+			}
 		}
 
 		for (int i = 0; i < 2; ++i) {
 
-			//角度を取得
-			go->enemy.hand[i].Theta = static_cast<float> (-atan2(
-				static_cast<double>(go->enemy.hand[i].Vector.x),
-				static_cast<double>(go->enemy.hand[i].Vector.y)
-			));
+			if (!go->enemy.hand[i].IsDown) {
 
-			//角度変換
-			//DegreeToTheta(&go->enemy.hand[i]);
+
+				//角度を取得
+				go->enemy.hand[i].Theta = static_cast<float> (-atan2(
+					static_cast<double>(go->enemy.hand[i].Vector.x),
+					static_cast<double>(go->enemy.hand[i].Vector.y)
+				));
+
+			}
 
 		}
 	}
@@ -1172,13 +1178,17 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 	}
 
 	//周回数の更新
-	if (!go->enemy.hand[Right].IsAlive && !go->enemy.hand[Left].IsAlive) {
+	if (go->enemy.LapNum == 0) {
 
-		if (go->enemy.LapNum < 2) {
-			go->enemy.LapNum++;
 
-			go->enemy.hand[Right].IsAlive = true;
-			go->enemy.hand[Left].IsAlive = true;
+		if (!go->enemy.IsAlive) {
+
+			go->enemy.IsAlive = true;
+			for (int i = 0; i < 2; i++) {
+				go->enemy.hand[i].IsAlive = true;
+				go->enemy.hand[i].IsDown = false;
+			}
+
 		}
 	}
 
@@ -1273,8 +1283,17 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 
 	//画像の描画範囲の変更
 	for (int i = 0; i < 2; ++i) {
+		if (!go->enemy.hand[i].IsDown) {
+			go->enemy.hand[i].ImagePos.x = 800.0f * go->enemy.MoveType;
 
-		go->enemy.hand[i].ImagePos.x = 800.0f * go->enemy.MoveType;
+			go->enemy.hand[i].Color = 0xffff00ff;
+		}
+		else {
+			go->enemy.hand[i].ImagePos.x = 0.0f;
+
+			go->enemy.hand[i].Color = 0x882222ff;
+
+		}
 	}
 
 	//回転処理

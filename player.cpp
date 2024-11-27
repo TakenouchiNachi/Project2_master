@@ -379,10 +379,14 @@ void FlickrCollision(GameObject* go) {
 
 	//手との当たり判定
 	for (int i = 0; i < 2; ++i) {
-		if (RectangleObjectCollision(&go->player.flickr, &go->enemy.hand[i])) {
-			//当たっていたらフラグを立てる
-			go->player.flickr.IsHit = true;
 
+		if (go->enemy.hand[i].IsAlive) {
+
+			if (RectangleObjectCollision(&go->player.flickr, &go->enemy.hand[i])) {
+				//当たっていたらフラグを立てる
+				go->player.flickr.IsHit = true;
+
+			}
 		}
 	}
 }
@@ -415,7 +419,7 @@ void FlickrAttract(RectangleObject* obj, GameObject* go) {
 
 		//オブジェクトとプレイヤーの距離が一定距離より短くなったらフラグを折る
 
-		if (sqrtf((obj->Vector.x * obj->Vector.x) + (obj->Vector.y * obj->Vector.y)) <= BlockSize) {
+		if (sqrtf((obj->Vector.x * obj->Vector.x) + (obj->Vector.y * obj->Vector.y)) <= 20) {
 
 		
 
