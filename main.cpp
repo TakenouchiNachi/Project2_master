@@ -43,6 +43,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AFTERIMAGE afterimage;
 
 	TitleScene title;
+	Title titleU;
 
 	int HandleClear = Novice::LoadTexture("./image/clear.png");
 	Vector2 wid = {};
@@ -59,6 +60,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AFTERIMAGE *p_afterimage = &afterimage;
 
 	TitleScene* p_title = &title;
+	Title* p_titleU = &titleU;
 
 	//初期化関数
 	PlayerInitialize(p_gameobject);
@@ -68,6 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	intializeScene(p_scene);
 	initializeSounds(p_sounds);
 	initializeShake(p_shake);
+	initializeTitle(p_titleU);
 
 
 	ParticleInitialize(p_particle);
@@ -94,22 +97,76 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		switch (scene.state)
 		{
 		case TITLE:
-
-			TitleChange(p_scene, p_key, p_sounds);
+			Novice::StopAudio(p_sounds->gamePlayPlayHandle);
+			TitleUpdate(p_titleU);
+			TitleChange(p_scene, p_key, p_sounds,p_gameobject,p_camera);
 
 
 			//描画処理
+			Novice::DrawBox(static_cast<int>(640.0f-32.0f), static_cast<int>(450.0f ), 64, 64, 0.0f, p_scene->color, kFillModeSolid);
+
+			TitleDraw(p_titleU,p_scene);
+
+			//Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+
+			Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_scene->titleT, p_scene->startFrame);
+
+				/*Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x222222ff, kFillModeSolid);
+				
+				
+
+
+				Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+
+
+				EnemyDraw(p_gameobject);
+
+
+				PlayerDraw(p_gameobject);*/
+
+			
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, p_scene->fadeColor, kFillModeSolid);
+
+			if (!Novice::IsPlayingAudio(p_sounds->titlePlayHandle) ||
+				p_sounds->titlePlayHandle == -1) {
+				p_sounds->titlePlayHandle =
+					Novice::PlayAudio(p_sounds->titleSoundHandle, true, 0.3f);
+			}
+
+
 			Novice::DrawBox(128, 128 + p_scene->option * 64, 64, 64, 0.0f, WHITE, kFillModeSolid);
 			TitleDraw(p_title);
+
 			break;
 
+
 		case GAMEPLAY:
+
+			//Novice::StopAudio(p_sounds->gamePlayPlayHandle);
+			Novice::StopAudio(p_sounds->titlePlayHandle);
+			if (!p_scene->isTransition)
+			{
+				TitleChange(p_scene, p_key, p_sounds, p_gameobject, p_camera);
+				
+				
+			}
+			else
+			{
+				PlayerUpdate(p_gameobject, p_camera, p_key);
+
 			clearColor = 0x00000000;
 			isSelectBar = 0;
 			//プレイヤーの更新処理
 
-			PlayerUpdate(p_gameobject, p_camera, p_key);
 
+
+
+				MovableObjectUpdate(p_gameobject, p_camera, p_key);
+
+
+				AfterimageUpDate(p_afterimage, p_particle, p_camera, p_gameobject);//@@@
+				MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
 			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
@@ -118,48 +175,56 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
-			ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
+				ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
 
-			FlickrUpdate(p_gameobject, p_key);
-			RenderingPipeline(&gameobject.player.flickr, p_camera);
+				FlickrUpdate(p_gameobject, p_key);
+				RenderingPipeline(&gameobject.player.flickr, p_camera);
+
+
 
 
 			CameraTransition_Start(p_gameobject, p_camera, p_key);
 			ScrollFunction(p_gameobject, p_camera);
 
-			MaskChange(p_scene, p_gameobject, p_key);
 
-			//ステージの更新処理
+				MaskChange(p_scene, p_gameobject, p_key);
 
-			StageGenerate(p_gameobject);
+				//ステージの更新処理
 
-			for (int i = 0; i < VerBlockNum; ++i) {
-				for (int j = 0; j < HolBlockNum; ++j) {
+				StageGenerate(p_gameobject);
 
-					RenderingPipeline(&gameobject.mapchip[i][j], p_camera);
+				for (int i = 0; i < VerBlockNum; ++i) {
+					for (int j = 0; j < HolBlockNum; ++j) {
+
+						RenderingPipeline(&gameobject.mapchip[i][j], p_camera);
+					}
 				}
+
+
+
+				//エネミーの更新処理
+				EnemyUpdate(p_gameobject, p_camera);
+
+				ScrollFunction(p_gameobject, p_camera);
+
+				ShakeFanction(p_shake, p_camera, p_key);
+
+				//CameraTransition_Start(p_gameobject, p_camera, p_key);
+
+				CameraUpdate(p_camera, p_key);
+
+				//当たり判定関数
+				Col_Update(p_gameobject);
+
+
+				//リセット関数
+				RkeyReset(p_gameobject, p_camera, p_key);
 			}
-
-
-			ShakeFanction(p_shake, p_camera, p_key);
-
-
-			//エネミーの更新処理
-			EnemyUpdate(p_gameobject, p_camera);
-
-			ScrollFunction(p_gameobject,p_camera);
-
-			CameraUpdate(p_camera, p_key);
-
-			//当たり判定関数
-			Col_Update(p_gameobject);
-
-			//リセット関数
-			RkeyReset(p_gameobject, p_camera, p_key);
 
 			/*if (p_key->keys[DIK_0]) {
 				p_scene->state = 2;
 			}*/
+
 
 
 
@@ -214,6 +279,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			MaskDraw(p_scene);
 
 
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, p_scene->fadeColor, kFillModeSolid);
+
+
 			//Novice::DrawLine(
 			//	static_cast<int>(gameobject.player.ScreenPos.x),
 			//	static_cast<int>(gameobject.player.ScreenPos.y),
@@ -252,6 +320,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//Novice::ScreenPrintf(10, 10, "posP : %f / isP : %d / ", p_particle->particleCharge[0].DrawLeftTop.y, p_particle->particleCharge[0].isParticle);
 			//Novice::ScreenPrintf(10, 40, "posP : %f / isP : %d / ", p_particle->particleFlicker[5].DrawLeftBottom.y, p_particle->particleFlicker[6].isParticle);
 			//Novice::ScreenPrintf(10, 400, "posP : %f / isP : %f / ", p_camera->CameraPos.x, p_camera->CameraPos.y);
+
+			//Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_camera->easeCamera.t, p_scene->startFrame);
+			//プレイヤーの更新処理
+
 			//Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_camera->easeCamera.t, p_scene->pos.y);
 			
 			//Novice::ScreenPrintf(20, 20, "Life :%d", gameobject.player.HP);
@@ -261,6 +333,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			EnemyDebugPrintf(p_gameobject);
 
+
+			//シーンを切り替える
+			if (p_key->keys[DIK_G] && !p_key->preKeys[DIK_G])
+			{
+				if (p_scene->state == GAMEPLAY)
+				{
+
+
+					p_scene->state = TITLE;
+
+					// BGMを止める
+					Novice::StopAudio(p_sounds->gamePlayPlayHandle);
+					break;
+				}
+
+			}
+			//SoundPlayBGM(p_sounds->gamePlayPlayHandle, p_sounds->gamePlaySoundHandle, p_sounds->volume);
+			// 音楽を鳴らす
+			if (!Novice::IsPlayingAudio(p_sounds->gamePlayPlayHandle) ||
+				p_sounds->gamePlayPlayHandle == -1) {
+				p_sounds->gamePlayPlayHandle =
+					Novice::PlayAudio(p_sounds->gamePlaySoundHandle, true, 0.3f);
+			}
 			break;
 
 		case CLEAR:

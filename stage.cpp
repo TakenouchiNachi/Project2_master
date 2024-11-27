@@ -154,8 +154,10 @@ void StageGenerate(GameObject* go) {
 }
 
 
-void  MovableObjectHold(GameObject* go) {
-	if (go->player.IsHoldObject) {
+void  MovableObjectHold(GameObject* go)
+{
+	if (go->player.IsHoldObject)
+	{
 		go->movableobject.WorldPos.x = go->player.WorldPos.x + BlockSize; 
 		go->movableobject.WorldPos.y = go->player.WorldPos.y + BlockSize;
 	}
