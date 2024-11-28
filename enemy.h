@@ -46,24 +46,24 @@ void DecisionMoveType_Ver1(GameObject* go);
 //台パン
 //全体フレーム
 const float DaiPanWholeFrame = 380.0f;
-void Daipan(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame);
+void Daipan(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame,Sounds* sounds);
 
 //ロケットパンチ
 const float LocketPunchWholeFrame = 400.0f;
-void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame);
+void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame,Sounds* sounds);
 
 //弾撃ち（利用可能）
 //弾の数
 const int EnemyBulletNum = 4;
 const float BulletShotWholeFrame = 330.0f;
-void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, Vector2 FixedPos);
+void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, Vector2 FixedPos,Sounds* sounds);
 void BulletMove(GameObject* go, int VectorUpdateFlame);
 
 //画像の角度を変更する関数
 void DegreeUpdate(GameObject* go);
 
 //更新処理
-void EnemyUpdate(GameObject* go, CameraRelated* cr);
+void EnemyUpdate(GameObject* go, CameraRelated* cr,Sounds* sounds);
 
 //描画関数
 void EnemyDraw(GameObject* go);
