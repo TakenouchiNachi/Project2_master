@@ -60,6 +60,7 @@ void PlayerInitialize(GameObject* go) {
 	go->player.IsAlive = true;
 	go->player.HP = 5;
 
+
 		go->player.HPGH.BaseInfoInitialize(
 			//初期座標(x,y)
 			0.0f,
@@ -98,6 +99,7 @@ void PlayerInitialize(GameObject* go) {
 			Else
 		);
 
+		go->player.HPGH.ImagePos = { 1200.0f,0.0f };
 
 		go->player.RemainingLifeGH.BaseInfoInitialize(
 			//初期座標(x,y)

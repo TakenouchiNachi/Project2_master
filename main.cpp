@@ -21,7 +21,7 @@
 #include"title.h"
 
 
-const char kWindowTitle[] = "LC1A_21_タケノウチ_ナチ_タイトル";
+const char kWindowTitle[] = "影縛りの糸";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -103,7 +103,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::StopAudio(p_sounds->gamePlayPlayHandle);
 			TitleUpdate(p_titleU);
 			TitleChange(p_scene, p_key, p_sounds,p_gameobject,p_camera);
-
 
 			//描画処理
 			Novice::DrawBox(static_cast<int>(640.0f-32.0f), static_cast<int>(450.0f ), 64, 64, 0.0f, p_scene->color, kFillModeSolid);
@@ -220,7 +219,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 				//リセット関数
-				RkeyReset(p_gameobject, p_camera, p_key);
+				//RkeyReset(p_gameobject, p_camera, p_key);
 				
 
 			}
