@@ -82,6 +82,13 @@ void initializeSounds(Sounds* sounds)
 	//ボスの手の攻撃
 	sounds->handAttackPlayHandle = false;
 	sounds->handAttackSoundHandle = Novice::LoadAudio("./Resources/Sounds/handAttack.mp3");
+
+	sounds->handCoolTime = 120;
+	sounds->handNowTime = 0;
+
+	sounds->isPlayHandSE = false;
+	sounds->isPlayPressSE = false;
+	sounds->isPlayShotSE = false;
 }
 
 //シェイクの初期化
