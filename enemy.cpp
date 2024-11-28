@@ -9,6 +9,7 @@
 #include"enum.h"
 #include"common.h"
 #include"camera.h"
+#include"sceneChange.h"
 
 
 //初期化関数
@@ -306,7 +307,7 @@ void DecisionMoveType_Ver1(GameObject* go) {
 		　 攻撃パターン
  =================================*/
  //台パン
-void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float OccurrenceFrame,float LastingFlame) {
+void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float OccurrenceFrame,float LastingFlame,Sounds* sounds) {
 
 
 	//この関数が呼び出されたときに一度だけイージングに関する初期化を行う
@@ -455,6 +456,13 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 				//攻撃判定を付ける
 				go->enemy.hand[i].IsAggression = true;
 
+
+				if (!sounds->isPlayPressSE)
+				{
+					SoundPlaySE(sounds->handPressPlayHandle, sounds->handPressSoundHandle, sounds->volume);
+					sounds->isPlayPressSE = true;
+				}
+
 				//モーション
 				Easing(
 					&go->enemy.hand[i].WorldPos,
@@ -493,6 +501,8 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 					//攻撃判定を付ける
 					go->enemy.hand[i].IsAggression = true;
 
+
+
 					//モーション
 					Easing(
 						&go->enemy.hand[i].WorldPos,
@@ -528,6 +538,7 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 		//攻撃判定をとる
 		for (int i = 0; i < 2; ++i) {
 			go->enemy.hand[i].IsAggression = false;
+			sounds->isPlayPressSE=false;
 		}
 	}
 
@@ -625,7 +636,7 @@ void Daipan(GameObject* go,float WholeFrame,float TransrateFrame,float Occurrenc
 
 
 //ロケットパンチ
-void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame) {
+void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, float LastingFlame,Sounds* sounds) {
 
 	//この関数が呼び出されたときに一度だけイージングに関する初期化を行う
 	if (go->enemy.RocketPunchInfo.CurrentFrame == 0) {
@@ -767,6 +778,16 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 				//攻撃判定を付ける
 				go->enemy.hand[i].IsAggression = true;
 
+				//発射時に音をならす
+				if (!sounds->isPlayHandSE)
+				{
+					SoundPlaySE(sounds->handAttackPlayHandle, sounds->handAttackSoundHandle, sounds->volume);
+					sounds->isPlayHandSE = true;
+				}
+
+
+				
+
 				//移動処理
 				go->enemy.hand[i].WorldPos.x += NormalizeX(go->enemy.hand[i].Vector.x, go->enemy.hand[i].Vector.y) * 20;
 				go->enemy.hand[i].WorldPos.y += NormalizeY(go->enemy.hand[i].Vector.y, go->enemy.hand[i].Vector.y) * 20;
@@ -793,7 +814,7 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 
 			//攻撃判定をとる
 			go->enemy.hand[i].IsAggression = false;
-
+			sounds->isPlayHandSE = false;
 		}
 	}
 
@@ -888,7 +909,7 @@ void LocketPunch(GameObject* go, float WholeFrame, float TransrateFrame, float O
 
 
 //弾打ち攻撃
-void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, Vector2 FixedPos) {
+void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float OccurrenceFrame, Vector2 FixedPos,Sounds* sounds) {
 
 	//この関数が呼び出されたときに一度だけイージングに関する初期化を行う
 	if (go->enemy.BulletShotCurrentFrame == 0) {
@@ -977,6 +998,13 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 		for (int i = 0; i < 2; ++i) {
 			EasingInitialize(&go->enemy.hand[i].t, &go->enemy.hand[i].NowFrame, &go->enemy.hand[i].EasingStartPos, &go->enemy.hand[i].WorldPos);
 		}
+
+		if (!sounds->isPlayShotSE)
+		{
+			SoundPlaySE(sounds->flickrChargePlayHandle, sounds->flickrChargeSoundHandle, sounds->volume);
+			sounds->isPlayShotSE = true;
+		}
+
 	}
 
 	if (go->enemy.BulletShotCurrentFrame > TransrateFrame && go->enemy.BulletShotCurrentFrame < WholeFrame) {
@@ -1055,6 +1083,8 @@ void BulletShot(GameObject* go, float WholeFrame, float TransrateFrame, float Oc
 			go->enemy.RightBullet[i].IsShot = false;
 			go->enemy.LeftBullet[i].IsShot = false;
 		}
+
+		sounds->isPlayShotSE = false;
 	}
 
 }
@@ -1166,7 +1196,7 @@ void DegreeUpdate(GameObject* go) {
 
 
 //更新処理
-void EnemyUpdate(GameObject* go,CameraRelated* cr) {
+void EnemyUpdate(GameObject* go,CameraRelated* cr,Sounds* sounds) {
 	
 	//フレームカウント
 	go->enemy.FlameCount++;
@@ -1250,13 +1280,13 @@ void EnemyUpdate(GameObject* go,CameraRelated* cr) {
 		DecisionMoveType_Ver1(go);
 	}
 	else if (go->enemy.MoveType == daipan) {
-		Daipan(go, DaiPanWholeFrame, 150.0f, 200.0f, 5.0f);
+		Daipan(go, DaiPanWholeFrame, 150.0f, 200.0f, 5.0f,sounds);
 	}
 	else if (go->enemy.MoveType == locketpunch) {
-		LocketPunch(go, LocketPunchWholeFrame, 90.0f, 200.0f, 5.0f);
+		LocketPunch(go, LocketPunchWholeFrame, 90.0f, 200.0f, 5.0f, sounds);
 	}
 	else if (go->enemy.MoveType == bulletshot) {
-		BulletShot(go, BulletShotWholeFrame, 90.0f, 100.0f, { WorldWidth / 2.0f ,WorldHeight / 2.0 });
+		BulletShot(go, BulletShotWholeFrame, 90.0f, 100.0f, { WorldWidth / 2.0f ,WorldHeight / 2.0 },sounds);
 	}
 
 	//基本情報の更新

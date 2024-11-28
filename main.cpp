@@ -203,7 +203,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 				//エネミーの更新処理
-				EnemyUpdate(p_gameobject, p_camera);
+				EnemyUpdate(p_gameobject, p_camera,p_sounds);
 
 				ScrollFunction(p_gameobject, p_camera);
 
@@ -334,21 +334,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			EnemyDebugPrintf(p_gameobject);
 
 
-			//シーンを切り替える
-			if (p_key->keys[DIK_G] && !p_key->preKeys[DIK_G])
-			{
-				if (p_scene->state == GAMEPLAY)
-				{
+			////シーンを切り替える
+			//if (p_key->keys[DIK_G] && !p_key->preKeys[DIK_G])
+			//{
+			//	if (p_scene->state == GAMEPLAY)
+			//	{
 
 
-					p_scene->state = TITLE;
+			//		p_scene->state = TITLE;
 
-					// BGMを止める
-					Novice::StopAudio(p_sounds->gamePlayPlayHandle);
-					break;
-				}
+			//		// BGMを止める
+			//		Novice::StopAudio(p_sounds->gamePlayPlayHandle);
+			//		break;
+			//	}
 
-			}
+			//}
 			//SoundPlayBGM(p_sounds->gamePlayPlayHandle, p_sounds->gamePlaySoundHandle, p_sounds->volume);
 			// 音楽を鳴らす
 			if (!Novice::IsPlayingAudio(p_sounds->gamePlayPlayHandle) ||

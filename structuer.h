@@ -433,6 +433,13 @@ struct Sounds
 
 	int handAttackPlayHandle;
 	int handAttackSoundHandle;
+
+	int handCoolTime;
+	int handNowTime;
+	int isPlayHandSE;
+	int isPlayPressSE;
+	int isPlayShotSE;
+
 };
 
 //シェイクの構造体
