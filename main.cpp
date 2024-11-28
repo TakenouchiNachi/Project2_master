@@ -219,7 +219,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 				//リセット関数
-				RkeyReset(p_gameobject, p_camera, p_key);
+				//RkeyReset(p_gameobject, p_camera, p_key);
 				
 
 			}
