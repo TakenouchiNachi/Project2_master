@@ -6,6 +6,7 @@
 //ヘッダーファイルの読み込み（アルファベット順）
 #include"camera.h"
 #include"common.h"
+#include"Explain.h"
 #include"collision.h"
 #include"define.h"
 #include"enemy.h"
@@ -38,7 +39,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneChange scene;
 	Sounds sounds;
 	Shake shake;
-
+	AllExplain allexplain;
 	PARTICLE particle;//@@@
 	AFTERIMAGE afterimage;
 
@@ -52,6 +53,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameObject* p_gameobject = &gameobject;
 	CameraRelated* p_camera = &camera;
 	Key* p_key = &key;
+	AllExplain* p_allexplain = &allexplain;
 	sceneChange* p_scene=&scene;
 	Sounds* p_sounds = &sounds;
 	Shake * p_shake= &shake;
@@ -71,7 +73,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	initializeSounds(p_sounds);
 	initializeShake(p_shake);
 	initializeTitle(p_titleU);
-
+	
+	ExplainIitialize(p_allexplain);
 
 	ParticleInitialize(p_particle);
 	AfterimageInitialize(p_afterimage);//@@@
@@ -109,7 +112,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
 
-			Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_scene->titleT, p_scene->startFrame);
+			//Novice::ScreenPrintf(10, 500, "posP : %f / isP : %f / ", p_scene->titleT, p_scene->startFrame);
 
 				/*Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x222222ff, kFillModeSolid);
 				
@@ -162,17 +165,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-				MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
 				AfterimageUpDate(p_afterimage, p_particle, p_camera, p_gameobject);//@@@
 				MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
-			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
-			  AfterimageUpDate(p_afterimage, p_particle, p_camera,p_gameobject);//@@@
-			//MovableObjectUpdate(p_gameobject, p_camera, p_key);
 
 
 				ParticleUpDate(p_particle, p_camera, p_gameobject, p_key);//@@@
@@ -183,8 +182,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-			CameraTransition_Start(p_gameobject, p_camera,p_sounds);
-			ScrollFunction(p_gameobject, p_camera);
+				CameraTransition_Start(p_gameobject, p_camera,p_sounds);
+				ScrollFunction(p_gameobject, p_camera);
 
 
 				MaskChange(p_scene, p_gameobject, p_key);
@@ -209,22 +208,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				ShakeFanction(p_shake, p_camera, p_key);
 
-				//CameraTransition_Start(p_gameobject, p_camera, p_key);
+				PlayerHudUpdate(p_gameobject);
 
 				CameraUpdate(p_camera, p_key);
+
+				ExplainUpdate(p_gameobject, p_allexplain);
 
 				//当たり判定関数
 				Col_Update(p_gameobject);
 
 
+
 				//リセット関数
 				RkeyReset(p_gameobject, p_camera, p_key);
+				
+
 			}
 
-			/*if (p_key->keys[DIK_0]) {
-				p_scene->state = 2;
-			}*/
+			if (gameobject.enemy.LapNum == 1) {
+				if (!gameobject.enemy.IsAlive) {
+					scene.state = 2;
+				}
+			}
 
+			if (gameobject.player.HP <= 0) {
+				scene.state = 3;
+			}
 
 
 
@@ -232,16 +241,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			/// ↓描画処理ここから
 			///
 
-
 			Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x222222ff, kFillModeSolid);
 
 			
 
-		///
-		/// ↓描画処理ここから
-		///
-	 
-		Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+			///
+			/// ↓描画処理ここから
+			///
+
+
+			Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
 
 
 			///
@@ -266,15 +275,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			PlayerDraw(p_gameobject);
 
-			FlickrDraw(p_gameobject);
+			ExplainDraw(p_allexplain);
 
-			
+			PlayerHudDraw(p_gameobject);
+
+			FlickrDraw(p_gameobject);
 
 			if (p_particle->particleHit.life > 0) {
 				Novice::DrawQuad(0, 0, 1280, 0, 0, 720, 1280, 720, 0, 0, 1280, 720, p_particle->particleHit.Image, p_particle->particleHit.Color);
 			}
 
-			PlayerHudDraw(p_gameobject);
 
 			MaskDraw(p_scene);
 
@@ -329,9 +339,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//Novice::ScreenPrintf(20, 20, "Life :%d", gameobject.player.HP);
 			
 
-			Novice::ScreenPrintf(0, 300, "life : %d", particle.particleHit.life);
+			//Novice::ScreenPrintf(0, 300, "life : %d", particle.particleHit.life);
 
-			EnemyDebugPrintf(p_gameobject);
+			//EnemyDebugPrintf(p_gameobject);
 
 
 			////シーンを切り替える
@@ -431,7 +441,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			FlickrDraw(p_gameobject);
 
-			MovableObjectDraw(p_gameobject);
 
 
 			if (p_particle->particleHit.life > 0) {
@@ -526,8 +535,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			PlayerDraw(p_gameobject);
 
 			FlickrDraw(p_gameobject);
-
-			MovableObjectDraw(p_gameobject);
 
 
 			if (p_particle->particleHit.life > 0) {
